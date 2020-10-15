@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+
+    <!-- Common -->
+    <!--White text-->
+    <color name="colorTextWhite">#FFFFFF</color>
+    <!--Black color-->
+    <color name="black">#000000</color>
+    <!--transparent color-->
+    <color name="transparent">#00000000</color>
+
+    <!-- style color-->
+    <color name="colorTransparentGray">#88ffffff</color>
+    <color name="colorDarkTransparentGray">#a4000000</color>
+    <color name="colorActivityBackground">#F3F3F3</color>
+
+    <color name="edit_hint_text">#8a8a8a</color>
+
+    <!--Danmu color-->
+    <color name="colorDanmuMsg">#30e7d5</color>
+    <!--input text background-->
+    <color name="color_input_dialog_background">#b4ffffff</color>
+    <!--input edit text background-->
+    <color name="colorTransparentBlack">#44777777</color>
+    <!--  腾讯小直播需要的一些颜色值 -->
+    <color name="colorSendName">#9966cc</color>
+    <color name="colorSendName1">#F12B5B</color>
+    <color name="colorSendName2">#2B7DE2</color>
+    <color name="colorSendName3">#006599</color>
+    <color name="colorSendName4">#FF7906</color>
+    <color name="colorSendName5">#1FBCB6</color>
+    <color name="colorSendName6">#FFAE1F</color>
+    <color name="colorSendName7">#FF437D</color>
+</resources>

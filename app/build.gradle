@@ -1,0 +1,83 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion = rootProject.ext.compileSdkVersion
+    buildToolsVersion = rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.futrtch.live"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+
+        renderscriptTargetApi = 14
+        renderscriptSupportModeEnabled = true
+        multiDexEnabled = true
+    }
+
+    dataBinding {
+        enabled = rootProject.ext.databinding
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    // 分包工具
+    implementation deps.support.multidex
+    // androidX
+    implementation deps.androidX.appcompat
+    implementation deps.androidX.recyclerview
+    implementation deps.androidX.constraintLayout
+    implementation deps.androidX.lifecycle
+    // material
+    implementation deps.material.runtime
+//    implementation deps.support.design
+//    implementation deps.support.recyclerview
+    // 腾讯直播SDK
+    implementation deps.liteavSdk.liteavsdk_smart
+    // 自定义采集控件
+    implementation deps.liveKit.runtime
+    // OkHttp3 + OkHttp3拦截器 腾讯云需要
+    implementation deps.okHttp3.runtime
+    implementation deps.okHttp3.interceptor
+    // gson
+    implementation deps.gson.runtime
+    // 腾讯IM
+    implementation deps.imsdk.runtime
+    // Glide
+    implementation deps.glide.runtime
+    // 腾讯存储服务
+    implementation deps.cosxml.runtime
+    // B站弹幕
+    implementation deps.DanmakuFlameMaster.runtime
+    // rxAndroid + rxJava
+    implementation deps.rxAndroid.runtime
+    implementation deps.rxAndroid.rxjava
+    // rxBinding
+    implementation deps.rxBinding.runtime
+    // autoDispose
+    implementation deps.autoDispose.android
+    implementation deps.autoDispose.lifecycle
+    // retrofit
+    implementation deps.retrofit.runtime
+    implementation deps.retrofit.adapter
+    implementation deps.retrofit.converter
+    // xxpermissions
+    implementation deps.xxpermissions.runtime
+
+
+
+}

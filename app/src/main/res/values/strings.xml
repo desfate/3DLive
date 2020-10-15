@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">3DLive</string>
+
+    <!-- 腾讯小程序相关string -->
+    <!-- msgadapter -->
+    <item type="id" name="tag_first"></item>
+    <item type="id" name="tag_second"></item>
+
+    <!-- permission check-->
+    <string name="float_window_not_allow">悬浮窗权限未开启 请在应用-权限中打开悬浮窗权限</string>
+
+    <string name="dialog_input_text_hint">开启弹幕互动吧</string>
+
+
+    <!-- 业务相关 -->
+    <!-- Login -->
+    <string name="login_hint_text">用户名：</string>
+    <string name="password_hint_text">密码：</string>
+
+    <!-- live play -->
+    <string name="send">发送</string>
+    <string name="username">userName</string>
+    <string name="login_btn_text">登录</string>
+    <string name="loading_text">加载中</string>
+    <string name="login_loading_text">登录中，请稍候！</string>
+
+</resources>
