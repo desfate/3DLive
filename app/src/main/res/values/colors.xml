@@ -4,6 +4,9 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
 
+    <color name="theme">#03A9F4</color>
+    <color name="bottom_navigation_normal">#CCCCCC</color>
+
     <!-- Common -->
     <!--White text-->
     <color name="colorTextWhite">#FFFFFF</color>

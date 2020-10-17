@@ -10,7 +10,7 @@
 
     <!-- Default screen margins, per the Android Design guidelines. -->
 
-
+    <dimen name="spacing_tiny">4dp</dimen>
     <!--大小-->
     <!--h1-->
     <!--h2-->
@@ -39,6 +39,8 @@
 
 
     <dimen name="live_btn_size">35dp</dimen>
+
+    <dimen name="spacing_medium">16dp</dimen>
 
 
     <!-- AVSDK *******************************************************************************************************************************-->

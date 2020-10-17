@@ -77,6 +77,10 @@ dependencies {
     implementation deps.retrofit.converter
     // xxpermissions
     implementation deps.xxpermissions.runtime
+    // liveEventBus
+    implementation deps.liveEventBus.runtime
+    // banner
+    implementation deps.banner.runtime
 
 
 

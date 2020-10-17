@@ -16,6 +16,7 @@
     <!-- Login -->
     <string name="login_hint_text">用户名：</string>
     <string name="password_hint_text">密码：</string>
+    <string name="repeat_password_hint_text">重复密码：</string>
 
     <!-- live play -->
     <string name="send">发送</string>
@@ -23,5 +24,8 @@
     <string name="login_btn_text">登录</string>
     <string name="loading_text">加载中</string>
     <string name="login_loading_text">登录中，请稍候！</string>
+    <string name="close_btn">关闭按钮</string>
+    <string name="register_and_login">注册并登录</string>
+    <string name="register_loading">注册中</string>
 
 </resources>

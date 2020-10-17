@@ -52,7 +52,7 @@
             android:layout_margin="30dp"
             android:autofillHints="password"
             android:hint="@string/password_hint_text"
-            android:inputType="text"
+            android:inputType="textPassword"
             android:textColorHint="@color/edit_hint_text"
             android:drawableLeft="@mipmap/password_icon"
             android:background="@drawable/myspace_bg_5"

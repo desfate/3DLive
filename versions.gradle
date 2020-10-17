@@ -36,7 +36,8 @@ versions.rxBinding = '4.0.0'//                rxBinding
 versions.autoDispose = '2.0.0'//              autoDispose
 versions.retrofit = '2.9.0'//                 retrofit
 versions.xxpermissions = '8.8'//              permissions
-
+versions.liveEventBus = '1.7.2'//             live-event-bus
+versions.banner = '2.1.0'//                   banner
 
 // IM 服务相关
 versions.imsdk = '4.5.45'
@@ -125,6 +126,15 @@ deps.retrofit = retrofit
 def xxpermissions = [:]
 xxpermissions.runtime = "com.hjq:xxpermissions:$versions.xxpermissions"
 deps.xxpermissions = xxpermissions
+
+def liveEventBus = [:]
+liveEventBus.runtime = "com.jeremyliao:live-event-bus-x:$versions.liveEventBus"
+deps.liveEventBus = liveEventBus
+
+def banner = [:]
+banner.runtime = "com.youth.banner:banner:$versions.banner"
+deps.banner = banner
+
 
 def addRepos(RepositoryHandler handler) {
     handler.google()
