@@ -6,9 +6,20 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/root_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@mipmap/login_background">
-        s
+        android:layout_height="match_parent">
+
+
+        <ImageView
+            android:id="@+id/iv_avatar_img"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@mipmap/live3_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:contentDescription="cover_img" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

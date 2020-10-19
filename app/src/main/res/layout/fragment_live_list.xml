@@ -36,8 +36,7 @@
             android:scrollbars="vertical"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:spanCount="2"
-            tools:listitem="@layout/activity_live" />
+            app:spanCount="2" />
 
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
