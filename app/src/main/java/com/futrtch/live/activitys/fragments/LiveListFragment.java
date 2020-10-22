@@ -41,6 +41,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class LiveListFragment extends Fragment {
 
+    public static final int START_LIVE_PLAY = 100;
+
     FragmentLiveListBinding mDataBinding;
     LiveListAdapter mAdapter;
     LiveListViewModel mViewModel;

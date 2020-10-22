@@ -1,7 +1,7 @@
 package com.futrtch.live.tencent.common.utils;
 
 /**
- * 错误码映射类
+ * 错误码映射类  这些错误码都是对用户的 （用户可感知的）
  */
 public class TCErrorConstants {
 
@@ -23,6 +23,16 @@ public class TCErrorConstants {
     public final static int ERROR_CUSTOMER_USERNAME_ERROR = 20001; // 用户名不符合规范！
     public final static int ERROR_CUSTOMER_PASSWORD_ERROR = 20002; // 密码长度应为8-16位
     public final static int ERROR_CUSTOMER_REPEAT_ERROR = 20003;   // 两次输入密码不一致
+
+    /**
+     * 直播相关错误
+     */
+    public final static int SUCCESS_CUSTOMER_IN_ROOM = 30000;  //       加入房间成功
+    public final static int ERROR_CUSTOMER_IN_ROOM_ERROR = 30001;  //   加入房间失败
+    public final static int ERROR_CUSTOMER_LIVE_END_ERROR = 30002;//    直播已结束
+    public final static int ERROR_CUSTOMER_VIDEO_PLAY_ERROR = 30003;//  视频流播放失败
+
+
 
 
     /**
@@ -50,6 +60,12 @@ public class TCErrorConstants {
                 return "密码长度应为8-16位";
             case ERROR_CUSTOMER_REPEAT_ERROR:
                 return "两次输入密码不一致";
+            case ERROR_CUSTOMER_IN_ROOM_ERROR:
+                return "加入房间失败";
+            case ERROR_CUSTOMER_LIVE_END_ERROR:
+                return "直播已结束";
+            case ERROR_CUSTOMER_VIDEO_PLAY_ERROR:
+                return "视频流播放失败";
         }
         return "找不到对应的错误码";
     }

@@ -15,10 +15,17 @@
         <activity android:name=".activitys.MainActivity">
         </activity>
 
-        <activity android:name=".activitys.LivaPlayActivity">
+        <activity android:name=".activitys.LivePlayActivity">
         </activity>
 
         <activity android:name=".activitys.LoginActivity">
+        </activity>
+
+        <activity android:name=".activitys.RegisterActivity">
+        </activity>
+
+        <activity android:name=".activitys.SplashActivity"
+            android:theme="@style/AppTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,8 +33,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activitys.RegisterActivity">
-        </activity>
     </application>
 
 </manifest>

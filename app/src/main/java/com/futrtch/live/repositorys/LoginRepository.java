@@ -11,6 +11,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
 import com.futrtch.live.base.BaseLiveData;
+import com.futrtch.live.beans.LoginSaveBean;
 import com.futrtch.live.http.LoginRequestBuilder;
 import com.futrtch.live.http.RequestTags;
 import com.futrtch.live.http.apis.AccountService;
@@ -53,6 +54,9 @@ public class LoginRepository extends BaseRepository {
 
     private final static String TAG = "LoginRepository";
 
+    private final static String PREFERENCE_USERID = "userid";
+    private final static String PREFERENCE_USERPWD = "userpwd";
+
     /**
      * 单例模式
      */
@@ -60,15 +64,8 @@ public class LoginRepository extends BaseRepository {
     private static volatile LoginRepository singleton = null;
 
     /**********************************     本地数据缓存    **************************************/
-    private LoginResponBean mUserInfo = new LoginResponBean(); // 登录返回后 用户信息存在这
-    private String mUserId;                // 账号
-    private String mUserPwd;               // 密码
-
-    private String mUserName;              // 用户称呼
-    private String mUserAvatar;            // 用户头像
-    private String mCoverPic;              // 直播用的封面图
-    private String mLocation;              // 地址信息
-    private int mSex = -1;                 // 性别  0:male,1:female,-1:unknown
+    private LoginResponBean mUserInfo = new LoginResponBean();  // 登录返回后 用户信息存在这
+    private final LoginSaveBean loginSaveBean = new LoginSaveBean();  // 用于保存用户登录信息
     private TCUserMgr.CosInfo mCosInfo = new TCUserMgr.CosInfo();   // COS 存储的 sdkappid
 
     private Context mContext;              //                                       初始化一些组件需要使用
@@ -84,8 +81,8 @@ public class LoginRepository extends BaseRepository {
         if (mContext == null) return;
         TXLog.d(TAG, "xzb_process: load local user info");
         SharedPreferences settings = mContext.getSharedPreferences("TCUserInfo", Context.MODE_PRIVATE);
-        mUserId = settings.getString("userid", "");
-        mUserPwd = settings.getString("userpwd", "");
+        loginSaveBean.setmUserId(settings.getString(PREFERENCE_USERID, ""));
+        loginSaveBean.setmUserPwd(settings.getString(PREFERENCE_USERPWD, ""));
     }
 
     private void saveUserInfo() {
@@ -93,8 +90,8 @@ public class LoginRepository extends BaseRepository {
         TXLog.d(TAG, "xzb_process: save local user info");
         SharedPreferences settings = mContext.getSharedPreferences("TCUserInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putString("userid", mUserId);
-        editor.putString("userpwd", mUserPwd);
+        editor.putString(PREFERENCE_USERID, loginSaveBean.getmUserId());
+        editor.putString(PREFERENCE_USERPWD, loginSaveBean.getmUserPwd());
         editor.apply();
     }
 
@@ -115,7 +112,6 @@ public class LoginRepository extends BaseRepository {
                             LiveEventBus.get(RequestTags.LOGIN_REQ, BaseResponBean.class)
                                     .post(new BaseResponBean<>(loginBean.getCode(), loginBean.getMessage()));         // 页面要处理的逻辑（注册返回）
                         }
-
                         if (loginBean.getCode() == 200
                                 && loginBean.getData() != null
                                 && loginBean.getData().getToken() != null
@@ -140,13 +136,13 @@ public class LoginRepository extends BaseRepository {
                         if (accountBean != null && accountBean.getCode() == 200) {  // 查询账户信息返回
                             if (accountBean.getData() != null) {
                                 if (accountBean.getData().getAvatar() != null)
-                                    LoginRepository.this.mUserAvatar = accountBean.getData().getAvatar();  //      保存用户头像信息
+                                    loginSaveBean.setmUserAvatar(accountBean.getData().getAvatar());  //      保存用户头像信息
                                 if (accountBean.getData().getNickname() != null)
-                                    LoginRepository.this.mUserName = accountBean.getData().getNickname(); //       用户称呼
+                                    loginSaveBean.setmUserName(accountBean.getData().getNickname()); //       用户称呼
                                 if (accountBean.getData().getFrontcover() != null)
-                                    LoginRepository.this.mCoverPic = accountBean.getData().getFrontcover();//      直播封面？
+                                    loginSaveBean.setmCoverPic(accountBean.getData().getFrontcover());//      直播封面？
                                 if (accountBean.getData().getSex() >= 0) {
-                                    LoginRepository.this.mSex = accountBean.getData().getSex();//                  用户性别
+                                    loginSaveBean.setmSex(accountBean.getData().getSex());//                  用户性别
                                 }
                             }
                         }
@@ -219,9 +215,9 @@ public class LoginRepository extends BaseRepository {
         loginInfo.userID = getUserId();
         loginInfo.userSig = mUserInfo.getRoomservice_sign().getUserSig();
 
-        String userName = this.mUserName;
+        String userName = loginSaveBean.getmUserName();
         loginInfo.userName = !TextUtils.isEmpty(userName) ? userName : getUserId();
-        loginInfo.userAvatar = this.mUserAvatar;
+        loginInfo.userAvatar = loginSaveBean.getmUserAvatar();
         MLVBLiveRoom liveRoom = MLVBLiveRoom.sharedInstance(mContext);
         liveRoom.login(loginInfo, new IMLVBLiveRoomListener.LoginCallback() {
             @Override
@@ -246,6 +242,10 @@ public class LoginRepository extends BaseRepository {
     public void setmContext(Context context) {
         this.mContext = context;
         initData();
+    }
+
+    public LoginSaveBean getLoginInfo(){
+        return loginSaveBean;
     }
 
     public static LoginRepository getInstance() {

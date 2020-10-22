@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="110dp"
+        android:background="@drawable/pusher_info_background"
+        android:padding="1dp">
+
+        <!-- 主播头像 -->
+        <ImageView
+            android:id="@+id/anchor_iv_head_icon"
+            android:layout_width="@dimen/user_head_size"
+            android:layout_height="@dimen/user_head_size"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@string/user_head"
+            android:src="@mipmap/face"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <!-- 主播已直播时间 -->
+        <TextView
+            android:id="@+id/anchor_tv_broadcasting_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="5dp"
+            android:maxLines="1"
+            android:paddingTop="2.5dp"
+            android:paddingEnd="10dp"
+            android:singleLine="true"
+            android:textColor="@color/colorTextWhite"
+            android:textSize="@dimen/textSize_10sp"
+            app:layout_constraintLeft_toRightOf="@+id/anchor_iv_head_icon"
+            app:layout_constraintTop_toTopOf="parent" />
+        <!-- 记录中 red dot -->
+        <ImageView
+            android:id="@+id/anchor_iv_record_ball"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/liveshow_item_dot"
+            android:scaleType="fitXY"
+            app:layout_constraintLeft_toRightOf="@+id/anchor_iv_head_icon"
+            app:layout_constraintTop_toTopOf="parent" />
+        <!-- 直播时间 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextWhite"
+            android:textSize="@dimen/textSize_10sp"
+            android:visibility="gone"
+            android:layout_below="@+id/anchor_iv_record_ball"
+            android:paddingTop="3dp"
+            app:layout_constraintLeft_toRightOf="@+id/anchor_iv_head_icon"
+            app:layout_constraintTop_toBottomOf="@+id/anchor_iv_record_ball"
+             />
+        <!-- 直播观众数目 -->
+        <TextView
+            android:id="@+id/anchor_tv_member_counts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawablePadding="5dp"
+            android:textSize="@dimen/textSize_10sp"
+            android:textColor="@color/colorTextWhite"
+            app:layout_constraintLeft_toRightOf="@+id/anchor_tv_broadcasting_time"
+            app:layout_constraintTop_toBottomOf="@+id/anchor_tv_broadcasting_time"
+             />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

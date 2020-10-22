@@ -17,6 +17,8 @@ import com.futrtch.live.tencent.common.utils.TCUtils;
 import java.util.LinkedList;
 
 /**
+ *
+ * fixme 服了  这个适配器尼玛还不能获取当前房间用户头像 实时显示 还是临时缓存的头像 也太偷懒了
  * Module:   TCUserAvatarListAdapter
  *
  * Function: 直播头像列表Adapter

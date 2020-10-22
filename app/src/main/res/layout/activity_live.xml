@@ -6,19 +6,147 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/root_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/transparent">
 
+        <!-- 自定义播放控件 -->
+        <github.com.desfate.livekit.LivePlayView
+            android:id="@+id/anchor_play_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"
+            />
 
+        <!-- 遮罩层 -->
         <ImageView
-            android:id="@+id/iv_avatar_img"
+            android:id="@+id/audience_background"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:src="@mipmap/live3_icon"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:contentDescription="cover_img" />
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <!-- 用户控制区 -->
+        <RelativeLayout
+            android:id="@+id/anchor_control_layer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/transparent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent">
+            <!-- 主播标题 -->
+            <include android:id="@+id/layout_live_pusher_info"
+                layout="@layout/layout_live_pusher_info"
+                android:layout_margin="5dp"
+                android:layout_width="110dp"
+                android:layout_height="35dp"/>
+            <!-- 观众列表 -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/anchor_rv_avatar"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_toEndOf="@+id/layout_live_pusher_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"/>
+            <!-- 用户可操作控件区域 -->
+            <RelativeLayout
+                android:id="@+id/tool_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="15dp">
+                <!-- 聊天按钮 -->
+                <Button
+                    android:id="@+id/btn_message_input"
+                    android:layout_width="wrap_content"
+                    android:minWidth="150dp"
+                    android:layout_height="@dimen/live_btn_size"
+                    android:text="@string/live_input_text"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center_vertical|left"
+                    android:textColor="@color/colorTransparentGray"
+                    android:paddingStart="10dp"
+                    android:background="@drawable/pusher_info_background" />
+                <!-- 退出按钮 -->
+                <ImageView
+                    android:id="@+id/btn_back"
+                    android:layout_width="@dimen/live_btn_size"
+                    android:layout_height="@dimen/live_btn_size"
+                    android:layout_alignParentEnd="true"
+                    android:src="@mipmap/live_close_icon"
+                    android:background="@drawable/live_icon_background"
+                    />
+                <!-- 更多按钮 -->
+                <ImageView
+                    android:id="@+id/btn_more"
+                    android:layout_width="@dimen/live_btn_size"
+                    android:layout_height="@dimen/live_btn_size"
+                    android:layout_toStartOf="@+id/btn_back"
+                    android:layout_marginEnd="10dp"
+                    android:src="@mipmap/live_more_icon"
+                    android:background="@drawable/live_icon_background"
+                    />
+                <!-- 礼物按钮 -->
+                <ImageView
+                    android:id="@+id/btn_gift"
+                    android:layout_width="@dimen/live_btn_size"
+                    android:layout_height="@dimen/live_btn_size"
+                    android:layout_toStartOf="@+id/btn_more"
+                    android:layout_marginEnd="10dp"
+                    android:src="@mipmap/live_gift_icon"
+                    android:background="@drawable/live_icon_background"
+                    />
+
+
+            </RelativeLayout>
+
+            <!--点赞动画-->
+            <RelativeLayout
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="80dp">
+
+                <com.futrtch.live.tencent.common.widget.like.TCHeartLayout
+                    android:id="@+id/heart_layout"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:focusable="true" />
+            </RelativeLayout>
+
+            <!--弹幕-->
+            <master.flame.danmaku.ui.widget.DanmakuView
+                android:id="@+id/anchor_danmaku_view"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_centerInParent="true"/>
+
+            <!-- 聊天区域 -->
+            <ListView
+                android:id="@+id/im_msg_listview"
+                android:layout_width="250dp"
+                android:layout_height="10dp"
+                android:layout_marginLeft="15dp"
+                android:scrollbars="none"
+                android:layout_alignParentLeft="true"
+                android:layout_above="@id/tool_bar"
+                android:cacheColorHint="#00000000"
+                android:divider="#3c421b1b"
+                android:scrollbarStyle="outsideOverlay"
+                android:stackFromBottom="true"
+                android:transcriptMode="normal"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

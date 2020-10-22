@@ -16,6 +16,8 @@ import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.futrtch.live.R;
 import com.futrtch.live.tencent.liveroom.roomutil.commondef.MLVBCommonDef;
 
@@ -24,18 +26,20 @@ import com.futrtch.live.tencent.liveroom.roomutil.commondef.MLVBCommonDef;
  * Created by Administrator on 2016/9/26.
  */
 public class ErrorDialogFragment extends DialogFragment {
+
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NO_TITLE,R.style.AppTheme);
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         int errorCode = getArguments().getInt("errorCode");
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.ConfirmDialogStyle)
                 .setCancelable(true)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-
-                        getActivity().finish();
-                    }
+                .setPositiveButton("确定", (dialog, which) -> {
+                    dialog.dismiss();
+                    getActivity().finish();
                 });
         if (errorCode == MLVBCommonDef.LiveRoomErrorCode.ERROR_LICENSE_INVALID) {
             String errInfo = "License 校验失败";

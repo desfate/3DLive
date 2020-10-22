@@ -25,15 +25,15 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 
 import com.futrtch.live.R;
-import com.futrtch.live.activitys.LivaPlayActivity;
+import com.futrtch.live.activitys.LivePlayActivity;
 import com.futrtch.live.databinding.LayoutBannerBinding;
 import com.futrtch.live.databinding.ListviewVideoItemBinding;
+import com.futrtch.live.tencent.common.utils.TCConstants;
 import com.futrtch.live.tencent.common.utils.TCUtils;
 import com.futrtch.live.tencent.live.AdapterCallBack;
 import com.futrtch.live.tencent.live.TCVideoInfo;
 import com.youth.banner.indicator.CircleIndicator;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -92,13 +92,23 @@ public class LiveListAdapter extends ListAdapter<TCVideoInfo, LiveListAdapter.Li
             ViewCompat.setTransitionName(binding.liveMembers, "members-" + info.userId);
 
             binding.squareLayout.setOnClickListener(view -> {
-                Intent intent = new Intent(mContext, LivaPlayActivity.class);
+                Intent intent = new Intent(mContext, LivePlayActivity.class);
                 intent.putExtra("btn", info.frontCover);
+                intent.putExtra(TCConstants.PUSHER_ID, info.userId !=null?info.userId :"");
+                intent.putExtra(TCConstants.PUSHER_NAME, TextUtils.isEmpty(info.nickname) ? info.userId : info.nickname);
+                intent.putExtra(TCConstants.PUSHER_AVATAR, info.avatar);
+                intent.putExtra(TCConstants.HEART_COUNT, "" + info.likeCount);
+                intent.putExtra(TCConstants.MEMBER_COUNT, "" + info.viewerCount);
+                intent.putExtra(TCConstants.GROUP_ID, info.groupId);
+                intent.putExtra(TCConstants.PLAY_TYPE, info.livePlay);
+                intent.putExtra(TCConstants.FILE_ID, info.fileId !=null?info.fileId :"");
+                intent.putExtra(TCConstants.COVER_PIC, info.frontCover);
+                intent.putExtra(TCConstants.TIMESTAMP, info.createTime);
+                intent.putExtra(TCConstants.ROOM_TITLE, info.title);
                 Pair<View,String> pair1 = new Pair<>((View)binding.anchorBtnCover,ViewCompat.getTransitionName(binding.anchorBtnCover));
                 ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) mContext, pair1);
                 ActivityCompat.startActivity(mContext,intent,activityOptionsCompat.toBundle());
             });
-
 
             //直播封面
             String cover = info.frontCover;

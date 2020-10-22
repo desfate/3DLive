@@ -25,7 +25,7 @@
                 android:layout_margin="5dp"
                 android:contentDescription="@string/close_btn"
                 android:padding="10dp"
-                android:src="@mipmap/close_icon" />
+                android:src="@mipmap/live_close_icon" />
         </FrameLayout>
 
         <!-- 登录名 -->

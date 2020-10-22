@@ -41,6 +41,8 @@
     <dimen name="live_btn_size">35dp</dimen>
 
     <dimen name="spacing_medium">16dp</dimen>
+    <dimen name="user_head_size">35dp</dimen>
+    <dimen name="textSize_10sp">10sp</dimen>
 
 
     <!-- AVSDK *******************************************************************************************************************************-->

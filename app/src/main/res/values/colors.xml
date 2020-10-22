@@ -14,6 +14,8 @@
     <color name="black">#000000</color>
     <!--transparent color-->
     <color name="transparent">#00000000</color>
+    <!--红色-->
+    <color name="colorRed">#FF3333</color>
 
     <!-- style color-->
     <color name="colorTransparentGray">#88ffffff</color>
@@ -37,4 +39,7 @@
     <color name="colorSendName5">#1FBCB6</color>
     <color name="colorSendName6">#FFAE1F</color>
     <color name="colorSendName7">#FF437D</color>
+
+
+    <color name="c9">#777777</color>
 </resources>
