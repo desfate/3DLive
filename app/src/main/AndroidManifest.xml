@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.futrtch.live">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -12,19 +14,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activitys.MainActivity">
-        </activity>
+        <activity android:name=".activitys.MainActivity"></activity>
 
-        <activity android:name=".activitys.LivePlayActivity">
-        </activity>
+        <activity
+            android:name=".activitys.LivePlayActivity"
+            android:configChanges="keyboardHidden|orientation"></activity>
 
-        <activity android:name=".activitys.LoginActivity">
-        </activity>
+        <activity
+            android:name=".activitys.LiveRecordActivity"
+            android:configChanges="keyboardHidden|orientation"></activity>
 
-        <activity android:name=".activitys.RegisterActivity">
-        </activity>
+        <activity android:name=".activitys.LoginActivity"></activity>
 
-        <activity android:name=".activitys.SplashActivity"
+        <activity android:name=".activitys.RegisterActivity"></activity>
+
+
+        <activity
+            android:name=".activitys.SplashActivity"
             android:theme="@style/AppTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,17 +1,12 @@
-package com.futrtch.live.viewmodel;
+package com.futrtch.live.mvvm.vm;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.futrtch.live.base.BaseResponBean;
-import com.futrtch.live.http.RequestTags;
-import com.futrtch.live.repositorys.LoginRepository;
+import com.futrtch.live.mvvm.repository.LoginRepository;
 import com.futrtch.live.tencent.common.utils.TCUtils;
-import com.jeremyliao.liveeventbus.LiveEventBus;
-
-import java.util.Observable;
 
 import static com.futrtch.live.tencent.common.utils.TCErrorConstants.ERROR_CUSTOMER_PASSWORD_ERROR;
 import static com.futrtch.live.tencent.common.utils.TCErrorConstants.ERROR_CUSTOMER_SUCCESS_PASS;

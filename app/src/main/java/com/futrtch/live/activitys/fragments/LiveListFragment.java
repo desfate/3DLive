@@ -1,5 +1,6 @@
 package com.futrtch.live.activitys.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -24,18 +25,20 @@ import androidx.transition.Slide;
 import androidx.transition.TransitionSet;
 
 import com.futrtch.live.R;
+import com.futrtch.live.activitys.LiveRecordActivity;
 import com.futrtch.live.adapters.BannerImageAdapter;
 import com.futrtch.live.adapters.LiveListAdapter;
 import com.futrtch.live.beans.BannerBean;
 import com.futrtch.live.databinding.FragmentLiveListBinding;
+import com.futrtch.live.mvvm.vm.LiveListViewModel;
+import com.futrtch.live.mvvm.vm.LiveListViewModelFactory;
 import com.futrtch.live.tencent.live.TCVideoInfo;
 import com.futrtch.live.utils.SpaceDecoration;
-import com.futrtch.live.viewmodel.LiveListViewModel;
-import com.futrtch.live.viewmodel.LiveListViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
 /**
  * 直播列表页面
  */
@@ -128,6 +131,8 @@ public class LiveListFragment extends Fragment {
         mDataBinding.fab.setOnClickListener(v -> mDataBinding.fab.setExpanded(true));
 
         mDataBinding.scrim.setOnClickListener(v -> mDataBinding.fab.setExpanded(false));
+
+        mDataBinding.startLive3Btn.setOnClickListener(v -> getActivity().startActivity(new Intent(getActivity(), LiveRecordActivity.class)));
 
         setTransition();  // 设置
         subscribeUi();

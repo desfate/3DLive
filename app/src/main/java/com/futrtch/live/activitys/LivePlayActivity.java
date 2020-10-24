@@ -1,35 +1,14 @@
 package com.futrtch.live.activitys;
 
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.provider.ContactsContract;
-import android.transition.ChangeBounds;
-import android.transition.ChangeImageTransform;
-import android.transition.ChangeTransform;
-import android.transition.Fade;
-import android.transition.Transition;
-import android.transition.TransitionSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.Size;
-import android.view.Display;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.animation.PathInterpolatorCompat;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,43 +16,25 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.futrtch.live.R;
 import com.futrtch.live.databinding.ActivityLiveBinding;
 import com.futrtch.live.interfaces.LiveRoomCallBack;
-import com.futrtch.live.repositorys.LoginRepository;
-import com.futrtch.live.tencent.beans.LivePlayBean;
-import com.futrtch.live.tencent.common.msg.TCChatEntity;
 import com.futrtch.live.tencent.common.msg.TCChatMsgListAdapter;
 import com.futrtch.live.tencent.common.msg.TCSimpleUserInfo;
-import com.futrtch.live.tencent.common.ui.ErrorDialogFragment;
-import com.futrtch.live.tencent.common.utils.TCConstants;
 import com.futrtch.live.tencent.common.utils.TCErrorConstants;
 import com.futrtch.live.tencent.common.utils.TCUtils;
 import com.futrtch.live.tencent.common.widget.RTCUserAvatarListAdapter;
-import com.futrtch.live.tencent.common.widget.TCInputTextMsgDialog;
-import com.futrtch.live.tencent.common.widget.TCSwipeAnimationController;
-import com.futrtch.live.tencent.common.widget.TCUserAvatarListAdapter;
-import com.futrtch.live.tencent.common.widget.danmaku.TCDanmuMgr;
-import com.futrtch.live.tencent.common.widget.video.TCVideoViewMgr;
-import com.futrtch.live.tencent.liveroom.IMLVBLiveRoomListener;
-import com.futrtch.live.tencent.liveroom.MLVBLiveRoom;
-import com.futrtch.live.tencent.liveroom.roomutil.commondef.AnchorInfo;
-import com.futrtch.live.tencent.liveroom.roomutil.commondef.AudienceInfo;
 import com.futrtch.live.tencent.liveroom.roomutil.commondef.MLVBCommonDef;
-import com.futrtch.live.utils.PressTimeControl;
 import com.futrtch.live.utils.StyleUtils;
 import com.futrtch.live.utils.TransitionUtils;
-import com.futrtch.live.viewmodel.LivePlayViewModel;
-import com.futrtch.live.viewmodel.LivePlayViewModelFactory;
+import com.futrtch.live.mvvm.vm.LivePlayViewModel;
+import com.futrtch.live.mvvm.vm.LivePlayViewModelFactory;
 import com.jakewharton.rxbinding4.view.RxView;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import autodispose2.AutoDispose;
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import github.com.desfate.livekit.live.LiveMessageCommand;
-import io.reactivex.rxjava3.functions.Consumer;
-import kotlin.Unit;
 
 /**
  * 直播播放页面
@@ -95,16 +56,18 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
         super.onCreate(savedInstanceState);
         setLiveRoomCallBack(this);
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_live);
-        ViewModelProvider.Factory factory = new LivePlayViewModelFactory(getApplication());
+        ViewModelProvider.Factory factory = new LivePlayViewModelFactory(getApplication(), this);
         mViewModel = ViewModelProviders.of(this, factory).get(LivePlayViewModel.class);
         TransitionUtils.setTransitionAnim(mDataBinding.audienceBackground, getWindow(), TRANSITION_NAME_IMAGE); // 设置过场动画
-        mDataBinding.audienceBackground.setImageResource(R.mipmap.live2_icon);
-        mViewModel.getIntentData(getIntent()); //   拿到主播相关数据
+
         init();
+        bindUi();
         subscribeUi();
     }
 
     private void init() {
+        mDataBinding.audienceBackground.setImageResource(R.mipmap.live2_icon);
+        mViewModel.getIntentData(getIntent()); //   拿到主播相关数据
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mDataBinding.anchorRvAvatar.setLayoutManager(linearLayoutManager);
@@ -112,9 +75,11 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
         mDataBinding.anchorRvAvatar.setAdapter(mAvatarListAdapter);
         mChatMsgListAdapter = new TCChatMsgListAdapter(this, mDataBinding.imMsgListview, new ArrayList<>());
         mDataBinding.imMsgListview.setAdapter(mChatMsgListAdapter);
-
         mViewModel.prepareLive(this, mDataBinding.anchorDanmakuView, mDataBinding.anchorControlLayer);  // 直播前准备
         mViewModel.startLivePlay(mDataBinding.anchorPlayView, this);
+    }
+
+    private void bindUi() {
         // 右滑还原
         RxView.touches(mDataBinding.anchorPlayView)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))

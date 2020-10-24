@@ -30,4 +30,11 @@
     <string name="user_head">user_head</string>
     <string name="live_input_text">说些什么...</string>
 
+    <!-- live play -->
+    <string name="live_end_tips">直播结束啦!</string>
+    <string name="live_time_tips">直播时长</string>
+    <string name="live_members_tips">观看人数</string>
+    <string name="live_admires_tips">获赞数量</string>
+    <string name="btn_return_home">返回首页</string>
+
 </resources>

@@ -39,7 +39,8 @@
     <color name="colorSendName5">#1FBCB6</color>
     <color name="colorSendName6">#FFAE1F</color>
     <color name="colorSendName7">#FF437D</color>
-
+    <!--主题色激活态，如按钮高亮-->
+    <color name="colorLight">#0accac</color>
 
     <color name="c9">#777777</color>
 </resources>

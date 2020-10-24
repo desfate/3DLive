@@ -27,10 +27,18 @@ public class TCErrorConstants {
     /**
      * 直播相关错误
      */
+    /********************************      观众页面     **************************************/
     public final static int SUCCESS_CUSTOMER_IN_ROOM = 30000;  //       加入房间成功
     public final static int ERROR_CUSTOMER_IN_ROOM_ERROR = 30001;  //   加入房间失败
     public final static int ERROR_CUSTOMER_LIVE_END_ERROR = 30002;//    直播已结束
     public final static int ERROR_CUSTOMER_VIDEO_PLAY_ERROR = 30003;//  视频流播放失败
+
+    /********************************      直播页面     **************************************/
+    public final static int SUCCESS_CUSTOMER_START_LIVE = 31000;//       开始直播
+    public final static int ERROR_CUSTOMER_CREATE_ROOM_ERROR = 31001; // 创建直播房间失败
+
+    public final static int SUCCESS_CUSTOMER_CREATE_ROOM = 32000; //     房间创建成功
+
 
 
 
@@ -66,6 +74,8 @@ public class TCErrorConstants {
                 return "直播已结束";
             case ERROR_CUSTOMER_VIDEO_PLAY_ERROR:
                 return "视频流播放失败";
+            case ERROR_CUSTOMER_CREATE_ROOM_ERROR:
+                return "创建直播房间失败";
         }
         return "找不到对应的错误码";
     }

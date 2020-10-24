@@ -1,24 +1,25 @@
-package com.futrtch.live.viewmodel;
+package com.futrtch.live.mvvm.vm;
 
 import android.app.Application;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-public class LiveRecordViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
+public class LiveListViewModelFactory  extends ViewModelProvider.AndroidViewModelFactory {
     /**
      * Creates a {@code AndroidViewModelFactory}
      *
-     * @param application an application to pass in {@link androidx.lifecycle.AndroidViewModel}
+     * @param application an application to pass in {@link AndroidViewModel}
      */
-    public LiveRecordViewModelFactory(@NonNull Application application) {
+    public LiveListViewModelFactory(@NonNull Application application) {
         super(application);
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new LiveRecordViewModel();
+        return (T) new LiveListViewModel();
     }
 }
