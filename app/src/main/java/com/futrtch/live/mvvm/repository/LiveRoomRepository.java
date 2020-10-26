@@ -56,7 +56,7 @@ public class LiveRoomRepository {
                         responseBean.setReturnCode(errCode);  //                                            返回错误码
                         responseBean.setErrInfo(errInfo); //                                                错误信息
                         Log.w(TAG, String.format("创建直播间错误, code=%s,error=%s", errCode, errInfo));
-//                        liveState.postValue(TCErrorConstants.ERROR_CUSTOMER_CREATE_ROOM_ERROR); //            通知页面  直播间创建失败
+                        liveState.postValue(TCErrorConstants.ERROR_CUSTOMER_CREATE_ROOM_ERROR); //          通知页面  直播间创建失败
                         emitter.onNext(responseBean);
                     }
 

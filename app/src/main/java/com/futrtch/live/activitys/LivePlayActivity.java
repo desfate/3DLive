@@ -126,6 +126,7 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
         mViewModel.getCurrentAudienceCount().observe(this, integer -> mDataBinding.layoutLivePusherInfo.anchorTvMemberCounts.setText(String.valueOf(integer)));
         // 观众进入房间
         mViewModel.getCurrentAudienceList().observe(this, tcSimpleUserInfo -> mAvatarListAdapter.submitList(tcSimpleUserInfo));  // 更新头像区域
+        // 聊天信息通知
         mViewModel.getCurrentMessageList().observe(this, tcChatEntities -> mChatMsgListAdapter.setData(tcChatEntities)); //         更新聊天区域
         // 横竖屏切换
         mViewModel.getScreenState().observe(this, this::switchWatchModel);
@@ -135,14 +136,6 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
         });
     }
 
-
-    /**
-     *     /////////////////////////////////////////////////////////////////////////////////
-     *     //
-     *     //                      直播房间回调
-     *     //
-     *     /////////////////////////////////////////////////////////////////////////////////
-     */
     /**
      * 消息返回
      *
@@ -181,16 +174,9 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
     }
 
     /**
-     *     /////////////////////////////////////////////////////////////////////////////////
-     *     //
-     *     //                      直播间横竖屏幕切换
-     *     //
-     *     /////////////////////////////////////////////////////////////////////////////////
-     */
-    /**
      * 横竖屏切换
      *
-     * @param watchType
+     * @param watchType 切换类型
      */
     public void switchWatchModel(String watchType) {
         switch (watchType) {
@@ -207,7 +193,7 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
     /**
      * 横竖屏切换后的宽高处理
      *
-     * @param newConfig
+     * @param newConfig 新配置
      */
     @Override
     public void onConfigurationChanged(@NotNull Configuration newConfig) {

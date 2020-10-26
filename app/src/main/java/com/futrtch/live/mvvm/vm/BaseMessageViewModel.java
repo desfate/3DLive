@@ -38,14 +38,15 @@ import master.flame.danmaku.controller.IDanmakuView;
 public class BaseMessageViewModel extends ViewModel {
 
     private final static String TAG = "BaseMessageViewModel";
+    /***********************************************  Data **********************************************************/
     String mPusherId = "";
-
+    /***********************************************  LiveData ******************************************************/
     MutableLiveData<List<TCSimpleUserInfo>> currentAudienceList = new MutableLiveData<>();//    当前观众头像列表（并不需要全部）
     MutableLiveData<List<TCChatEntity>> currentMessageList = new MutableLiveData<>();//         当前聊天数据列表
     MutableLiveData<Integer> currentAudienceCount = new MutableLiveData<>(); //                 直播总观众数目（不会太精确）
     MutableLiveData<Integer> heartCount = new MutableLiveData<>();//                            点赞数量
     MutableLiveData<String> screenState = new MutableLiveData<>();//                            横竖屏状态
-
+    /***********************************************  用于直播控制的  *************************************************/
     public TCDanmuMgr mDanMuMgr;//                                                              弹幕
     public MLVBLiveRoom mLiveRoom;//                                                            直播间 M L V B
     public TCInputTextMsgDialog mInputTextMsgDialog;//                                          底部输入控件
@@ -292,4 +293,11 @@ public class BaseMessageViewModel extends ViewModel {
         mInputTextMsgDialog.show();
     }
 
+    /**
+     * 获取推送主播id
+     * @return mPusherId
+     */
+    public String getmPusherId() {
+        return mPusherId;
+    }
 }

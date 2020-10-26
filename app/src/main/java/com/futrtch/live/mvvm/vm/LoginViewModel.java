@@ -17,9 +17,9 @@ import static com.futrtch.live.tencent.common.utils.TCErrorConstants.ERROR_CUSTO
  */
 public class LoginViewModel extends ViewModel {
 
-    private LoginRepository repository;
-    private LifecycleOwner lifecycleOwner;
-    private MutableLiveData<Integer> loginState = new MutableLiveData<>();  // 登录失败
+    private final LoginRepository repository;
+    private final LifecycleOwner lifecycleOwner;
+    private final MutableLiveData<Integer> loginState = new MutableLiveData<>();  // 登录失败
 
     public LoginViewModel(LoginRepository repository,LifecycleOwner lifecycleOwner) {
         this.repository = repository;

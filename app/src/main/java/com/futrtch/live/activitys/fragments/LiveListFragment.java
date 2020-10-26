@@ -32,6 +32,7 @@ import com.futrtch.live.beans.BannerBean;
 import com.futrtch.live.databinding.FragmentLiveListBinding;
 import com.futrtch.live.mvvm.vm.LiveListViewModel;
 import com.futrtch.live.mvvm.vm.LiveListViewModelFactory;
+import com.futrtch.live.tencent.common.utils.TCUtils;
 import com.futrtch.live.tencent.live.TCVideoInfo;
 import com.futrtch.live.utils.SpaceDecoration;
 
@@ -132,7 +133,11 @@ public class LiveListFragment extends Fragment {
 
         mDataBinding.scrim.setOnClickListener(v -> mDataBinding.fab.setExpanded(false));
 
-        mDataBinding.startLive3Btn.setOnClickListener(v -> getActivity().startActivity(new Intent(getActivity(), LiveRecordActivity.class)));
+        mDataBinding.startLive3Btn.setOnClickListener(v -> {
+            if (TCUtils.checkRecordPermission(getActivity())) {
+                getActivity().startActivity(new Intent(getActivity(), LiveRecordActivity.class));
+            }
+        });
 
         setTransition();  // 设置
         subscribeUi();

@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
 import com.futrtch.live.R;
@@ -17,6 +18,8 @@ import com.futrtch.live.activitys.BaseIMLVBActivity;
 import com.futrtch.live.databinding.ActivityRecordBinding;
 import com.futrtch.live.mvvm.repository.LiveRoomRepository;
 import com.futrtch.live.mvvm.repository.LoginRepository;
+import com.futrtch.live.tencent.common.msg.TCChatEntity;
+import com.futrtch.live.tencent.common.msg.TCSimpleUserInfo;
 import com.futrtch.live.tencent.common.ui.ErrorDialogFragment;
 import com.futrtch.live.tencent.common.utils.TCUtils;
 import com.futrtch.live.tencent.common.widget.FinishDetailDialogFragment;
@@ -24,6 +27,7 @@ import com.futrtch.live.utils.AnimatorUtils;
 import com.futrtch.live.utils.BroadcastTimerTask;
 import com.tencent.rtmp.TXLivePusher;
 
+import java.util.List;
 import java.util.Locale;
 
 import github.com.desfate.livekit.LivePushView;
@@ -227,6 +231,17 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
         }
     }
 
+    /**
+     * 处理房间消息
+     *
+     * @param info 生命周期
+     * @param type 消息类型
+     */
+    public void resolveMessage(LifecycleOwner lifecycleOwner, TCSimpleUserInfo info, int type, String message) {
+        // 处理收到的消息
+        super.handleMsg(lifecycleOwner, info, message, type);
+    }
+
     public MutableLiveData<Integer> getLiveState() {
         return liveState;
     }
@@ -237,6 +252,14 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
 
     public AnimatorUtils getAnimatorUtils() {
         return animatorUtils;
+    }
+
+    public MutableLiveData<List<TCChatEntity>> getCurrentMessageList() {
+        return currentMessageList;
+    }
+
+    public MutableLiveData<List<TCSimpleUserInfo>> getCurrentAudienceList() {
+        return currentAudienceList;
     }
 
     /**

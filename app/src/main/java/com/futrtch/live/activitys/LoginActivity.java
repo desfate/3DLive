@@ -49,9 +49,18 @@ public class LoginActivity extends AppCompatActivity {
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         ViewModelProvider.Factory factory = new LoginViewModelFactory(getApplication(), this);
         mViewModel = ViewModelProviders.of(this, factory).get(LoginViewModel.class);
+        init();
+        bindUi();
+        subscribeUi();
+    }
+
+    private void init(){
         mLoading = new LoadingDialog.Builder(LoginActivity.this);
         mLoading.setMessage(getString(R.string.login_loading_text));
         mLoading.create();
+    }
+
+    private void bindUi(){
         // 登录请求
         RxView.clicks(mDataBinding.loginBtn)
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -64,18 +73,13 @@ public class LoginActivity extends AppCompatActivity {
         // 注册按钮
         RxView.clicks(mDataBinding.registerImg)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
-                .subscribe(unit -> {
-                    startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-                });  //  跳转注册页面
-
-        subscribeUi();
+                .subscribe(unit -> startActivity(new Intent(LoginActivity.this, RegisterActivity.class)));  //  跳转注册页面
     }
 
     /**
      * 不带粘性消息
      */
     private void subscribeUi() {
-
         // 页面状态变化通知  带粘性消息
         mViewModel.getLoginState().observe(this, state -> {
             switch (state) {

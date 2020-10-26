@@ -20,7 +20,7 @@ public class RegisterViewModel extends ViewModel {
     LoginRepository loginRepository;
     LifecycleOwner lifecycleOwner;
 
-    private MutableLiveData<Integer> registerState = new MutableLiveData<>();  // 注册状态
+    private final MutableLiveData<Integer> registerState = new MutableLiveData<>();  // 注册状态
 
 
     RegisterViewModel(LoginRepository loginRepository, LifecycleOwner lifecycleOwner){

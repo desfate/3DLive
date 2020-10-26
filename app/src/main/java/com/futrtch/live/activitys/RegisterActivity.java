@@ -48,10 +48,18 @@ public class RegisterActivity extends AppCompatActivity {
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_register);
         ViewModelProvider.Factory factory = new RegisterViewModelFactory(getApplication(), this);
         mViewModel = ViewModelProviders.of(this, factory).get(RegisterViewModel.class);
+        init();
+        bindUi();
+        subscribeUi();
+    }
+
+    private void init(){
         mLoading = new LoadingDialog.Builder(RegisterActivity.this);
         mLoading.setMessage(getString(R.string.register_loading));
         mLoading.create();
+    }
 
+    private void bindUi(){
         // 点击上方关闭按钮
         RxView.clicks(mDataBinding.closeImg)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
@@ -63,8 +71,6 @@ public class RegisterActivity extends AppCompatActivity {
                 .subscribe(unit -> mViewModel.register(mDataBinding.registerUserNameEdt.getText().toString().trim()
                         , mDataBinding.registerPasswordEdt.getText().toString().trim()
                         , mDataBinding.repeatRegisterPasswordEdt.getText().toString().trim()));
-
-        subscribeUi();
     }
 
     private void subscribeUi() {

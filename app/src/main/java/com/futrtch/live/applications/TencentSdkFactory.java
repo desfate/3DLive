@@ -25,6 +25,5 @@ public class TencentSdkFactory implements InitSDK {
         TXLiveBase.getInstance().setLicence(application, LICENCE_URL, LICENCE_KEY);
         // 必须：初始化 MLVB 组件
         MLVBLiveRoomImpl.sharedInstance(application);
-
     }
 }
