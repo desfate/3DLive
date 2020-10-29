@@ -24,6 +24,7 @@ versions.appcompat_version = '1.2.0'//        androidX appcompat
 versions.recyclerview = '1.1.0'//             androidX recyclerview
 versions.constraintLayout = '2.0.0-alpha2' // androidX constraintlayout
 versions.lifecycle = '2.1.0'//                androidX lifecycle
+versions.palette = "1.0.0"//                  palette
 
 versions.material = '1.0.0'//                 android material
 versions.multidex = '1.0.0'//                 multi dex  Dex 多分包依赖
@@ -39,6 +40,8 @@ versions.xxpermissions = '8.8'//              permissions
 versions.liveEventBus = '1.7.2'//             live-event-bus
 versions.banner = '2.1.0'//                   banner
 
+
+
 // IM 服务相关
 versions.imsdk = '4.5.45'
 // Live 相关
@@ -46,7 +49,7 @@ versions.liteavSdk = 'latest.release' // 腾讯直播SDK版本
 // 腾讯云存储服务
 versions.cosxml = '5.4.+'// 腾讯对象存储 cosml
 // 自定义直播采集插件
-versions.livekit = '0.89'
+versions.livekit = '0.93'
 
 ext.deps = [:]
 deps.android_gradle_plugin = "com.android.tools.build:gradle:$versions.android_gradle_plugin"
@@ -111,6 +114,7 @@ androidX.appcompat =        "androidx.appcompat:appcompat:$versions.appcompat_ve
 androidX.recyclerview =     "androidx.recyclerview:recyclerview:$versions.recyclerview"
 androidX.constraintLayout = "androidx.constraintlayout:constraintlayout:$versions.constraintLayout"
 androidX.lifecycle =        "androidx.lifecycle:lifecycle-extensions:$versions.lifecycle"
+androidX.palette =          "androidx.palette:palette:$versions.palette"
 deps.androidX = androidX
 
 def material = [:]

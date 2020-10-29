@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:focusableInTouchMode="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/head_rly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="60dp"
+            android:background="@color/color_mine_background"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent">
+
+            <TextView
+                android:id="@+id/title_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="消息"
+                android:textSize="18sp"
+                android:textColor="@color/color_text_selected"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/add_group_chat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="20dp"
+                android:textSize="14sp"
+                android:textColor="@color/color_text_selected"
+                android:textStyle="bold"
+                android:text="创建群聊"
+                />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/title_line"
+            android:background="@color/color_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/head_rly"
+            app:layout_constraintBottom_toTopOf="@+id/anchor_rv_avatar"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/anchor_rv_avatar"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/color_mine_background"
+            app:layout_constraintTop_toBottomOf="@+id/title_line"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -14,10 +14,14 @@ android {
         renderscriptTargetApi = 14
         renderscriptSupportModeEnabled = true
         multiDexEnabled = true
+
+        ndk {
+            abiFilters rootProject.ext.ndkAbi
+        }
     }
 
-    dataBinding {
-        enabled = rootProject.ext.databinding
+    buildFeatures {
+        dataBinding = true
     }
 
     buildTypes {
@@ -31,6 +35,14 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    packagingOptions {
+        pickFirst '**/libc++_shared.so'
+        doNotStrip "*/armeabi/libYTCommon.so"
+        doNotStrip "*/armeabi-v7a/libYTCommon.so"
+        doNotStrip "*/x86/libYTCommon.so"
+        doNotStrip "*/arm64-v8a/libYTCommon.so"
+    }
 }
 
 dependencies {
@@ -42,6 +54,7 @@ dependencies {
     implementation deps.androidX.recyclerview
     implementation deps.androidX.constraintLayout
     implementation deps.androidX.lifecycle
+    implementation deps.androidX.palette
     // material
     implementation deps.material.runtime
 //    implementation deps.support.design
@@ -81,6 +94,7 @@ dependencies {
     implementation deps.liveEventBus.runtime
     // banner
     implementation deps.banner.runtime
+
 
 
 }

@@ -1,6 +1,6 @@
 package com.futrtch.live.applications;
 
-import com.futrtch.live.base.BaseApplication;
+import androidx.multidex.MultiDexApplication;
 
 import java.util.Optional;
 
@@ -9,7 +9,7 @@ import static com.futrtch.live.configs.LiveConfigs.liveSDKType;
 /**
  * 直播Application
  */
-public class LiveApplication extends BaseApplication {
+public class LiveApplication extends MultiDexApplication {
 
     private final static String TAG = "LiveApplication";
     private InitSDK mSdk;

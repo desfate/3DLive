@@ -10,8 +10,10 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.futrtch.live.R;
 import com.futrtch.live.activitys.fragments.LiveListFragment;
+import com.futrtch.live.activitys.fragments.MessageFragment;
+import com.futrtch.live.activitys.fragments.MineFragment;
+import com.futrtch.live.activitys.fragments.VodListFragment;
 import com.futrtch.live.databinding.ActivityMainBinding;
-import com.futrtch.live.utils.BottomNavigationViewHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,34 +30,35 @@ public class MainActivity extends AppCompatActivity {
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         setBottom();
         mFragments.add(new LiveListFragment());
-        mFragments.add(new LiveListFragment());
-        mFragments.add(new LiveListFragment());
-        mFragments.add(new LiveListFragment());
+        mFragments.add(new VodListFragment());
+        mFragments.add(new MessageFragment());
+        mFragments.add(new MineFragment());
         setFragmentPosition(0);
     }
 
     private void setBottom() {
         // 解决当item大于三个时，非平均布局问题
-        BottomNavigationViewHelper.disableShiftMode(mDataBinding.bvBottomNavigation);
+//        BottomNavigationViewHelper.disableShiftMode(mDataBinding.bvBottomNavigation);
         mDataBinding.bvBottomNavigation.setOnNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.menu_live:
                     setFragmentPosition(0);
                     break;
                 case R.id.menu_replay:
-                    setFragmentPosition(0);
+                    setFragmentPosition(1);
                     break;
                 case R.id.menu_message:
-                    setFragmentPosition(0);
+                    setFragmentPosition(2);
                     break;
                 case R.id.menu_mine:
-                    setFragmentPosition(0);
+                    setFragmentPosition(3);
                     break;
                 default:
                     break;
             }
             return true;
         });
+
     }
 
     private void setFragmentPosition(int position) {

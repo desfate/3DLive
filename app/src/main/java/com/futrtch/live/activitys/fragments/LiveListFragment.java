@@ -52,10 +52,6 @@ public class LiveListFragment extends Fragment {
     LiveListViewModel mViewModel;
     BannerImageAdapter mBannerAdpater;
 
-    public LiveListFragment() {
-
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -64,16 +60,17 @@ public class LiveListFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ViewModelProvider.Factory factory = new LiveListViewModelFactory(getActivity().getApplication());
         mViewModel = ViewModelProviders.of(this, factory).get(LiveListViewModel.class);
+        init(savedInstanceState);
+        bindUi();
+        subscribeUi();
 
+    }
+
+    private void init(Bundle savedInstanceState){
         mAdapter = new LiveListAdapter(getActivity(), new DiffUtil.ItemCallback<TCVideoInfo>() {
             @Override
             public boolean areItemsTheSame(@NonNull TCVideoInfo oldItem, @NonNull TCVideoInfo newItem) {
@@ -98,19 +95,6 @@ public class LiveListFragment extends Fragment {
             postponeEnterTransition(500, TimeUnit.MILLISECONDS);
         }
 
-        int padding = 4;
-        ViewCompat.setOnApplyWindowInsetsListener((View) view.getParent(), new OnApplyWindowInsetsListener() {
-            @Override
-            public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
-
-                mDataBinding.grid.setPadding(padding + insets.getSystemWindowInsetLeft()
-                        , 0
-                        , padding + insets.getSystemWindowInsetRight()
-                        , padding + insets.getSystemWindowInsetBottom());
-                return insets;
-            }
-        });
-
         ((GridLayoutManager)mDataBinding.grid.getLayoutManager()).setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -122,13 +106,15 @@ public class LiveListFragment extends Fragment {
             }
         });
 
-
-
         mDataBinding.grid.addItemDecoration(
                 new SpaceDecoration(getResources().getDimensionPixelSize(R.dimen.spacing_tiny))
         );
         mDataBinding.grid.setAdapter(mAdapter);
 
+//        setTransition();  // 设置
+    }
+
+    private void bindUi(){
         mDataBinding.fab.setOnClickListener(v -> mDataBinding.fab.setExpanded(true));
 
         mDataBinding.scrim.setOnClickListener(v -> mDataBinding.fab.setExpanded(false));
@@ -138,9 +124,6 @@ public class LiveListFragment extends Fragment {
                 getActivity().startActivity(new Intent(getActivity(), LiveRecordActivity.class));
             }
         });
-
-        setTransition();  // 设置
-        subscribeUi();
     }
 
     private void subscribeUi(){

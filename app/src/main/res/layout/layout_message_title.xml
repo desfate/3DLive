@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/user_info_rly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_mine_background"
+        android:paddingStart="20dp"
+        android:paddingTop="15dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="30dp">
+
+        <ImageView
+            android:id="@+id/fens_img"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/message_fans_icon"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/assist_img"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="粉丝"
+            android:textColor="@color/color_text_selected"
+            android:textSize="14sp"
+            app:layout_constraintLeft_toLeftOf="@+id/fens_img"
+            app:layout_constraintRight_toRightOf="@+id/fens_img"
+            app:layout_constraintTop_toBottomOf="@+id/fens_img" />
+
+        <ImageView
+            android:id="@+id/assist_img"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/assist_icon"
+            app:layout_constraintLeft_toRightOf="@+id/fens_img"
+            app:layout_constraintRight_toLeftOf="@+id/mine_img"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="赞"
+            android:textColor="@color/color_text_selected"
+            android:textSize="14sp"
+            app:layout_constraintLeft_toLeftOf="@+id/assist_img"
+            app:layout_constraintRight_toRightOf="@+id/assist_img"
+            app:layout_constraintTop_toBottomOf="@+id/assist_img" />
+
+        <ImageView
+            android:id="@+id/mine_img"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/message_mine_icon"
+            app:layout_constraintLeft_toRightOf="@+id/assist_img"
+            app:layout_constraintRight_toLeftOf="@+id/discuss_img"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="#我的"
+            android:textColor="@color/color_text_selected"
+            android:textSize="14sp"
+            app:layout_constraintLeft_toLeftOf="@+id/mine_img"
+            app:layout_constraintRight_toRightOf="@+id/mine_img"
+            app:layout_constraintTop_toBottomOf="@+id/mine_img" />
+
+        <ImageView
+            android:id="@+id/discuss_img"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/discuss_icon"
+            app:layout_constraintLeft_toRightOf="@+id/mine_img"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="评论"
+            android:textColor="@color/color_text_selected"
+            android:textSize="14sp"
+            app:layout_constraintLeft_toLeftOf="@+id/discuss_img"
+            app:layout_constraintRight_toRightOf="@+id/discuss_img"
+            app:layout_constraintTop_toBottomOf="@+id/discuss_img" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

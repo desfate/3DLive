@@ -29,7 +29,7 @@ public class BroadcastTimerTask {
      */
     public void interval(Long timeValue, @NonNull TimeUnit unit) {
         Observable.interval(timeValue, unit)//                                               每次间隔1000 毫秒 发送一次任务
-                .subscribeOn(AndroidSchedulers.mainThread())//                                      结果发还给主线程 因为大多数情况是进行页面刷新
+                .observeOn(AndroidSchedulers.mainThread())//                                      结果发还给主线程 因为大多数情况是进行页面刷新
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this.lifecycleOwner))) //              绑定创建类的生命周期
                 .subscribe(aLong -> {
                     BroadcastTimerTask.this.timeValue = aLong;

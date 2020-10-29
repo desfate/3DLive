@@ -79,6 +79,7 @@ public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCal
         mViewModel.bindView(mDataBinding); //                                        绑定view 和 viewModel
         mViewModel.prepareRecord(this, callBack, mDataBinding); //           初始化必要控件
         mViewModel.startPush(this);//                                        开始推送
+        mDataBinding.anchorPushView.startPush();//                                   控件打开推送开关
     }
 
     private void bindUi() {
@@ -110,7 +111,7 @@ public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCal
                     Log.d(TAG, "直播计时器启动");
                     mViewModel.getTimerTask().interval(1L, TimeUnit.SECONDS); //       开始计时
                     mViewModel.getAnimatorUtils().startAlphaChange(); //                         开始动画
-                    mDataBinding.anchorPushView.startPush();//                                   控件打开推送开关
+
                     break;
                 case SUCCESS_CUSTOMER_START_LIVE://                                              开始直播(预留)
                     // FIXME: 2020/10/26 现阶段 房间创建成功等于就开始推流了

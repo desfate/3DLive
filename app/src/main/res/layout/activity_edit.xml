@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/root_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_mine_background">
+
+        <ImageView
+            android:id="@+id/back_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/back_icon"
+            android:paddingStart="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/edit_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="编辑资料"
+            android:textSize="16sp"
+            android:textColor="@color/color_text_selected"
+            app:layout_constraintTop_toTopOf="@+id/back_img"
+            app:layout_constraintBottom_toBottomOf="@+id/back_img"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@+id/back_img"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:descendantFocusability="blocksDescendants"
+                android:orientation="vertical">
+
+
+                <ImageView
+                    android:id="@+id/camera_head_btn"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="50dp"
+                    android:scaleType="centerInside"
+                    android:src="@mipmap/camera_pic_icon"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/camera_head_background"
+                    />
+
+                <TextView
+                    android:id="@+id/sign_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="点击更换头像"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="@color/color_text_selected"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:layout_marginTop="15dp"
+                    />
+
+
+                <RelativeLayout
+                    android:layout_marginTop="50dp"
+                    android:id="@+id/name_lay"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/color_text_selected"
+                        android:text="名字"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        android:layout_marginStart="20dp"
+                        />
+
+                    <ImageView
+                        android:id="@+id/right_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/right_icon"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="20dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/name_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toStartOf="@+id/right_img"
+                        android:layout_marginEnd="10dp"
+                        android:textColor="@color/color_text_select"
+                        android:text="点击设置"
+                        android:textStyle="bold"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        />
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/num_lay"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/color_text_selected"
+                        android:text="账号"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        android:layout_marginStart="20dp"
+                        />
+
+                    <ImageView
+                        android:id="@+id/num_right_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/right_icon"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="20dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/num_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toStartOf="@+id/num_right_img"
+                        android:layout_marginEnd="10dp"
+                        android:textColor="@color/color_text_select"
+                        android:text="test"
+                        android:textStyle="bold"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        />
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/introduction_lay"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/color_text_selected"
+                        android:text="简介"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        android:layout_marginStart="20dp"
+                        />
+
+                    <ImageView
+                        android:id="@+id/introduction_right_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/right_icon"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="20dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/introduction_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toStartOf="@+id/introduction_right_img"
+                        android:layout_marginEnd="10dp"
+                        android:textColor="@color/color_text_select"
+                        android:text="点击设置"
+                        android:textStyle="bold"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        />
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/sex_lay"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/color_text_selected"
+                        android:text="性别"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        android:layout_marginStart="20dp"
+                        />
+
+                    <ImageView
+                        android:id="@+id/sex_right_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/right_icon"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="20dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/sex_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toStartOf="@+id/sex_right_img"
+                        android:layout_marginEnd="10dp"
+                        android:textColor="@color/color_text_select"
+                        android:text="点击设置"
+                        android:textStyle="bold"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        />
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/birthday_lay"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/color_text_selected"
+                        android:text="生日"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        android:layout_marginStart="20dp"
+                        />
+
+                    <ImageView
+                        android:id="@+id/birthday_right_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/right_icon"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="20dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/birthday_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toStartOf="@+id/birthday_right_img"
+                        android:layout_marginEnd="10dp"
+                        android:textColor="@color/color_text_select"
+                        android:text="点击设置"
+                        android:textStyle="bold"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        />
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/address_lay"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/color_text_selected"
+                        android:text="地区"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        android:layout_marginStart="20dp"
+                        />
+
+                    <ImageView
+                        android:id="@+id/address_right_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/right_icon"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="20dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/address_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toStartOf="@+id/address_right_img"
+                        android:layout_marginEnd="10dp"
+                        android:textColor="@color/color_text_select"
+                        android:text="点击设置"
+                        android:textStyle="bold"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        />
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/school_lay"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/color_text_selected"
+                        android:text="学校"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        android:layout_marginStart="20dp"
+                        />
+
+                    <ImageView
+                        android:id="@+id/school_right_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/right_icon"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="20dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/school_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toStartOf="@+id/school_right_img"
+                        android:layout_marginEnd="10dp"
+                        android:textColor="@color/color_text_select"
+                        android:text="点击设置"
+                        android:textStyle="bold"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/color_line"
+                    android:layout_margin="20dp"
+                    />
+
+                <TextView
+                    android:text="限时活动"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="@color/color_text_select"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="10dp"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/widget_lay"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/color_text_selected"
+                        android:text="头像挂件"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        android:layout_marginStart="20dp"
+                        />
+
+                    <ImageView
+                        android:id="@+id/widget_right_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/right_icon"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="20dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/widget_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toStartOf="@+id/widget_right_img"
+                        android:layout_marginEnd="10dp"
+                        android:textColor="@color/color_text_select"
+                        android:text="获得头像挂件"
+                        android:textStyle="bold"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        />
+                </RelativeLayout>
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

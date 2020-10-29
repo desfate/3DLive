@@ -117,8 +117,8 @@ public class LoginRepository extends BaseRepository {
                     }
                     return Flowable.error(new ApiException(-1, "网络异常"));  // 抛出登录异常  不会继续链式调用
                 })
-                .observeOn(Schedulers.io())
-                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(lifecycleOwner)))
                 .subscribe(new DisposableSubscriber<BaseResponBean<AccountInfoBean>>() {
                     @Override
@@ -164,8 +164,8 @@ public class LoginRepository extends BaseRepository {
      */
     public void registerReq(LifecycleOwner lifecycleOwner,String username, String password) {
         LoginRequestBuilder.registerFlowable(username, password)
-                .observeOn(Schedulers.io())
-                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(lifecycleOwner)))
                 .subscribe(new DisposableSubscriber<BaseResponBean>() {
                     @Override

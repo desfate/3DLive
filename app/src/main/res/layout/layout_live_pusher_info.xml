@@ -33,7 +33,7 @@
             android:singleLine="true"
             android:textColor="@color/colorTextWhite"
             android:textSize="@dimen/textSize_10sp"
-            app:layout_constraintLeft_toRightOf="@+id/anchor_iv_head_icon"
+            app:layout_constraintLeft_toRightOf="@+id/anchor_iv_record_ball"
             app:layout_constraintTop_toTopOf="parent" />
         <!-- 记录中 red dot -->
         <ImageView

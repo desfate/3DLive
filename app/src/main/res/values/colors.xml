@@ -42,5 +42,17 @@
     <!--主题色激活态，如按钮高亮-->
     <color name="colorLight">#0accac</color>
 
+    <!-- copy dou ying -->
+    <color name="color_mine_background">#161823</color>
+    <color name="color_btn">#393a44</color>
+    <color name="color_btn_text">#ececed</color>
+    <color name="color_user_name">#65676e</color>
+    <color name="color_tab_selected">#face15</color>
+    <color name="color_text_selected">#e8e8e9</color>
+    <color name="color_text_select">#8b8c91</color>
+    <color name="color_line">#282a34</color>
+    <color name="color_btn2">#242630</color>
+    <color name="color_btn_text2">#929398</color>
+
     <color name="c9">#777777</color>
 </resources>
