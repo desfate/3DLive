@@ -10,9 +10,9 @@
     <item
         android:id="@+id/menu_replay"
         android:enabled="true"
-        android:icon="@mipmap/replay_icon"
+        android:icon="@mipmap/friend_icon"
         app:showAsAction="ifRoom"
-        android:title="回放" />
+        android:title="朋友" />
     <item
         android:id="@+id/menu_message"
         android:enabled="true"

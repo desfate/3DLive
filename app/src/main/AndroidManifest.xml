@@ -40,7 +40,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activitys.MainActivity"></activity>
+        <activity android:name=".activitys.MainActivity"
+            android:windowSoftInputMode="adjustPan"
+            ></activity>
 
         <activity
             android:name=".activitys.LivePlayActivity"
@@ -55,6 +57,8 @@
         <activity android:name=".activitys.RegisterActivity"></activity>
 
         <activity android:name=".activitys.EditActivity"></activity>
+
+        <activity android:name=".activitys.SettingActivity"></activity>
         <activity
             android:name=".activitys.SplashActivity"
             android:theme="@style/AppTheme.Splash">

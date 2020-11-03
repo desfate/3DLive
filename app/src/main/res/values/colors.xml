@@ -53,6 +53,9 @@
     <color name="color_line">#282a34</color>
     <color name="color_btn2">#242630</color>
     <color name="color_btn_text2">#929398</color>
+    <color name="color_text_hint">#7c7c83</color>
+    <color name="color_search_btn">#fe2c55</color>
+    <color name="color_care_btn">#5c5e65</color>
 
     <color name="c9">#777777</color>
 </resources>

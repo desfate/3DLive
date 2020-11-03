@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DiffUtil;
@@ -16,11 +15,14 @@ import androidx.recyclerview.widget.DiffUtil;
 import com.futrtch.live.R;
 import com.futrtch.live.adapters.MineListAdapter;
 import com.futrtch.live.databinding.FragmentMineListBinding;
+import com.futrtch.live.mvvm.MVVMFragment;
 import com.futrtch.live.mvvm.vm.MineListViewModel;
 import com.futrtch.live.mvvm.vm.MineListViewModelFactory;
 import com.futrtch.live.tencent.live.TCVideoInfo;
 
-public class MineListFragment extends Fragment {
+import java.util.Objects;
+
+public class MineListFragment extends MVVMFragment {
 
     MineListViewModel mViewModel;
     FragmentMineListBinding mDataBinding;
@@ -36,16 +38,17 @@ public class MineListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewModelProvider.Factory factory = new MineListViewModelFactory(getActivity().getApplication(), this);
-        mViewModel = ViewModelProviders.of(this,factory).get(MineListViewModel.class);
-        mViewModel.prepare(getActivity(), mDataBinding);
-
-        init();
-        bindUi();
-        subscribeUi();
     }
 
-    private void init() {
+    @Override
+    public void initViewModel() {
+        ViewModelProvider.Factory factory = new MineListViewModelFactory(Objects.requireNonNull(getActivity()).getApplication(), this);
+        mViewModel = ViewModelProviders.of(this,factory).get(MineListViewModel.class);
+        mViewModel.prepare(getActivity(), mDataBinding);
+    }
+
+    @Override
+    public void init() {
         mAdapter = new MineListAdapter(new DiffUtil.ItemCallback<TCVideoInfo>() {
             @Override
             public boolean areItemsTheSame(@NonNull TCVideoInfo oldItem, @NonNull TCVideoInfo newItem) {
@@ -60,15 +63,20 @@ public class MineListFragment extends Fragment {
         mDataBinding.recyclerList.setAdapter(mAdapter);
     }
 
-    private void bindUi() {
+    @Override
+    public void bindUi() {
 
     }
 
-    private void subscribeUi() {
+    @Override
+    public void subscribeUi() {
         mViewModel.getMineListData().observe(this, tcVideo -> mAdapter.submitList(tcVideo));
     }
 
+    @Override
+    public void initRequest() {
 
+    }
 
 
 }

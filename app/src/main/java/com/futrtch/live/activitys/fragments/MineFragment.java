@@ -15,8 +15,10 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.futrtch.live.R;
 import com.futrtch.live.activitys.EditActivity;
+import com.futrtch.live.activitys.SettingActivity;
 import com.futrtch.live.base.BaseFragmentAdapter;
 import com.futrtch.live.databinding.FragmentMineBinding;
+import com.futrtch.live.mvvm.MVVMFragment;
 import com.futrtch.live.mvvm.vm.MineViewModel;
 import com.futrtch.live.mvvm.vm.MineViewModelFactory;
 import com.jakewharton.rxbinding4.view.RxView;
@@ -31,15 +33,11 @@ import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 /**
  * 我的页面
  */
-public class MineFragment extends Fragment {
+public class MineFragment extends MVVMFragment {
 
     FragmentMineBinding mDataBinding;
     MineViewModel mViewModel;
     List<Fragment> mFragments = new ArrayList<>();
-    String[] mTitles = new String[]{
-            "作品", "动态", "喜欢"
-    };
-
 
     @Nullable
     @Override
@@ -49,45 +47,54 @@ public class MineFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        ViewModelProvider.Factory factory = new MineViewModelFactory(Objects.requireNonNull(getActivity()).getApplication(),this);
+    public void initViewModel() {
+        ViewModelProvider.Factory factory = new MineViewModelFactory(Objects.requireNonNull(getActivity()).getApplication(), this);
         mViewModel = ViewModelProviders.of(this, factory).get(MineViewModel.class);
         mViewModel.prepare(getActivity(), mDataBinding);
-
-        init();
-        bindUi();
-        subscribeUi();
     }
 
-    private void init(){
-        mDataBinding.toolbar.setTitle("用户12342");
-        for (int i = 0; i < mTitles.length; i++) {
+    @Override
+    public void init() {
+        for (int i = 0; i < mViewModel.getmTitles().length; i++) {
             MineListFragment listFragment = new MineListFragment();
             mFragments.add(listFragment);
         }
         BaseFragmentAdapter adapter =
-                new BaseFragmentAdapter(getActivity().getSupportFragmentManager(), mFragments, mTitles);
+                new BaseFragmentAdapter(getChildFragmentManager(), mFragments, mViewModel.getmTitles());
         mDataBinding.viewpager.setAdapter(adapter);
         mDataBinding.tabs.setupWithViewPager(mDataBinding.viewpager);
-        mDataBinding.title.setText("用户名");
-        mDataBinding.userNameTv.setText("用户名");
     }
 
-    private void bindUi(){
+    @Override
+    public void bindUi() {
         RxView.clicks(mDataBinding.edtUserInfoBtn)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(unit -> Objects.requireNonNull(getActivity()).startActivity(new Intent(getActivity(), EditActivity.class)));
+
+        RxView.clicks(mDataBinding.more)
+                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .subscribe(unit -> Objects.requireNonNull(getActivity()).startActivity(new Intent(getActivity(), SettingActivity.class)));
+
+        RxView.clicks(mDataBinding.moreBtn)
+                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .subscribe(unit -> Objects.requireNonNull(getActivity()).startActivity(new Intent(getActivity(), SettingActivity.class)));
     }
 
-    private void subscribeUi(){
+    @Override
+    public void subscribeUi() {
         // 设置头部标题颜色
         mViewModel.getAvgColor().observe(this, integer -> mDataBinding.toolbar.setBackgroundColor(integer));
         // 根据节目变化  改变头部透明度
-        mViewModel.getTitleColor().observe(this, integer -> {
-            mDataBinding.toolbar.setAlpha(integer);
-//            mDataBinding.title.setAlpha(integer);
+        mViewModel.getTitleColor().observe(this, integer -> mDataBinding.toolbar.setAlpha(integer));
+        // 用户名变化 （自己和他人主页）
+        mViewModel.getUserName().observe(this, string -> {
+            mDataBinding.title.setText(string);
+            mDataBinding.userNameTv.setText(string);
         });
+    }
+
+    @Override
+    public void initRequest() {
 
     }
 }

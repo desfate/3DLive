@@ -1,6 +1,5 @@
 package com.futrtch.live.tencent.services;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import com.futrtch.live.base.BaseResponBean;
@@ -11,16 +10,12 @@ import com.futrtch.live.tencent.liveroom.roomutil.commondef.AnchorInfo;
 import com.futrtch.live.tencent.liveroom.roomutil.commondef.RoomInfo;
 import com.tencent.rtmp.TXLog;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.ObservableEmitter;
-import io.reactivex.rxjava3.core.ObservableOnSubscribe;
 
 
 public class LiveListService {
@@ -29,11 +24,9 @@ public class LiveListService {
 
     /**
      * 获取正在直播的用户列表
-     * @param context 上下文 用于拿到直播间单例
      * @return 返回观察者
      */
-    public static Observable<BaseResponBean<List<TCVideoInfo>>> fetchLiveList(Context context) {
-        MLVBLiveRoom liveRoom = MLVBLiveRoom.sharedInstance(context);
+    public static Observable<BaseResponBean<List<TCVideoInfo>>> fetchLiveList(MLVBLiveRoom liveRoom) {
         return Observable.create(emitter -> liveRoom.getRoomList(0, PAGE_SIZE, new IMLVBLiveRoomListener.GetRoomListCallback() {
             @Override
             public void onError(int errCode, String errInfo) {

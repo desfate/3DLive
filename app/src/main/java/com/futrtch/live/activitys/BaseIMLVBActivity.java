@@ -1,11 +1,12 @@
 package com.futrtch.live.activitys;
 
 import android.os.Bundle;
+import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.futrtch.live.interfaces.LiveRoomCallBack;
+import com.futrtch.live.mvvm.MVVMActivity;
 import com.futrtch.live.tencent.common.msg.TCSimpleUserInfo;
 import com.futrtch.live.tencent.common.utils.TCConstants;
 import com.futrtch.live.tencent.liveroom.IMLVBLiveRoomListener;
@@ -13,16 +14,21 @@ import com.futrtch.live.tencent.liveroom.roomutil.commondef.AnchorInfo;
 import com.futrtch.live.tencent.liveroom.roomutil.commondef.AudienceInfo;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * 腾讯这个直播回调东西太多
  * 用基类来处理
  * 子类只回调他们业务需要的部分
  */
-public class BaseIMLVBActivity  extends AppCompatActivity implements IMLVBLiveRoomListener {
+public abstract class BaseIMLVBActivity extends MVVMActivity implements IMLVBLiveRoomListener {
 
     LiveRoomCallBack liveRoomCallBack;  // 直播间相关回调
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        super.onCreate(savedInstanceState);
+    }
 
     public void setLiveRoomCallBack(LiveRoomCallBack liveRoomCallBack) {
         this.liveRoomCallBack = liveRoomCallBack;

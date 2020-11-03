@@ -40,6 +40,8 @@ versions.xxpermissions = '8.8'//              permissions
 versions.liveEventBus = '1.7.2'//             live-event-bus
 versions.banner = '2.1.0'//                   banner
 
+versions.bravh = '3.0.4'//                    bravh（BaseAdapter）
+
 
 
 // IM 服务相关
@@ -139,6 +141,9 @@ def banner = [:]
 banner.runtime = "com.youth.banner:banner:$versions.banner"
 deps.banner = banner
 
+def bravh = [:]
+bravh.runtime = "com.github.CymChad:BaseRecyclerViewAdapterHelper:$versions.bravh"
+deps.bravh = bravh
 
 def addRepos(RepositoryHandler handler) {
     handler.google()

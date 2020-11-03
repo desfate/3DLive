@@ -8,24 +8,21 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.futrtch.live.R;
 import com.futrtch.live.adapters.MessageListAdapter;
-import com.futrtch.live.beans.MessageBean;
 import com.futrtch.live.databinding.FragmentMessageBinding;
+import com.futrtch.live.databinding.LayoutMessageTitleBinding;
+import com.futrtch.live.mvvm.MVVMFragment;
 import com.futrtch.live.mvvm.vm.MessageListViewModel;
 import com.futrtch.live.mvvm.vm.MessageListViewModelFactory;
-import com.jakewharton.rxbinding4.view.RxView;
 
-import autodispose2.AutoDispose;
-import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
+import java.util.Objects;
 
-public class MessageFragment extends Fragment {
+public class MessageFragment extends MVVMFragment {
 
     MessageListAdapter mAdapter;
     FragmentMessageBinding mDataBinding;
@@ -40,47 +37,40 @@ public class MessageFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        ViewModelProvider.Factory factory = new MessageListViewModelFactory(getActivity().getApplication(), this);
+    public void initViewModel() {
+        ViewModelProvider.Factory factory = new MessageListViewModelFactory(Objects.requireNonNull(getActivity()).getApplication(), this);
         mViewModel = ViewModelProviders.of(this, factory).get(MessageListViewModel.class);
-        init();
-        bindUi();
-        subscribeUi();
     }
 
-    private void init() {
+    @Override
+    public void init() {
         manager = new LinearLayoutManager(getActivity());
         mDataBinding.anchorRvAvatar.setLayoutManager(manager);
-        mAdapter = new MessageListAdapter(getActivity(), new DiffUtil.ItemCallback<MessageBean>() {
-            @Override
-            public boolean areItemsTheSame(@NonNull MessageBean oldItem, @NonNull MessageBean newItem) {
-                return oldItem.getMessageContent().equals(newItem.getMessageContent());
-            }
-
-            @Override
-            public boolean areContentsTheSame(@NonNull MessageBean oldItem, @NonNull MessageBean newItem) {
-                return oldItem.getMessageContent().equals(newItem.getMessageContent());
-            }
-        }, v -> {
-
-        });
-
-        mAdapter.setHeader(); // 有头部轮播图
+        mAdapter = new MessageListAdapter(R.layout.layout_message_item, getActivity(), mViewModel.getmListData());
+        mAdapter.setHeaderView(getHeadView());
         mDataBinding.anchorRvAvatar.setAdapter(mAdapter);
         mViewModel.prepare(getActivity(), mDataBinding);
         manager.scrollToPositionWithOffset(0, 0);
     }
 
-    private void bindUi() {
-        RxView.clicks(mDataBinding.addGroupChat)
-                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
-                .subscribe(unit -> manager.scrollToPositionWithOffset(0, 0));
+    @Override
+    public void bindUi() {
+
     }
 
-    private void subscribeUi() {
-        // 绑定列表数据
-        mViewModel.getMessageListData().observe(this, messageBeans -> mAdapter.submitList(messageBeans));
+    @Override
+    public void subscribeUi() {
+
+    }
+
+    @Override
+    public void initRequest() {
+
+    }
+
+    public View getHeadView(){
+        LayoutMessageTitleBinding binding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.layout_message_title, mDataBinding.anchorRvAvatar, false);
+        return binding.getRoot();
     }
 
 }

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/user_info_rly"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:background="@color/color_mine_background">
+
+
+        <ImageView
+            android:id="@+id/message_img"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:src="@mipmap/address_book_icon"
+            android:scaleType="centerInside"
+            android:background="@drawable/friend_head_background"
+
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/message_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="13dp"
+            android:layout_marginTop="15dp"
+            android:text="查看通讯录好友"
+            android:textColor="@color/color_text_selected"
+            android:textSize="16sp"
+            app:layout_constraintLeft_toRightOf="@+id/message_img"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/message_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="13dp"
+            android:layout_marginTop="2dp"
+            android:text="看看有谁在直播"
+            android:textColor="@color/color_user_name"
+            android:textSize="14sp"
+            app:layout_constraintLeft_toRightOf="@+id/message_img"
+            app:layout_constraintTop_toBottomOf="@+id/message_name" />
+
+
+        <ImageView
+            android:id="@+id/close_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:src="@mipmap/right_icon"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/message_img"
+            app:layout_constraintBottom_toBottomOf="@+id/message_img"
+            />
+
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@color/color_line"
+            app:layout_constraintTop_toBottomOf="@+id/close_img"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <TextView
+            android:id="@+id/recommand_tv"
+            app:layout_constraintTop_toBottomOf="@+id/line"
+            android:layout_marginTop="35dp"
+            android:text="全部推荐"
+            android:layout_marginStart="20dp"
+            android:textColor="@color/color_text_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableRight="@mipmap/warn_icon"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

@@ -94,6 +94,8 @@ dependencies {
     implementation deps.liveEventBus.runtime
     // banner
     implementation deps.banner.runtime
+    // bravh
+    implementation deps.bravh.runtime
 
 
 

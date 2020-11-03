@@ -22,6 +22,13 @@ public class MineViewModel extends ViewModel {
     MutableLiveData<Float> trans = new MutableLiveData<>();
     MutableLiveData<List<TCVideoInfo>> mineListData = new MutableLiveData<>();  // 直播间列表数据
 
+    MutableLiveData<String> userName = new MutableLiveData<>();  // 当前用户名
+
+    String[] mTitles = new String[]{
+            "作品", "动态", "喜欢"
+    };
+
+
     public MineViewModel(MineRepository mineRepository){
         this.mineRepository = mineRepository;
     }
@@ -72,6 +79,8 @@ public class MineViewModel extends ViewModel {
     }
 
 
+    public String[] getmTitles() { return mTitles; }
+
     public MutableLiveData<Integer> getAvgColor() {
         return avgColor;
     }
@@ -79,6 +88,8 @@ public class MineViewModel extends ViewModel {
     public MutableLiveData<Float> getTitleColor() {
         return trans;
     }
+
+    public MutableLiveData<String> getUserName() { return userName; }
 
     public MutableLiveData<List<TCVideoInfo>> getMineListData() {
         return mineListData;

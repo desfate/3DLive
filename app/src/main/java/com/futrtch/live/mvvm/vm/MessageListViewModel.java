@@ -2,7 +2,6 @@ package com.futrtch.live.mvvm.vm;
 
 import android.app.Activity;
 
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.futrtch.live.beans.MessageBean;
@@ -12,9 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MessageListViewModel extends ViewModel {
-
-
-    MutableLiveData<List<MessageBean>> messageListData = new MutableLiveData<>();  // 直播间列表数据
+    List<MessageBean> mListData = new ArrayList<>();
 
     public MessageListViewModel(){
 
@@ -30,10 +27,10 @@ public class MessageListViewModel extends ViewModel {
             tcVideoInfos.add(new MessageBean(3,
                     "你好 哈喽","11-11"));
         }
-        messageListData.postValue(tcVideoInfos);
+        mListData.addAll(tcVideoInfos);
     }
 
-    public MutableLiveData<List<MessageBean>> getMessageListData() {
-        return messageListData;
+    public List<MessageBean> getmListData() {
+        return mListData;
     }
 }

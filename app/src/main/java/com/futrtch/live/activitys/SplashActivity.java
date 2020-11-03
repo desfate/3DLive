@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import com.futrtch.live.R;
 import com.futrtch.live.databinding.ActivitySplashBinding;
+import com.futrtch.live.mvvm.MVVMActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -21,7 +21,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 /**
  * 广告页面
  */
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends MVVMActivity {
 
     ActivitySplashBinding mDataBinding;
 
@@ -32,12 +32,33 @@ public class SplashActivity extends AppCompatActivity {
         init();
     }
 
-    private void init(){
+    @Override
+    public void initViewModel() {
+
+    }
+
+    @Override
+    public void init(){
         Observable.timer(800, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(aLong -> jumpActivity());
+    }
+
+    @Override
+    public void bindUi() {
+
+    }
+
+    @Override
+    public void subscribeUi() {
+
+    }
+
+    @Override
+    public void initRequest() {
+
     }
 
     private void jumpActivity(){

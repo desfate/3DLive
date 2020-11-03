@@ -48,7 +48,7 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
 
     /***********************************************  Data *********************************************************/
     private final LiveRoomRepository mRepository;//                                             直播推流 数据仓库
-    String liveTitle = "直播测试"; //                                                                        直播标题
+    String liveTitle = "直播测试2"; //                                                                        直播标题
     String liveCover; //                                                                        直播图片
     String location;  //                                                                        直播位置信息
     /***********************************************  LiveData ******************************************************/

@@ -25,7 +25,27 @@ public class EditActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit);
-        RxView.clicks(mDataBinding.nameLay).to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
-                .subscribe(unit -> ToastUtil.showToast(getApplicationContext(), "名字"));
+        init();
+        bindUi();
+        subscribeUi();
     }
+    private void init() {
+    }
+    private void bindUi() {
+        RxView.clicks(mDataBinding.backImg)
+                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .subscribe(unit -> finish());
+
+        RxView.clicks(mDataBinding.nameLay)
+                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .subscribe(unit -> ToastUtil.showToast(getApplicationContext(), "name"));
+    }
+    private void subscribeUi() {
+    }
+
+
+
+
+
+
 }

@@ -7,7 +7,6 @@ import android.util.DisplayMetrics;
 import android.util.Size;
 import android.view.View;
 
-import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
@@ -16,16 +15,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.futrtch.live.R;
 import com.futrtch.live.databinding.ActivityLiveBinding;
 import com.futrtch.live.interfaces.LiveRoomCallBack;
+import com.futrtch.live.mvvm.vm.LivePlayViewModel;
+import com.futrtch.live.mvvm.vm.LivePlayViewModelFactory;
 import com.futrtch.live.tencent.common.msg.TCChatMsgListAdapter;
 import com.futrtch.live.tencent.common.msg.TCSimpleUserInfo;
 import com.futrtch.live.tencent.common.utils.TCErrorConstants;
 import com.futrtch.live.tencent.common.utils.TCUtils;
 import com.futrtch.live.tencent.common.widget.RTCUserAvatarListAdapter;
 import com.futrtch.live.tencent.liveroom.roomutil.commondef.MLVBCommonDef;
-import com.futrtch.live.utils.StyleUtils;
 import com.futrtch.live.utils.TransitionUtils;
-import com.futrtch.live.mvvm.vm.LivePlayViewModel;
-import com.futrtch.live.mvvm.vm.LivePlayViewModelFactory;
 import com.jakewharton.rxbinding4.view.RxView;
 
 import org.jetbrains.annotations.NotNull;
@@ -46,26 +44,20 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
 
     private LivePlayViewModel mViewModel;
     private ActivityLiveBinding mDataBinding;
-
     private RTCUserAvatarListAdapter mAvatarListAdapter;  // 头像列表适配器
     private TCChatMsgListAdapter mChatMsgListAdapter;    // 消息列表的Adapter
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        StyleUtils.initStyle(this);  //     初始化直播页面的style
-        super.onCreate(savedInstanceState);
+    public void initViewModel() {
         setLiveRoomCallBack(this);
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_live);
         ViewModelProvider.Factory factory = new LivePlayViewModelFactory(getApplication(), this);
         mViewModel = ViewModelProviders.of(this, factory).get(LivePlayViewModel.class);
-        TransitionUtils.setTransitionAnim(mDataBinding.audienceBackground, getWindow(), TRANSITION_NAME_IMAGE); // 设置过场动画
-
-        init();
-        bindUi();
-        subscribeUi();
     }
 
-    private void init() {
+    @Override
+    public void init() {
+        TransitionUtils.setTransitionAnim(mDataBinding.audienceBackground, getWindow(), TRANSITION_NAME_IMAGE); // 设置过场动画
         mDataBinding.audienceBackground.setImageResource(R.mipmap.live2_icon);
         mViewModel.getIntentData(getIntent()); //   拿到主播相关数据
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -79,7 +71,8 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
         mViewModel.startLivePlay(mDataBinding.anchorPlayView, this);
     }
 
-    private void bindUi() {
+    @Override
+    public void bindUi() {
         // 右滑还原
         RxView.touches(mDataBinding.anchorPlayView)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
@@ -108,7 +101,8 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
                 .subscribe(unit -> mViewModel.showInputMsgDialog(LivePlayActivity.this));
     }
 
-    private void subscribeUi() {
+    @Override
+    public void subscribeUi() {
         mViewModel.getLiveState().observe(this, integer -> {
             switch (integer) {
                 case TCErrorConstants.SUCCESS_CUSTOMER_IN_ROOM:  //                 进入LiveRoom成功
@@ -134,6 +128,11 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
         mViewModel.getHeartCount().observe(this, integer -> {
 
         });
+    }
+
+    @Override
+    public void initRequest() {
+
     }
 
     /**

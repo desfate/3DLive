@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
@@ -13,10 +12,11 @@ import com.futrtch.live.R;
 import com.futrtch.live.base.BaseResponBean;
 import com.futrtch.live.databinding.ActivityRegisterBinding;
 import com.futrtch.live.http.RequestTags;
-import com.futrtch.live.tencent.common.utils.TCErrorConstants;
-import com.futrtch.live.utils.ToastUtil;
+import com.futrtch.live.mvvm.MVVMActivity;
 import com.futrtch.live.mvvm.vm.RegisterViewModel;
 import com.futrtch.live.mvvm.vm.RegisterViewModelFactory;
+import com.futrtch.live.tencent.common.utils.TCErrorConstants;
+import com.futrtch.live.utils.ToastUtil;
 import com.futrtch.live.widgets.LoadingDialog;
 import com.jakewharton.rxbinding4.view.RxView;
 import com.jeremyliao.liveeventbus.LiveEventBus;
@@ -34,7 +34,7 @@ import static com.futrtch.live.tencent.common.utils.TCErrorConstants.ERROR_CUSTO
 /**
  * 注册页面
  */
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends MVVMActivity {
 
     private final static String TAG = "RegisterActivity";
 
@@ -45,21 +45,24 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void initViewModel() {
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_register);
         ViewModelProvider.Factory factory = new RegisterViewModelFactory(getApplication(), this);
         mViewModel = ViewModelProviders.of(this, factory).get(RegisterViewModel.class);
-        init();
-        bindUi();
-        subscribeUi();
     }
 
-    private void init(){
+    @Override
+    public void init(){
         mLoading = new LoadingDialog.Builder(RegisterActivity.this);
         mLoading.setMessage(getString(R.string.register_loading));
         mLoading.create();
     }
 
-    private void bindUi(){
+    @Override
+    public void bindUi(){
         // 点击上方关闭按钮
         RxView.clicks(mDataBinding.closeImg)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
@@ -73,7 +76,8 @@ public class RegisterActivity extends AppCompatActivity {
                         , mDataBinding.repeatRegisterPasswordEdt.getText().toString().trim()));
     }
 
-    private void subscribeUi() {
+    @Override
+    public void subscribeUi() {
         // 注册页面状态更变通知
         mViewModel.getRegisterState().observe(this, state -> {
             switch (state) {
@@ -116,6 +120,11 @@ public class RegisterActivity extends AppCompatActivity {
                         ToastUtil.showToast(this, "登录失败:" + TCErrorConstants.getErrorInfo(bean.getCode()));
                     }
                 });
+    }
+
+    @Override
+    public void initRequest() {
+
     }
 
     @Override

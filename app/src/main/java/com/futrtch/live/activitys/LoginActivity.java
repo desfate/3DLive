@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
@@ -14,10 +13,11 @@ import com.futrtch.live.base.BaseResponBean;
 import com.futrtch.live.base.PermissionTools;
 import com.futrtch.live.databinding.ActivityLoginBinding;
 import com.futrtch.live.http.RequestTags;
-import com.futrtch.live.tencent.common.utils.TCErrorConstants;
-import com.futrtch.live.utils.ToastUtil;
+import com.futrtch.live.mvvm.MVVMActivity;
 import com.futrtch.live.mvvm.vm.LoginViewModel;
 import com.futrtch.live.mvvm.vm.LoginViewModelFactory;
+import com.futrtch.live.tencent.common.utils.TCErrorConstants;
+import com.futrtch.live.utils.ToastUtil;
 import com.futrtch.live.widgets.LoadingDialog;
 import com.hjq.permissions.Permission;
 import com.jakewharton.rxbinding4.view.RxView;
@@ -36,7 +36,7 @@ import static com.futrtch.live.tencent.common.utils.TCErrorConstants.ERROR_CUSTO
 /**
  * 登录页面
  */
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends MVVMActivity {
     private static final String TAG = "LoginActivity";
 
     private LoadingDialog.Builder mLoading; // 加载页面
@@ -46,21 +46,24 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void initViewModel() {
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         ViewModelProvider.Factory factory = new LoginViewModelFactory(getApplication(), this);
         mViewModel = ViewModelProviders.of(this, factory).get(LoginViewModel.class);
-        init();
-        bindUi();
-        subscribeUi();
     }
 
-    private void init(){
+    @Override
+    public void init(){
         mLoading = new LoadingDialog.Builder(LoginActivity.this);
         mLoading.setMessage(getString(R.string.login_loading_text));
         mLoading.create();
     }
 
-    private void bindUi(){
+    @Override
+    public void bindUi(){
         // 登录请求
         RxView.clicks(mDataBinding.loginBtn)
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -79,7 +82,8 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * 不带粘性消息
      */
-    private void subscribeUi() {
+    @Override
+    public void subscribeUi() {
         // 页面状态变化通知  带粘性消息
         mViewModel.getLoginState().observe(this, state -> {
             switch (state) {
@@ -107,6 +111,11 @@ public class LoginActivity extends AppCompatActivity {
                         mDataBinding.passwordEdt.setText("");  // 清空密码输入框
                     }
                 });
+    }
+
+    @Override
+    public void initRequest() {
+
     }
 
     @Override

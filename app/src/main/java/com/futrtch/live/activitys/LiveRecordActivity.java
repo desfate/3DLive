@@ -53,15 +53,17 @@ public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCal
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void initViewModel() {
         ViewModelProvider.Factory factory = new LiveRecordViewModelFactory(getApplication(), this);
         mViewModel = ViewModelProviders.of(this, factory).get(LiveRecordViewModel.class);
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_record);
-        init();
-        bindUi();
-        subscribeUi();
     }
 
-    private void init() {
+    @Override
+    public void init() {
         // 计时器回调 更新直播时间
         BroadcastTimerTask.TimeCallBack callBack = time -> {
             mDataBinding.layoutLivePusherInfo.anchorTvBroadcastingTime.setText(TCUtils.formattedTime(time));  //             更新直播时间
@@ -82,7 +84,8 @@ public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCal
         mDataBinding.anchorPushView.startPush();//                                   控件打开推送开关
     }
 
-    private void bindUi() {
+    @Override
+    public void bindUi() {
         // 退出按钮
         RxView.clicks(mDataBinding.btnBack)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
@@ -100,7 +103,8 @@ public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCal
                 .subscribe(unit -> mViewModel.showInputMsgDialog(LiveRecordActivity.this)); //                            显示输入框
     }
 
-    private void subscribeUi() {
+    @Override
+    public void subscribeUi() {
         mViewModel.getLiveState().observe(this, integer -> {
             switch (integer) {
                 case ERROR_CUSTOMER_CREATE_ROOM_ERROR:  //   创建房间失败
@@ -123,6 +127,11 @@ public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCal
         mViewModel.getCurrentMessageList().observe(this, tcChatEntities -> mChatMsgListAdapter.setData(tcChatEntities)); //         更新聊天区域
         // 观众进入房间
         mViewModel.getCurrentAudienceList().observe(this, tcSimpleUserInfo -> mAvatarListAdapter.submitList(tcSimpleUserInfo));  // 更新头像区域
+    }
+
+    @Override
+    public void initRequest() {
+
     }
 
     @Override

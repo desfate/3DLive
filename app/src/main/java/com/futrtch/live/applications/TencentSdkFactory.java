@@ -14,7 +14,8 @@ public class TencentSdkFactory implements InitSDK {
     // 如何获取License? 请参考官网指引 https://cloud.tencent.com/document/product/454/34750
     public final static String LICENCE_URL =
             "http://license.vod2.myqcloud.com/license/v1/fbc229653a09ab6ec9e0d2f9d30db945/TXLiveSDK.licence";
-    public final static String LICENCE_KEY = "7ebeb7a8f2cd241daf84cfa2e8a66191";
+    public final static String LICENCE_KEY =
+            "7ebeb7a8f2cd241daf84cfa2e8a66191";
 
     TencentSdkFactory(){
 
