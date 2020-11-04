@@ -34,13 +34,13 @@ public class MessageListAdapter extends BaseQuickAdapter<MessageBean, BaseDataBi
         if (binding == null) return;
         if (info != null) {
             switch (info.getMessageType()) {
-                case 1:
+                case MessageBean.LIVE_MESSAGE:
                     binding.messageImg.setImageResource(R.mipmap.live_message_icon);
                     binding.messageName.setText("直播通知");
                     binding.messageContent.setText(MessageFormat.format("{0}.{1}", info.getMessageContent(), info.getMessageTime()));
                     binding.signText.setVisibility(View.VISIBLE);
                     break;
-                case 2:
+                case MessageBean.SYSTEM_MESSAGE:
                     binding.messageImg.setImageResource(R.mipmap.system_message_icon);
                     binding.messageName.setText("系统通知");
                     binding.messageContent.setText(MessageFormat.format("{0}.{1}", info.getMessageContent(), info.getMessageTime()));

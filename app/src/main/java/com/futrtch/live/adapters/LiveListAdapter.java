@@ -35,7 +35,6 @@ public class LiveListAdapter extends BaseQuickAdapter<TCVideoInfo, BaseDataBindi
     public LiveListAdapter(int layoutResId, Context context, List<TCVideoInfo> mList) {
         super(layoutResId, mList);
         this.mContext = context;
-
     }
 
     @Override

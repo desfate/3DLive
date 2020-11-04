@@ -1,4 +1,4 @@
-package com.futrtch.live.activitys.fragments;
+package com.futrtch.live.activitys.fragments.mine;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DiffUtil;
 
 import com.futrtch.live.R;
 import com.futrtch.live.adapters.MineListAdapter;
@@ -18,7 +17,6 @@ import com.futrtch.live.databinding.FragmentMineListBinding;
 import com.futrtch.live.mvvm.MVVMFragment;
 import com.futrtch.live.mvvm.vm.MineListViewModel;
 import com.futrtch.live.mvvm.vm.MineListViewModelFactory;
-import com.futrtch.live.tencent.live.TCVideoInfo;
 
 import java.util.Objects;
 
@@ -49,17 +47,7 @@ public class MineListFragment extends MVVMFragment {
 
     @Override
     public void init() {
-        mAdapter = new MineListAdapter(new DiffUtil.ItemCallback<TCVideoInfo>() {
-            @Override
-            public boolean areItemsTheSame(@NonNull TCVideoInfo oldItem, @NonNull TCVideoInfo newItem) {
-                return oldItem.userId.equals(newItem.userId);
-            }
-
-            @Override
-            public boolean areContentsTheSame(@NonNull TCVideoInfo oldItem, @NonNull TCVideoInfo newItem) {
-                return oldItem.userId.equals(newItem.userId);
-            }
-        });
+        mAdapter = new MineListAdapter(R.layout.listview_mine_item, getActivity(), mViewModel.getmListData());
         mDataBinding.recyclerList.setAdapter(mAdapter);
     }
 
@@ -70,7 +58,7 @@ public class MineListFragment extends MVVMFragment {
 
     @Override
     public void subscribeUi() {
-        mViewModel.getMineListData().observe(this, tcVideo -> mAdapter.submitList(tcVideo));
+
     }
 
     @Override

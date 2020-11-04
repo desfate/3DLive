@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.futrtch.live.R;
 import com.futrtch.live.activitys.fragments.FriendFragment;
-import com.futrtch.live.activitys.fragments.LiveListFragment;
+import com.futrtch.live.activitys.fragments.LiveFragment;
 import com.futrtch.live.activitys.fragments.MessageFragment;
 import com.futrtch.live.activitys.fragments.MineFragment;
 import com.futrtch.live.databinding.ActivityMainBinding;
@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         setBottom();
-        mFragments.add(new LiveListFragment());
+        mFragments.add(new LiveFragment());
         mFragments.add(new FriendFragment());
         mFragments.add(new MessageFragment());
         mFragments.add(new MineFragment());

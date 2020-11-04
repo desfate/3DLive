@@ -1,6 +1,11 @@
 package com.futrtch.live.beans;
 
 public class MessageBean {
+
+    public final static int LIVE_MESSAGE = 1;
+    public final static int SYSTEM_MESSAGE = 2;
+    public final static int USER_MESSAGE = 3;
+
     int messageType;
     String messageContent;
     String messageTime;

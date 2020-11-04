@@ -56,6 +56,8 @@
     <color name="color_text_hint">#7c7c83</color>
     <color name="color_search_btn">#fe2c55</color>
     <color name="color_care_btn">#5c5e65</color>
+    <color name="color_message_text">#e9e9ea</color>
+    <color name="color_message_time_text">#8e8f95</color>
 
     <color name="c9">#777777</color>
 </resources>

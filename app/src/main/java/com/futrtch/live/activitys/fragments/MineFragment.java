@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.futrtch.live.R;
 import com.futrtch.live.activitys.EditActivity;
 import com.futrtch.live.activitys.SettingActivity;
+import com.futrtch.live.activitys.fragments.mine.MineListFragment;
 import com.futrtch.live.base.BaseFragmentAdapter;
 import com.futrtch.live.databinding.FragmentMineBinding;
 import com.futrtch.live.mvvm.MVVMFragment;
@@ -31,7 +32,7 @@ import autodispose2.AutoDispose;
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 
 /**
- * 我的页面
+ * 我的页面  主页 -> 我的
  */
 public class MineFragment extends MVVMFragment {
 

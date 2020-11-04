@@ -12,7 +12,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
 import com.futrtch.live.activitys.LivePlayActivity;
-import com.futrtch.live.activitys.fragments.LiveListFragment;
+import com.futrtch.live.activitys.fragments.main.LiveListFragment;
 import com.futrtch.live.beans.ShareBean;
 import com.futrtch.live.mvvm.repository.LiveRoomRepository;
 import com.futrtch.live.mvvm.repository.LoginRepository;
@@ -90,7 +90,7 @@ public class LivePlayViewModel extends BaseMessageViewModel {
                 , danMaKuView
                 , livePlayBean.getmAvatar()
                 , livePlayBean.getmNickname()
-                , livePlayBean.getmGroupId());
+                , livePlayBean.getmPusherNickname());
     }
 
     /**

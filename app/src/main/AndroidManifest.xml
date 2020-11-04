@@ -42,6 +42,7 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".activitys.MainActivity"
             android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait"
             ></activity>
 
         <activity
@@ -57,6 +58,12 @@
         <activity android:name=".activitys.RegisterActivity"></activity>
 
         <activity android:name=".activitys.EditActivity"></activity>
+
+        <activity android:name=".activitys.MessageActivity"></activity>
+
+        <activity android:name=".activitys.AddressBookActivity"></activity>
+
+        <activity android:name=".activitys.MessageTitleActivity"></activity>
 
         <activity android:name=".activitys.SettingActivity"></activity>
         <activity

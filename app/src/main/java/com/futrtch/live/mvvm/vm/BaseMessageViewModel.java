@@ -30,8 +30,11 @@ import java.util.Optional;
 import autodispose2.AutoDispose;
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import github.com.desfate.livekit.live.LiveMessageCommand;
+import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.ObservableSource;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Function;
 import master.flame.danmaku.controller.IDanmakuView;
 
@@ -129,7 +132,7 @@ public class BaseMessageViewModel extends ViewModel {
                             case TCConstants.IMCMD_DANMU:// 收到弹幕消息
                                 Optional.ofNullable(mDanMuMgr).ifPresent(tcDanmuMgr -> tcDanmuMgr.addDanmu(info.avatar, info.nickname, text));
                             case TCConstants.IMCMD_PAILN_TEXT: // 普通文本消息
-                                if (!Objects.requireNonNull(currentAudienceList.getValue()).contains(info1)) {
+//                                if (!Objects.requireNonNull(currentAudienceList.getValue()).contains(info1)) {
                                     if (info1.userid.equals(mPusherId)) {  // 主播消息解密一下  看看是不是命令
                                         String command = LiveMessageCommand.resolveCommand(text);
                                         if (command.length() > 0) {
@@ -144,23 +147,40 @@ public class BaseMessageViewModel extends ViewModel {
                                                     break;
                                             }
                                         }
-                                    }
+//                                    }
                                 }
                                 entity.setSenderName(((TCSimpleUserInfo) userInfo).nickname);
                                 entity.setContent(text);
                                 break;
                         }
                     });  // 通知头像更新
-
                     return Observable.create(emitter -> emitter.onNext(entity));
                 }).to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(lifecycleOwner)))  //   防止内存泄漏
-                .subscribe(tcChatEntity -> {
-                    // tcChatEntity 不可能为空
-                    List<TCChatEntity> messageList = currentMessageList.getValue();
-                    Optional.ofNullable(messageList).ifPresent(tcChatEntities -> {
-                        tcChatEntities.add(tcChatEntity);  //                                                最新的消息肯定在最下面
-                        currentMessageList.postValue(tcChatEntities);  // 通                                 知聊天列表更新
-                    });
+                .subscribe(new Observer<TCChatEntity>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(@NonNull TCChatEntity tcChatEntity) {
+                        // tcChatEntity 不可能为空
+                        List<TCChatEntity> messageList = currentMessageList.getValue();
+                        Optional.ofNullable(messageList).ifPresent(tcChatEntities -> {
+                            tcChatEntities.add(tcChatEntity);  //                                                最新的消息肯定在最下面
+                            currentMessageList.postValue(tcChatEntities);  // 通                                 知聊天列表更新
+                        });
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
                 });
     }
 

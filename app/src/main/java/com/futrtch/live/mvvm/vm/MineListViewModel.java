@@ -2,7 +2,6 @@ package com.futrtch.live.mvvm.vm;
 
 import android.app.Activity;
 
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.futrtch.live.databinding.FragmentMineListBinding;
@@ -16,7 +15,7 @@ public class MineListViewModel extends ViewModel {
 
     MineRepository mineRepository;
 
-    MutableLiveData<List<TCVideoInfo>> mineListData = new MutableLiveData<>();  // 直播间列表数据
+    List<TCVideoInfo> mListData = new ArrayList<>();
 
     public MineListViewModel(MineRepository mineRepository){
         this.mineRepository = mineRepository;
@@ -42,10 +41,10 @@ public class MineListViewModel extends ViewModel {
                     ""
             ));
         }
-        mineListData.postValue(tcVideoInfos);
+        mListData.addAll(tcVideoInfos);
     }
 
-    public MutableLiveData<List<TCVideoInfo>> getMineListData() {
-        return mineListData;
+    public List<TCVideoInfo> getmListData() {
+        return mListData;
     }
 }

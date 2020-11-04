@@ -1,4 +1,4 @@
-package com.futrtch.live.activitys.fragments;
+package com.futrtch.live.activitys.fragments.friend;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.futrtch.live.R;
 import com.futrtch.live.adapters.FriendListAdapter;
 import com.futrtch.live.databinding.FragmentFriendListBinding;
-import com.futrtch.live.databinding.LayoutFriendHeadBinding;
 import com.futrtch.live.mvvm.MVVMFragment;
 import com.futrtch.live.mvvm.vm.FriendListViewModel;
 import com.futrtch.live.mvvm.vm.FriendListViewModelFactory;
@@ -27,10 +26,12 @@ import java.util.Objects;
 import autodispose2.AutoDispose;
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 
-public class FindFriendFragment extends MVVMFragment {
+/**
+ * 朋友列表   主页 -> 朋友 -> 朋友列表
+ */
+public class FriendListFragment extends MVVMFragment{
 
     FragmentFriendListBinding mDataBinding;
-    Bundle savedInstanceState;
     FriendListViewModel mViewModel;
     FriendListAdapter mAdapter;
     LinearLayoutManager manager;
@@ -39,7 +40,6 @@ public class FindFriendFragment extends MVVMFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mDataBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_friend_list, container, false);
-        this.savedInstanceState = savedInstanceState;
         return mDataBinding.getRoot();
     }
 
@@ -51,13 +51,11 @@ public class FindFriendFragment extends MVVMFragment {
 
     @Override
     public void init() {
+        mDataBinding.scanImg.setVisibility(View.INVISIBLE);
         manager = new LinearLayoutManager(getActivity());
         mDataBinding.recyclerList.setLayoutManager(manager);
         mAdapter = new FriendListAdapter(R.layout.layout_friend_item, getActivity(),mViewModel.getFriendList());
         mDataBinding.recyclerList.setAdapter(mAdapter);
-        mAdapter.setHeaderView(getHeaderView(v -> {
-
-        }));
         mViewModel.prepare();
     }
 
@@ -92,23 +90,18 @@ public class FindFriendFragment extends MVVMFragment {
             if(aBoolean) {
                 mDataBinding.seachTv.setVisibility(View.VISIBLE);
                 mDataBinding.scanImg.setImageResource(R.mipmap.input_close_icon);
+                mDataBinding.scanImg.setVisibility(View.VISIBLE);
             } else {
                 mDataBinding.seachTv.setVisibility(View.GONE);
                 mDataBinding.scanImg.setImageResource(R.mipmap.scan_icon);
+                mDataBinding.scanImg.setVisibility(View.INVISIBLE);
             }
         });
         mViewModel.getmData().observe(this, friendBeans -> {
-
             manager.scrollToPositionWithOffset(0, 0);
         });
     }
 
-    private View getHeaderView(View.OnClickListener listener) {
-        LayoutFriendHeadBinding binding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.layout_friend_head, mDataBinding.recyclerList, false);
-        binding.userInfoRly.setOnClickListener(listener);
-        binding.recommandTv.setOnClickListener(listener);
-        return binding.getRoot();
-    }
 
     @Override
     public void initRequest() {

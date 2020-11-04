@@ -1,5 +1,6 @@
-package com.futrtch.live.activitys.fragments;
+package com.futrtch.live.activitys.fragments.friend;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,12 +14,16 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.futrtch.live.R;
+import com.futrtch.live.activitys.AddressBookActivity;
 import com.futrtch.live.adapters.FriendListAdapter;
 import com.futrtch.live.databinding.FragmentFriendListBinding;
+import com.futrtch.live.databinding.LayoutFriendHeadBinding;
 import com.futrtch.live.mvvm.MVVMFragment;
 import com.futrtch.live.mvvm.vm.FriendListViewModel;
 import com.futrtch.live.mvvm.vm.FriendListViewModelFactory;
 import com.futrtch.live.utils.InputKeybroadUtils;
+import com.futrtch.live.utils.ToastUtil;
+import com.futrtch.live.views.ViewsBuilder;
 import com.jakewharton.rxbinding4.view.RxView;
 
 import java.util.Objects;
@@ -27,21 +32,20 @@ import autodispose2.AutoDispose;
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 
 /**
- * 朋友列表/发现朋友
+ * 发现朋友   主页 -> 朋友 -> 发现朋友
  */
-public class FriendListFragment extends MVVMFragment{
+public class FindFriendFragment extends MVVMFragment {
 
-    FragmentFriendListBinding mDataBinding;
-    Bundle savedInstanceState;
-    FriendListViewModel mViewModel;
-    FriendListAdapter mAdapter;
-    LinearLayoutManager manager;
+    private FragmentFriendListBinding mDataBinding;
+    private FriendListViewModel mViewModel;
+    private FriendListAdapter mAdapter;
+    private LinearLayoutManager manager;
+    private LayoutFriendHeadBinding mHeadBinding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mDataBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_friend_list, container, false);
-        this.savedInstanceState = savedInstanceState;
         return mDataBinding.getRoot();
     }
 
@@ -53,15 +57,22 @@ public class FriendListFragment extends MVVMFragment{
 
     @Override
     public void init() {
-        mDataBinding.scanImg.setVisibility(View.INVISIBLE);
         manager = new LinearLayoutManager(getActivity());
         mDataBinding.recyclerList.setLayoutManager(manager);
-        mAdapter = new FriendListAdapter(R.layout.layout_friend_item, getActivity(),mViewModel.getFriendList());
+        mAdapter = new FriendListAdapter(R.layout.layout_friend_item, getActivity(), mViewModel.getFriendList());
+        mHeadBinding = (LayoutFriendHeadBinding) new ViewsBuilder()
+                .setInflater(getLayoutInflater())
+                .setLayoutId(R.layout.layout_friend_head)
+                .setParent(mDataBinding.recyclerList)
+                .setAttachToParent(false)
+                .build()
+                .getDataBinding();
+        mAdapter.setHeaderView(mHeadBinding.getRoot());
         mDataBinding.recyclerList.setAdapter(mAdapter);
         mViewModel.prepare();
     }
 
-    public void bindUi(){
+    public void bindUi() {
         RxView.clicks(mDataBinding.searchInput)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(unit -> {
@@ -77,30 +88,39 @@ public class FriendListFragment extends MVVMFragment{
         RxView.clicks(mDataBinding.scanImg)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(unit -> {
-                    if(mViewModel.getIsFocus().getValue()){ // 有焦点情况下是删除
+                    if (mViewModel.getIsFocus().getValue()) { // 有焦点情况下是删除
                         mDataBinding.searchInput.setText("");
                         mDataBinding.searchInput.clearFocus();
                         InputKeybroadUtils.hideInput(Objects.requireNonNull(getActivity()));
-                    }else{
+                    } else {
 
                     }
                 });
+
+        RxView.clicks(mHeadBinding.userInfoRly)
+                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .subscribe(unit -> {
+                    startActivity(new Intent(getActivity(), AddressBookActivity.class));
+                });
+
+        RxView.clicks(mHeadBinding.recommandTv)
+                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .subscribe(unit -> {
+                    ToastUtil.showToast(getContext(), "全部推荐");
+                });
     }
 
-    public void subscribeUi(){
+    public void subscribeUi() {
         mViewModel.getIsFocus().observe(this, aBoolean -> {
-            if(aBoolean) {
+            if (aBoolean) {
                 mDataBinding.seachTv.setVisibility(View.VISIBLE);
                 mDataBinding.scanImg.setImageResource(R.mipmap.input_close_icon);
-                mDataBinding.scanImg.setVisibility(View.VISIBLE);
             } else {
                 mDataBinding.seachTv.setVisibility(View.GONE);
                 mDataBinding.scanImg.setImageResource(R.mipmap.scan_icon);
-                mDataBinding.scanImg.setVisibility(View.INVISIBLE);
             }
         });
         mViewModel.getmData().observe(this, friendBeans -> {
-
             manager.scrollToPositionWithOffset(0, 0);
         });
     }

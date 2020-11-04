@@ -65,6 +65,11 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
+    <style name="mainStyle" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <!-- Input dialog theme. -->
     <style name="InputDialog">
         <item name="android:windowFrame">@null</item>

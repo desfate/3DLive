@@ -11,30 +11,28 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import com.futrtch.live.R;
-import com.futrtch.live.activitys.fragments.friend.FindFriendFragment;
-import com.futrtch.live.activitys.fragments.friend.FriendListFragment;
+import com.futrtch.live.activitys.fragments.main.LiveCareFragment;
+import com.futrtch.live.activitys.fragments.main.LiveListFragment;
+import com.futrtch.live.activitys.fragments.main.LiveReplayFragment;
 import com.futrtch.live.base.BaseFragmentAdapter;
-import com.futrtch.live.databinding.FragmentFriendBinding;
+import com.futrtch.live.databinding.FragmentLiveBinding;
 import com.futrtch.live.mvvm.MVVMFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 朋友页面  主页 -> 朋友
- */
-public class FriendFragment extends MVVMFragment{
+public class LiveFragment extends MVVMFragment {
 
-    FragmentFriendBinding mDataBinding;
+    FragmentLiveBinding mDataBinding;
     List<Fragment> mFragments = new ArrayList<>();
     String[] mTitles = new String[]{
-            "朋友列表", "发现朋友"
+            "推荐",  "关注", "回放"
     };
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mDataBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_friend, container, false);
+        mDataBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_live, container, false);
         return mDataBinding.getRoot();
     }
 
@@ -45,17 +43,13 @@ public class FriendFragment extends MVVMFragment{
 
     @Override
     public void init() {
-        for (int i = 0; i < mTitles.length; i++) {
-            MVVMFragment listFragment;
-            if(i == 0) {
-                listFragment = new FriendListFragment();
-            }else{
-                listFragment = new FindFriendFragment();
-            }
-            mFragments.add(listFragment);
-        }
+
+        mFragments.add(new LiveListFragment());
+        mFragments.add(new LiveCareFragment());
+        mFragments.add(new LiveReplayFragment());
+
         BaseFragmentAdapter adapter =
-                new BaseFragmentAdapter(getChildFragmentManager(), mFragments, mTitles);
+                new BaseFragmentAdapter(getFragmentManager(), mFragments, mTitles);
         mDataBinding.viewpager.setAdapter(adapter);
         mDataBinding.tabs.setupWithViewPager(mDataBinding.viewpager);
     }
@@ -72,5 +66,4 @@ public class FriendFragment extends MVVMFragment{
     public void initRequest() {
 
     }
-
 }

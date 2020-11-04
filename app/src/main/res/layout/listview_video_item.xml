@@ -6,6 +6,7 @@
 
     <com.futrtch.live.tencent.live.SquareLayout
         android:id="@+id/square_layout"
+        android:padding="2.5dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:ignore="contentDescription">
