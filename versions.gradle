@@ -49,7 +49,7 @@ versions.hiltLifecycle = "1.0.0-alpha01"//    hilt lifecycle
 // IM 服务相关
 versions.imsdk = '4.5.45'
 // Live 相关
-versions.liteavSdk = 'latest.release@aar' // 腾讯直播SDK版本
+versions.liteavSdk = '8.0.9639' // 腾讯直播SDK版本
 // 腾讯云存储服务
 versions.cosxml = '5.4.+'// 腾讯对象存储 cosml
 // 自定义直播采集插件
