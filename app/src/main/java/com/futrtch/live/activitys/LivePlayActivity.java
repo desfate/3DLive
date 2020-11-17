@@ -5,7 +5,9 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Size;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
@@ -23,12 +25,15 @@ import com.futrtch.live.tencent.common.utils.TCErrorConstants;
 import com.futrtch.live.tencent.common.utils.TCUtils;
 import com.futrtch.live.tencent.common.widget.RTCUserAvatarListAdapter;
 import com.futrtch.live.tencent.liveroom.roomutil.commondef.MLVBCommonDef;
+import com.futrtch.live.utils.AnimatorUtils;
+import com.futrtch.live.utils.ToastUtil;
 import com.futrtch.live.utils.TransitionUtils;
 import com.jakewharton.rxbinding4.view.RxView;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import autodispose2.AutoDispose;
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
@@ -47,9 +52,11 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
     private RTCUserAvatarListAdapter mAvatarListAdapter;  // 头像列表适配器
     private TCChatMsgListAdapter mChatMsgListAdapter;    // 消息列表的Adapter
 
+    private AnimatorUtils animatorUtils;
+
     @Override
     public void initViewModel() {
-        setLiveRoomCallBack(this);
+        super.setLiveRoomCallBack(this);
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_live);
         ViewModelProvider.Factory factory = new LivePlayViewModelFactory(getApplication(), this);
         mViewModel = ViewModelProviders.of(this, factory).get(LivePlayViewModel.class);
@@ -57,8 +64,8 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
 
     @Override
     public void init() {
+
         TransitionUtils.setTransitionAnim(mDataBinding.audienceBackground, getWindow(), TRANSITION_NAME_IMAGE); // 设置过场动画
-        mDataBinding.audienceBackground.setImageResource(R.mipmap.live2_icon);
         mViewModel.getIntentData(getIntent()); //   拿到主播相关数据
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -67,8 +74,12 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
         mDataBinding.anchorRvAvatar.setAdapter(mAvatarListAdapter);
         mChatMsgListAdapter = new TCChatMsgListAdapter(this, mDataBinding.imMsgListview, new ArrayList<>());
         mDataBinding.imMsgListview.setAdapter(mChatMsgListAdapter);
+        mDataBinding.imMsgListview.setVisibility(View.VISIBLE);
         mViewModel.prepareLive(this, mDataBinding.anchorDanmakuView, mDataBinding.anchorControlLayer);  // 直播前准备
         mViewModel.startLivePlay(mDataBinding.anchorPlayView, this);
+
+        int pic = Integer.parseInt(getIntent().getStringExtra("btn"));
+        mDataBinding.audienceBackground.setImageResource(pic);
     }
 
     @Override
@@ -107,7 +118,7 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
             switch (integer) {
                 case TCErrorConstants.SUCCESS_CUSTOMER_IN_ROOM:  //                 进入LiveRoom成功
                     mDataBinding.anchorPlayView.setVisibility(View.VISIBLE);//      解决白色闪屏问题
-                    mDataBinding.audienceBackground.setVisibility(View.GONE);
+                    mDataBinding.audienceBackground.setVisibility(View.INVISIBLE);
                     break;
                 case TCErrorConstants.ERROR_CUSTOMER_IN_ROOM_ERROR: //              进入LiveRoom失败
                     mDataBinding.anchorPlayView.setVisibility(View.INVISIBLE);
@@ -202,6 +213,7 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
         int W = mDisplayMetrics.widthPixels;
         int H = mDisplayMetrics.heightPixels;
         Size playSize = mViewModel.getLiveSize();
+        if(getResources() == null || getResources().getConfiguration() == null) return;
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             // 这个大小要根据推过来的视频流进行变换
             if (playSize != null) {
@@ -222,5 +234,24 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
                         / (Math.min(playSize.getWidth(), playSize.getHeight()));
             }
         }
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+            mViewModel.exitRoom(this);
+            //不执行父类点击事件
+            return true;
+        }
+        //继续执行父类其他点击事件
+        return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mViewModel.release();
+        Optional.ofNullable(animatorUtils).ifPresent(AnimatorUtils::release);
+        Optional.ofNullable(ToastUtil.mToast).ifPresent(Toast::cancel);
     }
 }

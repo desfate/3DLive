@@ -1,6 +1,7 @@
 package com.futrtch.live.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 
 import androidx.databinding.DataBindingUtil;
@@ -8,8 +9,10 @@ import androidx.databinding.DataBindingUtil;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseDataBindingHolder;
 import com.futrtch.live.R;
+import com.futrtch.live.activitys.UserActivity;
 import com.futrtch.live.beans.MessageBean;
 import com.futrtch.live.databinding.LayoutMessageItemBinding;
+import com.futrtch.live.mvvm.vm.UserViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -51,8 +54,11 @@ public class MessageListAdapter extends BaseQuickAdapter<MessageBean, BaseDataBi
                     binding.messageName.setText("用户私信");
                     binding.messageContent.setText(MessageFormat.format("{0}.{1}", info.getMessageContent(), info.getMessageTime()));
                     binding.signText.setVisibility(View.INVISIBLE);
-
-
+                    binding.messageImg.setOnClickListener(v -> {
+                        Intent intent = new Intent(context, UserActivity.class);
+                        intent.putExtra(UserViewModel.USER_ID, info.getUserId());
+                        context.startActivity(intent);
+                    });
             }
         }
     }

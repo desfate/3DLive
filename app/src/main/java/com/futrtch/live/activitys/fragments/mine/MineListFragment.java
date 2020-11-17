@@ -26,6 +26,14 @@ public class MineListFragment extends MVVMFragment {
     FragmentMineListBinding mDataBinding;
     MineListAdapter mAdapter;
 
+    public static MineListFragment getInstance(int index){
+        MineListFragment fragment = new MineListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("index", index);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -47,7 +55,7 @@ public class MineListFragment extends MVVMFragment {
 
     @Override
     public void init() {
-        mAdapter = new MineListAdapter(R.layout.listview_mine_item, getActivity(), mViewModel.getmListData());
+        mAdapter = new MineListAdapter(R.layout.listview_mine_item, mViewModel.getmListData());
         mDataBinding.recyclerList.setAdapter(mAdapter);
     }
 
@@ -64,6 +72,11 @@ public class MineListFragment extends MVVMFragment {
     @Override
     public void initRequest() {
 
+    }
+
+    @Override
+    public void releaseBinding() {
+        releaseBindingList(mDataBinding);
     }
 
 

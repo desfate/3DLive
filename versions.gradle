@@ -18,12 +18,14 @@ def versions = [:]
 versions.android_gradle_plugin = '4.0.1'   // gradle build tools
 versions.support_design = '23.2.1'   //       support design
 versions.support_recyclerview = '23.2.1' //   support recyclerview
+versions.kotlinVersion = '1.3.61'//           support kotlin
 
-// 现在需要向androidX进发
-versions.appcompat_version = '1.2.0'//        androidX appcompat
+// androidX
+versions.appcompat_version = '1.2.0'//        androidX appcompatVIDEO_RESOLUTION_TYPE_1920_1080
 versions.recyclerview = '1.1.0'//             androidX recyclerview
 versions.constraintLayout = '2.0.0-alpha2' // androidX constraintlayout
 versions.lifecycle = '2.1.0'//                androidX lifecycle
+versions.hiltAndroidXVersion = '1.0.0-alpha01'// androidX hilt
 versions.palette = "1.0.0"//                  palette
 
 versions.material = '1.0.0'//                 android material
@@ -41,20 +43,23 @@ versions.liveEventBus = '1.7.2'//             live-event-bus
 versions.banner = '2.1.0'//                   banner
 
 versions.bravh = '3.0.4'//                    bravh（BaseAdapter）
-
-
+versions.hilt = "2.28-alpha"//                dagger hilt IoC & DI
+versions.hiltLifecycle = "1.0.0-alpha01"//    hilt lifecycle
 
 // IM 服务相关
 versions.imsdk = '4.5.45'
 // Live 相关
-versions.liteavSdk = 'latest.release' // 腾讯直播SDK版本
+versions.liteavSdk = 'latest.release@aar' // 腾讯直播SDK版本
 // 腾讯云存储服务
 versions.cosxml = '5.4.+'// 腾讯对象存储 cosml
 // 自定义直播采集插件
 versions.livekit = '0.94'
+// 内存泄漏查看工具
+versions.leakCanary = "2.5"
 
 ext.deps = [:]
 deps.android_gradle_plugin = "com.android.tools.build:gradle:$versions.android_gradle_plugin"
+deps.android_gradle_hilt = "com.google.dagger:hilt-android-gradle-plugin:$versions.hilt"
 ext.deps = deps
 
 def support = [:]
@@ -144,6 +149,17 @@ deps.banner = banner
 def bravh = [:]
 bravh.runtime = "com.github.CymChad:BaseRecyclerViewAdapterHelper:$versions.bravh"
 deps.bravh = bravh
+
+def hilt = [:]
+hilt.runtime = "com.google.dagger:hilt-android:$versions.hilt"
+hilt.kapt =    "com.google.dagger:hilt-android-compiler:$versions.hilt"
+hilt.lifecycle = "androidx.hilt:hilt-lifecycle-viewmodel:$versions.hiltLifecycle"
+hilt.compiler = "androidx.hilt:hilt-compiler:$versions.hiltLifecycle"
+deps.hilt = hilt
+
+def leakCanary = [:]
+leakCanary.runtime = "com.squareup.leakcanary:leakcanary-android:$versions.leakCanary"
+deps.leakCanary = leakCanary
 
 def addRepos(RepositoryHandler handler) {
     handler.google()

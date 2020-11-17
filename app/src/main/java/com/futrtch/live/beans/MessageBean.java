@@ -9,11 +9,13 @@ public class MessageBean {
     int messageType;
     String messageContent;
     String messageTime;
+    String userId;
 
-    public MessageBean(int messageType, String messageContent, String messageTime) {
+    public MessageBean(int messageType, String messageContent, String messageTime, String userId) {
         this.messageType = messageType;
         this.messageContent = messageContent;
         this.messageTime = messageTime;
+        this.userId = userId;
     }
 
     public int getMessageType() {
@@ -38,5 +40,13 @@ public class MessageBean {
 
     public void setMessageTime(String messageTime) {
         this.messageTime = messageTime;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

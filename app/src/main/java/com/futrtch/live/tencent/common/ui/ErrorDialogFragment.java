@@ -3,7 +3,6 @@ package com.futrtch.live.tencent.common.ui;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -17,6 +16,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.futrtch.live.R;
 import com.futrtch.live.tencent.liveroom.roomutil.commondef.MLVBCommonDef;
@@ -27,9 +27,18 @@ import com.futrtch.live.tencent.liveroom.roomutil.commondef.MLVBCommonDef;
  */
 public class ErrorDialogFragment extends DialogFragment {
 
+    public final static int FINISH_NO_TRANSITION_TYPE = 0;
+    public final static int FINISH_TRANSITION_TYPE = 1;
+
+    private int finishType = FINISH_NO_TRANSITION_TYPE;
+
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE,R.style.AppTheme);
+    }
+
+    public void setType(int type){
+        this.finishType = type;
     }
 
     @Override
@@ -39,7 +48,11 @@ public class ErrorDialogFragment extends DialogFragment {
                 .setCancelable(true)
                 .setPositiveButton("确定", (dialog, which) -> {
                     dialog.dismiss();
-                    getActivity().finish();
+                    if(finishType == 0){
+                        getActivity().finish();
+                    }else{
+                        ((AppCompatActivity)getActivity()).supportFinishAfterTransition();
+                    }
                 });
         if (errorCode == MLVBCommonDef.LiveRoomErrorCode.ERROR_LICENSE_INVALID) {
             String errInfo = "License 校验失败";

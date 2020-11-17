@@ -3,7 +3,6 @@ package com.futrtch.live.mvvm.vm;
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -13,16 +12,19 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.futrtch.live.R;
+import com.futrtch.live.base.BaseResponBean;
+import com.futrtch.live.http.RequestTags;
 import com.futrtch.live.tencent.common.msg.TCChatEntity;
 import com.futrtch.live.tencent.common.msg.TCSimpleUserInfo;
 import com.futrtch.live.tencent.common.utils.TCConstants;
 import com.futrtch.live.tencent.common.widget.TCInputTextMsgDialog;
 import com.futrtch.live.tencent.common.widget.danmaku.TCDanmuMgr;
-import com.futrtch.live.tencent.liveroom.IMLVBLiveRoomListener;
 import com.futrtch.live.tencent.liveroom.MLVBLiveRoom;
 import com.futrtch.live.tencent.login.TCUserMgr;
+import com.jeremyliao.liveeventbus.LiveEventBus;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -54,6 +56,11 @@ public class BaseMessageViewModel extends ViewModel {
     public MLVBLiveRoom mLiveRoom;//                                                            直播间 M L V B
     public TCInputTextMsgDialog mInputTextMsgDialog;//                                          底部输入控件
 
+    BaseMessageViewModel(){
+        currentMessageList.postValue(new ArrayList<>());
+        currentMessageList.postValue(new ArrayList<>());
+    }
+
     /**
      * 初始化数据
      * @param activity 上下文
@@ -64,11 +71,12 @@ public class BaseMessageViewModel extends ViewModel {
      */
     public void prepare(Activity activity, IDanmakuView danMakUView, String avatar, String nickname, String mPusherId) {
         this.mPusherId = mPusherId;
-        mLiveRoom = MLVBLiveRoom.sharedInstance(activity);//                                    初始化 M L V B 组件
+        mLiveRoom = MLVBLiveRoom.sharedInstance(activity.getApplicationContext());//                                    初始化 M L V B 组件
         mDanMuMgr = new TCDanmuMgr(activity);
         mDanMuMgr.setDanmakuView(danMakUView);
         mInputTextMsgDialog = new TCInputTextMsgDialog(activity, R.style.InputDialog);
         mInputTextMsgDialog.setmOnTextSendListener((msg, tanMuOpen) -> sendInputMsg(msg, tanMuOpen, activity, avatar, nickname));
+
     }
 
     /**
@@ -88,8 +96,9 @@ public class BaseMessageViewModel extends ViewModel {
                     Optional.ofNullable((TCSimpleUserInfo) userInfo).ifPresent(info1 -> {
                         switch (type) {
                             case TCConstants.IMCMD_ENTER_LIVE:  // 观众进入房间
+                                if(currentAudienceList.getValue() == null) currentAudienceList.setValue(new ArrayList<>());
                                 // 有用户加入
-                                if (!Objects.requireNonNull(currentAudienceList.getValue()).contains(info1)) {
+                                if (currentAudienceList.getValue().contains(info1)) {
                                     List<TCSimpleUserInfo> audienceList = currentAudienceList.getValue();  // 更新头像列表 把新进入的用户加入刀第一位
                                     audienceList.add(0, info1); // // FIXME: 2020/10/22                真实情况应该是根据用户等级进行排序
                                     int audienceNum = currentAudienceCount.getValue() == null ? 0 : currentAudienceCount.getValue();
@@ -104,7 +113,7 @@ public class BaseMessageViewModel extends ViewModel {
                                 break;
                             case TCConstants.IMCMD_EXIT_LIVE: // 观众退出房间
                                 // 退出
-                                if (!Objects.requireNonNull(currentAudienceList.getValue()).contains(info1)) {
+                                if (currentAudienceList.getValue() != null && currentAudienceList.getValue().contains(info1)) {
                                     List<TCSimpleUserInfo> audienceList = currentAudienceList.getValue();  // 更新头像列表 把新进入的用户加入刀第一位
                                     audienceList.remove(info1);
                                     int audienceNum = currentAudienceCount.getValue() == null ? 0 : currentAudienceCount.getValue();
@@ -128,6 +137,9 @@ public class BaseMessageViewModel extends ViewModel {
                                     entity.setContent(((TCSimpleUserInfo) userInfo).userid + "点了个赞");
                                 else
                                     entity.setContent(((TCSimpleUserInfo) userInfo).nickname + "点了个赞");
+                                entity.setType(TCConstants.PRAISE);
+                                LiveEventBus.get(RequestTags.PRAISE_MSG, BaseResponBean.class)
+                                        .post(new BaseResponBean<>(TCConstants.PRAISE, "收到点赞消息"));         // 页面要处理的逻辑（注册返回）
                                 break;
                             case TCConstants.IMCMD_DANMU:// 收到弹幕消息
                                 Optional.ofNullable(mDanMuMgr).ifPresent(tcDanmuMgr -> tcDanmuMgr.addDanmu(info.avatar, info.nickname, text));
@@ -149,7 +161,7 @@ public class BaseMessageViewModel extends ViewModel {
                                         }
 //                                    }
                                 }
-                                entity.setSenderName(((TCSimpleUserInfo) userInfo).nickname);
+                                entity.setSenderName(((TCSimpleUserInfo) userInfo).userid);
                                 entity.setContent(text);
                                 break;
                         }
@@ -167,6 +179,11 @@ public class BaseMessageViewModel extends ViewModel {
                         // tcChatEntity 不可能为空
                         List<TCChatEntity> messageList = currentMessageList.getValue();
                         Optional.ofNullable(messageList).ifPresent(tcChatEntities -> {
+                            if(tcChatEntity.getType() == TCConstants.PRAISE){ // 点赞消息不重复写入
+                                if(tcChatEntities.contains(tcChatEntity)){
+                                    return;
+                                }
+                            }
                             tcChatEntities.add(tcChatEntity);  //                                                最新的消息肯定在最下面
                             currentMessageList.postValue(tcChatEntities);  // 通                                 知聊天列表更新
                         });
@@ -213,29 +230,9 @@ public class BaseMessageViewModel extends ViewModel {
             if (mDanMuMgr != null) {
                 mDanMuMgr.addDanmu(avatar, nickName, msg);
             }
-            mLiveRoom.sendRoomCustomMsg(String.valueOf(TCConstants.IMCMD_DANMU), msg, new IMLVBLiveRoomListener.SendRoomCustomMsgCallback() {
-                @Override
-                public void onError(int errCode, String errInfo) {
-                    Log.w(TAG, "sendRoomDanmuMsg error: " + errInfo);
-                }
-
-                @Override
-                public void onSuccess() {
-                    Log.d(TAG, "sendRoomDanmuMsg success");
-                }
-            });
+            mLiveRoom.sendRoomCustomMsg(String.valueOf(TCConstants.IMCMD_DANMU), msg, null);
         } else {
-            mLiveRoom.sendRoomTextMsg(msg, new IMLVBLiveRoomListener.SendRoomTextMsgCallback() {
-                @Override
-                public void onError(int errCode, String errInfo) {
-                    Log.d(TAG, "sendRoomTextMsg error:");
-                }
-
-                @Override
-                public void onSuccess() {
-                    Log.d(TAG, "sendRoomTextMsg success:");
-                }
-            });
+            mLiveRoom.sendRoomTextMsg(msg, null);
         }
     }
 
@@ -271,29 +268,9 @@ public class BaseMessageViewModel extends ViewModel {
             if (mDanMuMgr != null) {
                 mDanMuMgr.addDanmu(TCUserMgr.getInstance().getAvatar(), TCUserMgr.getInstance().getNickname(), msg);
             }
-            mLiveRoom.sendRoomCustomMsg(String.valueOf(TCConstants.IMCMD_DANMU), msg, new IMLVBLiveRoomListener.SendRoomCustomMsgCallback() {
-                @Override
-                public void onError(int errCode, String errInfo) {
-                    Log.w(TAG, "sendRoomDanmuMsg error: " + errInfo);
-                }
-
-                @Override
-                public void onSuccess() {
-                    Log.d(TAG, "sendRoomDanmuMsg success");
-                }
-            });
+            mLiveRoom.sendRoomCustomMsg(String.valueOf(TCConstants.IMCMD_DANMU), msg, null);
         } else {
-            mLiveRoom.sendRoomTextMsg(msg, new IMLVBLiveRoomListener.SendRoomTextMsgCallback() {
-                @Override
-                public void onError(int errCode, String errInfo) {
-                    Log.d(TAG, "sendRoomTextMsg error:");
-                }
-
-                @Override
-                public void onSuccess() {
-                    Log.d(TAG, "sendRoomTextMsg success:");
-                }
-            });
+            mLiveRoom.sendRoomTextMsg(msg, null);
         }
     }
 
@@ -319,5 +296,9 @@ public class BaseMessageViewModel extends ViewModel {
      */
     public String getmPusherId() {
         return mPusherId;
+    }
+
+    public void release(){
+
     }
 }

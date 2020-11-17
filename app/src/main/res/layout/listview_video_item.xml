@@ -16,6 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
+            android:transitionName="btn"
             app:cover_color="@color/color_mine_background"
             app:radius="10dp"
             app:shape="fillet" />

@@ -9,23 +9,19 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.futrtch.live.R;
 import com.futrtch.live.activitys.EditActivity;
 import com.futrtch.live.activitys.SettingActivity;
-import com.futrtch.live.activitys.fragments.mine.MineListFragment;
-import com.futrtch.live.base.BaseFragmentAdapter;
-import com.futrtch.live.databinding.FragmentMineBinding;
+import com.futrtch.live.adapters.viewpage.MineFragmentAdapter;
+import com.futrtch.live.databinding.FragmentUserBinding;
 import com.futrtch.live.mvvm.MVVMFragment;
 import com.futrtch.live.mvvm.vm.MineViewModel;
 import com.futrtch.live.mvvm.vm.MineViewModelFactory;
 import com.jakewharton.rxbinding4.view.RxView;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import autodispose2.AutoDispose;
@@ -36,14 +32,14 @@ import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
  */
 public class MineFragment extends MVVMFragment {
 
-    FragmentMineBinding mDataBinding;
+    FragmentUserBinding mDataBinding;
     MineViewModel mViewModel;
-    List<Fragment> mFragments = new ArrayList<>();
+    MineFragmentAdapter mAdapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mDataBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_mine, container, false);
+        mDataBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_user, container, false);
         return mDataBinding.getRoot();
     }
 
@@ -56,13 +52,8 @@ public class MineFragment extends MVVMFragment {
 
     @Override
     public void init() {
-        for (int i = 0; i < mViewModel.getmTitles().length; i++) {
-            MineListFragment listFragment = new MineListFragment();
-            mFragments.add(listFragment);
-        }
-        BaseFragmentAdapter adapter =
-                new BaseFragmentAdapter(getChildFragmentManager(), mFragments, mViewModel.getmTitles());
-        mDataBinding.viewpager.setAdapter(adapter);
+        mAdapter = new MineFragmentAdapter(getChildFragmentManager(), mViewModel.getmIndex(), mViewModel.getmTitles());
+        mDataBinding.viewpager.setAdapter(mAdapter);
         mDataBinding.tabs.setupWithViewPager(mDataBinding.viewpager);
     }
 
@@ -97,5 +88,10 @@ public class MineFragment extends MVVMFragment {
     @Override
     public void initRequest() {
 
+    }
+
+    @Override
+    public void releaseBinding() {
+        releaseBindingList(mDataBinding);
     }
 }

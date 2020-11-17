@@ -4,26 +4,30 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 
-import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.futrtch.live.R;
+import com.futrtch.live.base.BaseResponBean;
 import com.futrtch.live.databinding.ActivityRecordBinding;
+import com.futrtch.live.http.RequestTags;
 import com.futrtch.live.interfaces.LiveRoomCallBack;
 import com.futrtch.live.mvvm.vm.LiveRecordViewModel;
 import com.futrtch.live.mvvm.vm.LiveRecordViewModelFactory;
 import com.futrtch.live.tencent.common.msg.TCChatMsgListAdapter;
 import com.futrtch.live.tencent.common.msg.TCSimpleUserInfo;
+import com.futrtch.live.tencent.common.utils.TCConstants;
 import com.futrtch.live.tencent.common.utils.TCErrorConstants;
 import com.futrtch.live.tencent.common.utils.TCUtils;
 import com.futrtch.live.tencent.common.widget.RTCUserAvatarListAdapter;
 import com.futrtch.live.tencent.liveroom.roomutil.commondef.MLVBCommonDef;
 import com.futrtch.live.utils.BroadcastTimerTask;
 import com.jakewharton.rxbinding4.view.RxView;
+import com.jeremyliao.liveeventbus.LiveEventBus;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -51,12 +55,8 @@ public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCal
     private TCChatMsgListAdapter mChatMsgListAdapter;    // 消息列表的Adapter
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public void initViewModel() {
+        super.setLiveRoomCallBack(this);
         ViewModelProvider.Factory factory = new LiveRecordViewModelFactory(getApplication(), this);
         mViewModel = ViewModelProviders.of(this, factory).get(LiveRecordViewModel.class);
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_record);
@@ -77,6 +77,7 @@ public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCal
 
         mChatMsgListAdapter = new TCChatMsgListAdapter(this, mDataBinding.imMsgListview, new ArrayList<>());
         mDataBinding.imMsgListview.setAdapter(mChatMsgListAdapter);
+        mDataBinding.imMsgListview.setVisibility(View.VISIBLE);
 
         mViewModel.bindView(mDataBinding); //                                        绑定view 和 viewModel
         mViewModel.prepareRecord(this, callBack, mDataBinding); //           初始化必要控件
@@ -123,6 +124,13 @@ public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCal
                     break;
             }
         });
+        LiveEventBus.get(RequestTags.PRAISE_MSG, BaseResponBean.class)
+                .observe(this, baseResponBean -> {
+                    if(baseResponBean.getCode() == TCConstants.PRAISE){ // 收到点赞消息
+                        mDataBinding.heartLayout.addFavor();
+                    }
+                });
+
         // 聊天信息通知
         mViewModel.getCurrentMessageList().observe(this, tcChatEntities -> mChatMsgListAdapter.setData(tcChatEntities)); //         更新聊天区域
         // 观众进入房间
@@ -139,6 +147,7 @@ public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCal
         super.onDestroy();
         mViewModel.release();
         mDataBinding.anchorPushView.release();
+        mDataBinding.anchorPushView.setLivePushListener(null);
     }
 
     @Override
@@ -153,6 +162,7 @@ public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCal
         getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
         int W = mDisplayMetrics.widthPixels;
         int H = mDisplayMetrics.heightPixels;
+        if(getResources() == null || getResources().getConfiguration() == null) return;
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             mDataBinding.anchorPushView.getLayoutParams().width = W;
             mDataBinding.anchorPushView.getLayoutParams().height = H;

@@ -1,5 +1,6 @@
 package com.futrtch.live.activitys.fragments.friend;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +14,13 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.futrtch.live.R;
+import com.futrtch.live.activitys.UserActivity;
 import com.futrtch.live.adapters.FriendListAdapter;
 import com.futrtch.live.databinding.FragmentFriendListBinding;
 import com.futrtch.live.mvvm.MVVMFragment;
 import com.futrtch.live.mvvm.vm.FriendListViewModel;
 import com.futrtch.live.mvvm.vm.FriendListViewModelFactory;
+import com.futrtch.live.mvvm.vm.UserViewModel;
 import com.futrtch.live.utils.InputKeybroadUtils;
 import com.jakewharton.rxbinding4.view.RxView;
 
@@ -36,6 +39,14 @@ public class FriendListFragment extends MVVMFragment{
     FriendListAdapter mAdapter;
     LinearLayoutManager manager;
 
+    public static FriendListFragment getInstance(int index){
+        FriendListFragment fragment = new FriendListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("index", index);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -47,6 +58,7 @@ public class FriendListFragment extends MVVMFragment{
     public void initViewModel() {
         ViewModelProvider.Factory factory = new FriendListViewModelFactory(Objects.requireNonNull(getActivity()).getApplication());
         mViewModel = ViewModelProviders.of(this, factory).get(FriendListViewModel.class);
+        mViewModel.setFriendState(FriendListViewModel.FRIEND_LIST);
     }
 
     @Override
@@ -83,6 +95,12 @@ public class FriendListFragment extends MVVMFragment{
 
                     }
                 });
+
+        mAdapter.setOnItemClickListener((adapter, view, position) -> {
+            Intent intent = new Intent(getActivity(), UserActivity.class);
+            intent.putExtra(UserViewModel.USER_ID, Objects.requireNonNull(mViewModel.getFriendList()).get(position).getUserName());
+            startActivity(intent);
+        });
     }
 
     public void subscribeUi(){
@@ -106,6 +124,11 @@ public class FriendListFragment extends MVVMFragment{
     @Override
     public void initRequest() {
 
+    }
+
+    @Override
+    public void releaseBinding() {
+        releaseBindingList(mDataBinding);
     }
 
 

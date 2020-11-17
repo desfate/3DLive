@@ -8,26 +8,20 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.futrtch.live.R;
-import com.futrtch.live.activitys.fragments.main.LiveCareFragment;
-import com.futrtch.live.activitys.fragments.main.LiveListFragment;
-import com.futrtch.live.activitys.fragments.main.LiveReplayFragment;
-import com.futrtch.live.base.BaseFragmentAdapter;
+import com.futrtch.live.adapters.viewpage.LiveFragmentAdapter;
 import com.futrtch.live.databinding.FragmentLiveBinding;
 import com.futrtch.live.mvvm.MVVMFragment;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.futrtch.live.mvvm.vm.ViewPagerViewModel;
+import com.futrtch.live.mvvm.vm.ViewPagerViewModelFactory;
 
 public class LiveFragment extends MVVMFragment {
-
+    LiveFragmentAdapter mAdapter;
     FragmentLiveBinding mDataBinding;
-    List<Fragment> mFragments = new ArrayList<>();
-    String[] mTitles = new String[]{
-            "推荐",  "关注", "回放"
-    };
+    ViewPagerViewModel mViewModel;
 
     @Nullable
     @Override
@@ -38,19 +32,14 @@ public class LiveFragment extends MVVMFragment {
 
     @Override
     public void initViewModel() {
-
+        ViewModelProvider.Factory factory = new ViewPagerViewModelFactory(getActivity().getApplication());
+        mViewModel = ViewModelProviders.of(this, factory).get(ViewPagerViewModel.class);
     }
 
     @Override
     public void init() {
-
-        mFragments.add(new LiveListFragment());
-        mFragments.add(new LiveCareFragment());
-        mFragments.add(new LiveReplayFragment());
-
-        BaseFragmentAdapter adapter =
-                new BaseFragmentAdapter(getFragmentManager(), mFragments, mTitles);
-        mDataBinding.viewpager.setAdapter(adapter);
+        mAdapter = new LiveFragmentAdapter(getFragmentManager(), mViewModel.getIndexThree(), mViewModel.getLiveTitles());
+        mDataBinding.viewpager.setAdapter(mAdapter);
         mDataBinding.tabs.setupWithViewPager(mDataBinding.viewpager);
     }
 
@@ -65,5 +54,10 @@ public class LiveFragment extends MVVMFragment {
     @Override
     public void initRequest() {
 
+    }
+
+    @Override
+    public void releaseBinding() {
+        releaseBindingList(mDataBinding);
     }
 }

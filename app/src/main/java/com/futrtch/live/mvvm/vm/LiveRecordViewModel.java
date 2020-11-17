@@ -266,6 +266,10 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
      * release
      */
     public void release() {
+        if (mDanMuMgr != null) {
+            mDanMuMgr.destroy();
+            mDanMuMgr = null;
+        }
         animatorUtils.release();  // 动画释放
     }
 

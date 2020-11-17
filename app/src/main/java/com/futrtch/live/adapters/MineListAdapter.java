@@ -1,6 +1,5 @@
 package com.futrtch.live.adapters;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import androidx.databinding.DataBindingUtil;
@@ -22,11 +21,8 @@ import java.util.Random;
  */
 public class MineListAdapter extends BaseQuickAdapter<TCVideoInfo, BaseDataBindingHolder<ListviewMineItemBinding>> {
 
-    Context context;
-
-    public MineListAdapter(int layoutResId, Context context, List<TCVideoInfo> mList) {
+    public MineListAdapter(int layoutResId, List<TCVideoInfo> mList) {
         super(layoutResId, mList);
-        this.context = context;
     }
 
     @Override

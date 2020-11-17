@@ -59,5 +59,12 @@
     <color name="color_message_text">#e9e9ea</color>
     <color name="color_message_time_text">#8e8f95</color>
 
+    <color name="color_dialog_name_text">#161823</color>
+    <color name="color_dialog_normal_text">#8a8b91</color>
+    <color name="color_dialog_line">#e4e4e5</color>
+    <color name="color_chat_text">#d3d3d6</color>
+
+    <color name="color_dialog_red_text">#fe3824</color>
+
     <color name="c9">#777777</color>
 </resources>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_mine_background"
+        android:gravity="center">
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="@color/color_line"/>
+
+        <ImageView
+            android:id="@+id/chat_img"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@mipmap/chat_switch_icon"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            />
+
+        <RelativeLayout
+            android:layout_toRightOf="@+id/chat_img"
+            android:id="@+id/input_lay"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/chat_background"
+            android:layout_margin="10dp">
+
+            <EditText
+                android:id="@+id/chat_edt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:hint="发送消息..."
+                android:textSize="13sp"
+                android:layout_toLeftOf="@+id/emoji_img"
+                android:layout_marginLeft="15dp"
+                android:textColorHint="@color/color_btn_text2"
+                />
+
+            <ImageView
+                android:id="@+id/add_img"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/add_icon" />
+
+            <ImageView
+                android:id="@+id/emoji_img"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/add_img"
+                android:layout_marginRight="15dp"
+                android:src="@mipmap/emoji_icon" />
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</layout>

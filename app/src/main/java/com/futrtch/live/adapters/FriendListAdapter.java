@@ -40,7 +40,15 @@ public class FriendListAdapter extends BaseQuickAdapter<FriendBean, BaseDataBind
         if (binding == null) return;
         binding.userInfoRly.setVisibility(View.VISIBLE);
         binding.messageName.setText(bean.getUserName());
+
         setCareState(binding, bean.getIsCare());
+        if(bean.isCareShow()){
+            binding.careBtn.setVisibility(View.VISIBLE);
+            binding.closeImg.setVisibility(View.VISIBLE);
+        }else{
+            binding.careBtn.setVisibility(View.INVISIBLE);
+            binding.closeImg.setVisibility(View.INVISIBLE);
+        }
 
         RxView.clicks(binding.closeImg)
                 .subscribe(unit -> removeData(binding.userInfoRly, getItemPosition(bean)));

@@ -34,10 +34,4 @@ public class LiveApplication extends MultiDexApplication {
         }
         Optional.ofNullable(mSdk).ifPresent(initSDK -> initSDK.initSDK(LiveApplication.this));
     }
-
-
-
-
-
-
 }

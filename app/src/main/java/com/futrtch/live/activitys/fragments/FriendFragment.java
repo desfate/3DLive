@@ -8,28 +8,24 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.futrtch.live.R;
-import com.futrtch.live.activitys.fragments.friend.FindFriendFragment;
-import com.futrtch.live.activitys.fragments.friend.FriendListFragment;
-import com.futrtch.live.base.BaseFragmentAdapter;
+import com.futrtch.live.adapters.viewpage.FriendFragmentAdapter;
 import com.futrtch.live.databinding.FragmentFriendBinding;
 import com.futrtch.live.mvvm.MVVMFragment;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.futrtch.live.mvvm.vm.ViewPagerViewModel;
+import com.futrtch.live.mvvm.vm.ViewPagerViewModelFactory;
 
 /**
  * 朋友页面  主页 -> 朋友
  */
 public class FriendFragment extends MVVMFragment{
 
+    ViewPagerViewModel mViewModel;
+    FriendFragmentAdapter mAdapter;
     FragmentFriendBinding mDataBinding;
-    List<Fragment> mFragments = new ArrayList<>();
-    String[] mTitles = new String[]{
-            "朋友列表", "发现朋友"
-    };
 
     @Nullable
     @Override
@@ -40,23 +36,14 @@ public class FriendFragment extends MVVMFragment{
 
     @Override
     public void initViewModel() {
-
+        ViewModelProvider.Factory factory = new ViewPagerViewModelFactory(getActivity().getApplication());
+        mViewModel = ViewModelProviders.of(this, factory).get(ViewPagerViewModel.class);
     }
 
     @Override
     public void init() {
-        for (int i = 0; i < mTitles.length; i++) {
-            MVVMFragment listFragment;
-            if(i == 0) {
-                listFragment = new FriendListFragment();
-            }else{
-                listFragment = new FindFriendFragment();
-            }
-            mFragments.add(listFragment);
-        }
-        BaseFragmentAdapter adapter =
-                new BaseFragmentAdapter(getChildFragmentManager(), mFragments, mTitles);
-        mDataBinding.viewpager.setAdapter(adapter);
+        mAdapter = new FriendFragmentAdapter(getChildFragmentManager(), mViewModel.getIndexTwo(), mViewModel.getFriendTitles());
+        mDataBinding.viewpager.setAdapter(mAdapter);
         mDataBinding.tabs.setupWithViewPager(mDataBinding.viewpager);
     }
 
@@ -71,6 +58,11 @@ public class FriendFragment extends MVVMFragment{
     @Override
     public void initRequest() {
 
+    }
+
+    @Override
+    public void releaseBinding() {
+        releaseBindingList(mDataBinding);
     }
 
 }

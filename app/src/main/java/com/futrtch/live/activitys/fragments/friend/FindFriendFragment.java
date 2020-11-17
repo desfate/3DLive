@@ -13,14 +13,18 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.futrtch.live.R;
 import com.futrtch.live.activitys.AddressBookActivity;
+import com.futrtch.live.activitys.UserActivity;
 import com.futrtch.live.adapters.FriendListAdapter;
 import com.futrtch.live.databinding.FragmentFriendListBinding;
 import com.futrtch.live.databinding.LayoutFriendHeadBinding;
 import com.futrtch.live.mvvm.MVVMFragment;
 import com.futrtch.live.mvvm.vm.FriendListViewModel;
 import com.futrtch.live.mvvm.vm.FriendListViewModelFactory;
+import com.futrtch.live.mvvm.vm.UserViewModel;
 import com.futrtch.live.utils.InputKeybroadUtils;
 import com.futrtch.live.utils.ToastUtil;
 import com.futrtch.live.views.ViewsBuilder;
@@ -42,6 +46,14 @@ public class FindFriendFragment extends MVVMFragment {
     private LinearLayoutManager manager;
     private LayoutFriendHeadBinding mHeadBinding;
 
+    public static FindFriendFragment getInstance(int index){
+        FindFriendFragment fragment = new FindFriendFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("index", index);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -53,6 +65,7 @@ public class FindFriendFragment extends MVVMFragment {
     public void initViewModel() {
         ViewModelProvider.Factory factory = new FriendListViewModelFactory(Objects.requireNonNull(getActivity()).getApplication());
         mViewModel = ViewModelProviders.of(this, factory).get(FriendListViewModel.class);
+        mViewModel.setFriendState(FriendListViewModel.FIND_FRIEND);  // 发现朋友
     }
 
     @Override
@@ -108,6 +121,16 @@ public class FindFriendFragment extends MVVMFragment {
                 .subscribe(unit -> {
                     ToastUtil.showToast(getContext(), "全部推荐");
                 });
+
+        mAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                Intent intent = new Intent(getActivity(), UserActivity.class);
+                intent.putExtra(UserViewModel.USER_ID, Objects.requireNonNull(mViewModel.getFriendList()).get(position).getUserName());
+                startActivity(intent);
+            }
+        });
+
     }
 
     public void subscribeUi() {
@@ -129,6 +152,11 @@ public class FindFriendFragment extends MVVMFragment {
     @Override
     public void initRequest() {
 
+    }
+
+    @Override
+    public void releaseBinding() {
+        releaseBindingList(mDataBinding, mHeadBinding);
     }
 
 

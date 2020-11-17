@@ -21,8 +21,8 @@ import com.futrtch.live.databinding.FragmentLiveListBinding;
 import com.futrtch.live.databinding.LayoutEmptyListBinding;
 import com.futrtch.live.http.RequestTags;
 import com.futrtch.live.mvvm.MVVMFragment;
-import com.futrtch.live.mvvm.vm.LiveListViewModel;
-import com.futrtch.live.mvvm.vm.LiveListViewModelFactory;
+import com.futrtch.live.mvvm.vm.LiveCareViewModel;
+import com.futrtch.live.mvvm.vm.LiveCareViewModelFactory;
 import com.futrtch.live.tencent.common.utils.TCUtils;
 import com.futrtch.live.tencent.live.TCVideoInfo;
 import com.futrtch.live.utils.decoration.GridSectionAverageGapItemDecoration;
@@ -44,10 +44,18 @@ public class LiveCareFragment extends MVVMFragment {
     public final static int START_LIVE_PLAY = 10090;
 
     LiveListAdapter mAdapter;
-    LiveListViewModel mViewModel;
+    LiveCareViewModel mViewModel;
 
     FragmentLiveListBinding mDataBinding;
     LayoutEmptyListBinding mEmptyBinding; // 页面为空
+
+    public static LiveCareFragment getInstance(int index){
+        LiveCareFragment fragment = new LiveCareFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("index", index);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Nullable
     @Override
@@ -58,8 +66,8 @@ public class LiveCareFragment extends MVVMFragment {
 
     @Override
     public void initViewModel() {
-        ViewModelProvider.Factory factory = new LiveListViewModelFactory(Objects.requireNonNull(getActivity()).getApplication(), this);
-        mViewModel = ViewModelProviders.of(this, factory).get(LiveListViewModel.class);
+        ViewModelProvider.Factory factory = new LiveCareViewModelFactory(Objects.requireNonNull(getActivity()).getApplication(), this);
+        mViewModel = ViewModelProviders.of(this, factory).get(LiveCareViewModel.class);
     }
 
     @Override
@@ -105,17 +113,25 @@ public class LiveCareFragment extends MVVMFragment {
 
     public void subscribeUi() {
         // 收到列表数据返回
-        LiveEventBus.get(RequestTags.LIVEROOMLIST_REQ, BaseResponBean.class)
+        LiveEventBus.get(RequestTags.LIVECARELIST_REQ, BaseResponBean.class)
                 .observe(this, baseResponBean -> {
                     mDataBinding.swipeLayout.setRefreshing(false);
                     mViewModel.getListData().clear();
-                    mViewModel.getListData().addAll((List<TCVideoInfo>) baseResponBean.getData());
+                    if(baseResponBean != null && baseResponBean.getData() != null) {
+                        mViewModel.getListData().addAll((List<TCVideoInfo>) baseResponBean.getData());
+                    }
+                    mAdapter.notifyDataSetChanged();
                 });
     }
 
     @Override
     public void initRequest() {
         mViewModel.onRefresh();
+    }
+
+    @Override
+    public void releaseBinding() {
+        releaseBindingList(mDataBinding, mEmptyBinding);
     }
 
 }

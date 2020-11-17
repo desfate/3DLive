@@ -27,7 +27,11 @@ public class FriendListViewModel extends ViewModel {
     public void prepare(){
         List<FriendBean> beans = new ArrayList<>();
         for(int i = 0 ; i < 50; i ++) {
-            beans.add(new FriendBean("用户"+i, "", false, false));
+            if(state == FIND_FRIEND){
+                beans.add(new FriendBean("用户"+i, "", false, false, true));
+            }else{
+                beans.add(new FriendBean("用户"+i, "", false, false, false));
+            }
         }
         if(mFriendList == null) mFriendList = new ArrayList<>();
         mFriendList.addAll(beans);

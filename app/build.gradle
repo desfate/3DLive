@@ -1,4 +1,9 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+//    id 'kotlin-android'
+//    id 'kotlin-kapt'
+//    id 'dagger.hilt.android.plugin'
+}
 
 android {
     compileSdkVersion = rootProject.ext.compileSdkVersion
@@ -96,7 +101,12 @@ dependencies {
     implementation deps.banner.runtime
     // bravh
     implementation deps.bravh.runtime
-
-
+    // hilt
+//    implementation deps.hilt.runtime
+//    implementation deps.hilt.lifecycle
+//    kapt deps.hilt.kapt
+//    kapt deps.hilt.compiler
+    // leakCanary
+    debugImplementation deps.leakCanary.runtime
 
 }

@@ -1,44 +1,69 @@
 package com.futrtch.live.activitys;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.ActivityManager;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.futrtch.live.R;
-import com.futrtch.live.activitys.fragments.FriendFragment;
-import com.futrtch.live.activitys.fragments.LiveFragment;
-import com.futrtch.live.activitys.fragments.MessageFragment;
-import com.futrtch.live.activitys.fragments.MineFragment;
 import com.futrtch.live.databinding.ActivityMainBinding;
+import com.futrtch.live.databinding.LayoutToastViewBinding;
+import com.futrtch.live.interfaces.LiveRoomCallBack;
+import com.futrtch.live.mvvm.vm.MainViewModel;
+import com.futrtch.live.mvvm.vm.MainViewModelFactory;
+import com.futrtch.live.tencent.common.msg.TCSimpleUserInfo;
+import com.futrtch.live.tencent.common.utils.TCUtils;
+import com.futrtch.live.tencent.liveroom.roomutil.commondef.MLVBCommonDef;
+import com.futrtch.live.utils.ToastUtil;
+import com.futrtch.live.views.ViewsBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseIMLVBActivity implements LiveRoomCallBack {
 
+    MainViewModel mViewModel;
+    LayoutToastViewBinding mToastBinding;
     ActivityMainBinding mDataBinding;
-    List<Fragment> mFragments = new ArrayList<>();
+    Toast mToast;
     private int lastIndex;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void initViewModel() {
+        super.setLiveRoomCallBack(this);
+        ViewModelProvider.Factory factory = new MainViewModelFactory(getApplication(), this);
+        mViewModel = ViewModelProviders.of(this, factory).get(MainViewModel.class);
+    }
+
+    @Override
+    public void init() {
+        mViewModel.prepare();
+        mViewModel.setExitListener(this);
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        setBottom();
-        mFragments.add(new LiveFragment());
-        mFragments.add(new FriendFragment());
-        mFragments.add(new MessageFragment());
-        mFragments.add(new MineFragment());
+        mToastBinding = (LayoutToastViewBinding) new ViewsBuilder()
+                .setParent(mDataBinding.rootLayout)
+                .setLayoutId(R.layout.layout_toast_view)
+                .setInflater(getLayoutInflater())
+                .setAttachToParent(false)
+                .build()
+                .getDataBinding();
+        mToast = ToastUtil.getCustomToast(getApplicationContext(),"",mToastBinding.getRoot());
         setFragmentPosition(0);
     }
 
-    private void setBottom() {
-        // 解决当item大于三个时，非平均布局问题
-//        BottomNavigationViewHelper.disableShiftMode(mDataBinding.bvBottomNavigation);
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public void bindUi() {
         mDataBinding.bvBottomNavigation.setOnNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.menu_live:
@@ -58,13 +83,22 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
+    }
+
+    @Override
+    public void subscribeUi() {
+
+    }
+
+    @Override
+    public void initRequest() {
 
     }
 
     private void setFragmentPosition(int position) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        Fragment currentFragment = mFragments.get(position);
-        Fragment lastFragment = mFragments.get(lastIndex);
+        Fragment currentFragment = mViewModel.getFragments().get(position);
+        Fragment lastFragment = mViewModel.getFragments().get(lastIndex);
         lastIndex = position;
         ft.hide(lastFragment);
         if (!currentFragment.isAdded()) {
@@ -75,15 +109,52 @@ public class MainActivity extends AppCompatActivity {
         ft.commitAllowingStateLoss();
     }
 
+    private long time;
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
-
-
-            //不执行父类点击事件
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (System.currentTimeMillis() - time > 2000) {
+                Optional.ofNullable(mToast).ifPresent(Toast::show);
+                time = System.currentTimeMillis();
+            } else {
+                Optional.ofNullable(mToast).ifPresent(Toast::cancel);
+                exitAPP();
+            }
             return true;
         }
-        //继续执行父类其他点击事件
-        return super.onKeyUp(keyCode, event);
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void exitAPP() {
+        ActivityManager activityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.AppTask> appTaskList = activityManager.getAppTasks();
+        for (ActivityManager.AppTask appTask : appTaskList) {
+            appTask.finishAndRemoveTask();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mToastBinding.unbind();
+        mViewModel.release();
+    }
+
+    @Override
+    public void messageCallBack(TCSimpleUserInfo info, int type, String message) {
+
+    }
+
+    @Override
+    public void roomClosed(String roomID) {
+
+    }
+
+    @Override
+    public void roomError(int errorCode, String errorMessage, Bundle extraInfo) {
+        if (errorCode == MLVBCommonDef.LiveRoomErrorCode.ERROR_IM_FORCE_OFFLINE) { // IM 被强制下线。
+            TCUtils.showKickOut(MainActivity.this);
+        }
     }
 }

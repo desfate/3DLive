@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/black</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <!-- Login and register Activity theme. -->
@@ -84,4 +85,34 @@
         <item name="android:textColorHint">@color/c9</item>
         <item name="colorControlActivated">@color/colorAccent</item>
     </style>
+
+    <style name="BottomDialog" parent="@style/Theme.AppCompat.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="BottomDialog.Animation" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/tranlate_dialog_in</item>
+        <item name="android:windowExitAnimation">@anim/tranlate_dialog_out</item>
+    </style>
+
+    <style name="BottomDialogStyle" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <!-- 浮于Activity之上 -->
+        <item name="android:windowIsFloating">true</item>
+        <!-- 边框 -->
+        <item name="android:windowFrame">@null</item>
+        <!-- Dialog以外的区域模糊效果 -->
+        <item name="android:backgroundDimEnabled">true</item>
+        <!-- 无标题 -->
+        <item name="android:windowNoTitle">true</item>
+        <!-- 半透明 -->
+        <item name="android:windowIsTranslucent">true</item>
+        <!-- Dialog进入及退出动画 -->
+        <item name="android:windowAnimationStyle">@style/BottomDialogAnimation</item></style>
+    <!-- ActionSheet进出动画 -->
+    <style name="BottomDialogAnimation" parent="@android:style/Animation.Dialog">
+        <item name="android:windowEnterAnimation">@anim/tranlate_dialog_in</item>
+        <item name="android:windowExitAnimation">@anim/tranlate_dialog_out</item></style>
 </resources>

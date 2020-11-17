@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/exit_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/color_mine_background"
+            android:textColor="@color/colorTextWhite"
+            android:alpha="0.9"
+            android:text="再按一次退出"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            />
+
+
+
+    </RelativeLayout>
+
+
+</layout>

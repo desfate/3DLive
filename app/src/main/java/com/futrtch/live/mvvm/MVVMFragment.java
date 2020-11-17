@@ -5,7 +5,10 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
+
+import java.util.Optional;
 
 /**
  * MVVM框架的基类
@@ -37,6 +40,11 @@ public abstract class MVVMFragment extends Fragment {
      */
     public abstract void initRequest();
 
+    /**
+     * dataBinding解绑
+     */
+    public abstract void releaseBinding();
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -50,5 +58,23 @@ public abstract class MVVMFragment extends Fragment {
     public void onResume() {
         super.onResume();
         bindUi();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        releaseBinding();
+    }
+
+    /**
+     * 释放dataBinding
+     * @param dataBindings 需要释放的列表
+     */
+    public void releaseBindingList(ViewDataBinding... dataBindings){
+        if(dataBindings != null && dataBindings.length > 0) {
+            for (ViewDataBinding binding : dataBindings) {
+                Optional.ofNullable(binding).ifPresent(ViewDataBinding::unbind);
+            }
+        }
     }
 }

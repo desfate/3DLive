@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator;
 import android.view.View;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * 属性动画
@@ -25,6 +24,26 @@ public class AnimatorUtils {
         mObjAnim = ObjectAnimator.ofFloat(this.view, "alpha", 1f, 0f, 1f);
         mObjAnim.setDuration(1000);
         mObjAnim.setRepeatCount(-1);
+        mObjAnim.start();
+    }
+
+    /**
+     * 渐隐动画
+     */
+    public void AlphaHide(){
+        mObjAnim = ObjectAnimator.ofFloat(this.view, "alpha", 1f, 0f);
+        mObjAnim.setDuration(1000);
+        mObjAnim.setRepeatCount(1);
+        mObjAnim.start();
+    }
+
+    /**
+     * 渐显动画
+     */
+    public void AlphaShow(){
+        mObjAnim = ObjectAnimator.ofFloat(this.view, "alpha",  0f, 1f);
+        mObjAnim.setDuration(1000);
+        mObjAnim.setRepeatCount(1);
         mObjAnim.start();
     }
 

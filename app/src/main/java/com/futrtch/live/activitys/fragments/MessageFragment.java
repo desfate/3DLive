@@ -14,17 +14,20 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.futrtch.live.R;
+import com.futrtch.live.activitys.ChatActivity;
 import com.futrtch.live.activitys.MessageActivity;
 import com.futrtch.live.activitys.MessageTitleActivity;
 import com.futrtch.live.adapters.MessageListAdapter;
 import com.futrtch.live.beans.MessageBean;
 import com.futrtch.live.databinding.FragmentMessageBinding;
+import com.futrtch.live.databinding.LayoutMessageDialogBinding;
 import com.futrtch.live.databinding.LayoutMessageTitleBinding;
 import com.futrtch.live.mvvm.MVVMFragment;
 import com.futrtch.live.mvvm.vm.MessageListViewModel;
 import com.futrtch.live.mvvm.vm.MessageListViewModelFactory;
 import com.futrtch.live.mvvm.vm.MessageViewModel;
 import com.futrtch.live.mvvm.vm.TitleMessageViewModel;
+import com.futrtch.live.views.BottomDialog;
 import com.futrtch.live.views.ViewsBuilder;
 import com.jakewharton.rxbinding4.view.RxView;
 
@@ -43,11 +46,15 @@ public class MessageFragment extends MVVMFragment {
     LinearLayoutManager manager;
     LayoutMessageTitleBinding mHeadBinding;
     FragmentMessageBinding mDataBinding;
+    LayoutMessageDialogBinding mDialogBinding;
+    BottomDialog mDialog;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mDataBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_message, container, false);
+        mDialogBinding = DataBindingUtil.inflate(inflater, R.layout.layout_message_dialog, null,false);
         return mDataBinding.getRoot();
     }
 
@@ -59,6 +66,7 @@ public class MessageFragment extends MVVMFragment {
 
     @Override
     public void init() {
+        mDialog = new BottomDialog(Objects.requireNonNull(getActivity()), mDialogBinding);
         manager = new LinearLayoutManager(getActivity());
         mDataBinding.anchorRvAvatar.setLayoutManager(manager);
         mAdapter = new MessageListAdapter(R.layout.layout_message_item, getActivity(), mViewModel.getmListData());
@@ -121,8 +129,20 @@ public class MessageFragment extends MVVMFragment {
                     intent.putExtra(MessageViewModel.KEY_MESSAGE, MessageViewModel.SYS_MESSAGE);
                     startActivity(intent);
                     break;
+                case MessageBean.USER_MESSAGE:
+                    Intent chatIntent = new Intent(getActivity(), ChatActivity.class);
+                    startActivity(chatIntent);
+                    break;
             }
         });
+        // 群聊
+        RxView.clicks(mDataBinding.addGroupChat)
+                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .subscribe(unit -> mDialog.showDialog());
+
+        RxView.clicks(mDialogBinding.chatBtn)
+                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .subscribe(unit -> mDialog.cancel());
     }
 
     @Override
@@ -133,5 +153,10 @@ public class MessageFragment extends MVVMFragment {
     @Override
     public void initRequest() {
 
+    }
+
+    @Override
+    public void releaseBinding() {
+        releaseBindingList(mDataBinding,mDialogBinding,mHeadBinding);
     }
 }

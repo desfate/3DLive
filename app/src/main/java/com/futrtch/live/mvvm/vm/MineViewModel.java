@@ -6,8 +6,9 @@ import android.graphics.Color;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.futrtch.live.databinding.FragmentMineBinding;
+import com.futrtch.live.databinding.FragmentUserBinding;
 import com.futrtch.live.mvvm.repository.MineRepository;
+import com.futrtch.live.mvvm.repository.ViewPagerRepository;
 import com.futrtch.live.tencent.live.TCVideoInfo;
 import com.google.android.material.appbar.AppBarLayout;
 
@@ -16,26 +17,22 @@ import java.util.List;
 
 public class MineViewModel extends ViewModel {
 
-    MineRepository mineRepository;
+    MineRepository mineRepository;                                              // 我的数据仓库
+    ViewPagerRepository viewPagerRepository;                                    // viewPager 数据仓库
 
-    MutableLiveData<Integer> avgColor = new MutableLiveData<>();
-    MutableLiveData<Float> trans = new MutableLiveData<>();
+    MutableLiveData<Integer> avgColor = new MutableLiveData<>();                // 平均颜色
+    MutableLiveData<Float> trans = new MutableLiveData<>();                     // 动态透明度
     MutableLiveData<List<TCVideoInfo>> mineListData = new MutableLiveData<>();  // 直播间列表数据
-
-    MutableLiveData<String> userName = new MutableLiveData<>();  // 当前用户名
-
-    String[] mTitles = new String[]{
-            "作品", "动态", "喜欢"
-    };
+    MutableLiveData<String> userName = new MutableLiveData<>();  //                当前用户名
 
 
     public MineViewModel(MineRepository mineRepository){
         this.mineRepository = mineRepository;
+        viewPagerRepository = ViewPagerRepository.getInstance();
     }
 
 
-    public void prepare(Activity activity, FragmentMineBinding mDataBinding) {
-
+    public void prepare(Activity activity, FragmentUserBinding mDataBinding) {
         mDataBinding.appbar.addOnOffsetChangedListener((AppBarLayout.BaseOnOffsetChangedListener) (appBarLayout, i) -> {
             float percent = (float) (Math.abs(i * 1.0f) / appBarLayout.getTotalScrollRange());
             trans.postValue(percent);
@@ -78,8 +75,9 @@ public class MineViewModel extends ViewModel {
         return Color.argb(alpha, red, green, blue);
     }
 
+    public List<Integer> getmIndex() { return viewPagerRepository.getIndexThree(); }
 
-    public String[] getmTitles() { return mTitles; }
+    public String[] getmTitles() { return viewPagerRepository.getMineTitles(); }
 
     public MutableLiveData<Integer> getAvgColor() {
         return avgColor;

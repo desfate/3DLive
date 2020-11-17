@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:showDividers="middle"
+        android:background="@drawable/custom_dialog_back"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/user_name"
+            android:paddingTop="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="用户名"
+            android:textStyle="bold"
+            android:textColor="@color/color_dialog_name_text"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/user_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="用户id：10086"
+            android:layout_marginTop="5dp"
+            android:textSize="14sp"
+            android:textColor="@color/color_dialog_normal_text"
+            />
+
+        <View
+            android:id="@+id/line1"
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="@color/color_dialog_line"
+            android:layout_marginTop="15dp"
+            />
+
+        <TextView
+            android:id="@+id/share_tv"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:text="分享"
+            android:layout_height="60dp"
+            android:layout_width="match_parent"
+            android:textColor="@color/color_dialog_name_text"
+            />
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="@color/color_dialog_line" />
+
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="@color/color_dialog_line" />
+        <TextView
+            android:id="@+id/report_tv"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:text="举报"
+            android:layout_height="60dp"
+            android:layout_width="match_parent"
+            android:textColor="@color/color_dialog_red_text"
+            />
+        <View
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="@color/color_dialog_line" />
+        <TextView
+            android:id="@+id/black_tv"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:text="拉黑"
+            android:layout_height="60dp"
+            android:layout_width="match_parent"
+            android:textColor="@color/color_dialog_red_text"
+            />
+
+        <View
+            android:id="@+id/cancel_line"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="@color/color_dialog_line"
+            />
+
+        <TextView
+            android:id="@+id/cancel_tv"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:text="取消"
+            android:layout_height="60dp"
+            android:layout_width="match_parent"
+            android:textColor="@color/color_dialog_name_text"
+            />
+
+    </LinearLayout>
+
+
+</layout>

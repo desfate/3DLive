@@ -7,7 +7,7 @@
         android:id="@+id/root_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/transparent">
+        android:background="@color/color_mine_background">
 
         <github.com.desfate.livekit.LivePushView
             android:id="@+id/anchor_push_view"

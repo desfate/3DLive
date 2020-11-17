@@ -34,10 +34,22 @@ public class LiveListRepository {
     public void getLiveRoomList(){
         LiveListService.fetchLiveList(liveRoom)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(lifecycleOwner)))
-                .subscribe(listBaseResponBean -> {
-                    LiveEventBus.get(RequestTags.LIVEROOMLIST_REQ, BaseResponBean.class)
-                            .post(listBaseResponBean);
-                });
+                .subscribe(listBaseResponBean -> LiveEventBus.get(RequestTags.LIVEROOMLIST_REQ, BaseResponBean.class)
+                        .post(listBaseResponBean));
+    }
+
+    public void getLiveCareList(){
+        LiveListService.fetchLiveList(liveRoom)
+                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(lifecycleOwner)))
+                .subscribe(listBaseResponBean -> LiveEventBus.get(RequestTags.LIVECARELIST_REQ, BaseResponBean.class)
+                        .post(listBaseResponBean));
+    }
+
+    public void getReplayList(){
+        LiveListService.fetchLiveList(liveRoom)
+                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(lifecycleOwner)))
+                .subscribe(listBaseResponBean -> LiveEventBus.get(RequestTags.REPLAYLIST_REQ, BaseResponBean.class)
+                        .post(listBaseResponBean));
     }
 
 

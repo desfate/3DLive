@@ -6,12 +6,14 @@ public class FriendBean {
     String UserImg;   // 用户头像图片
     boolean isCare;    // 是否关注
     boolean isBlack;   // 是否拉黑
+    boolean careShow;  // 是否显示关注
 
-    public FriendBean(String userName, String userImg, boolean isCare, boolean isBlack) {
+    public FriendBean(String userName, String userImg, boolean isCare, boolean isBlack, boolean careShow) {
         UserName = userName;
         UserImg = userImg;
         this.isCare = isCare;
         this.isBlack = isBlack;
+        this.careShow = careShow;
     }
 
     public String getUserName() {
@@ -44,5 +46,13 @@ public class FriendBean {
 
     public void setIsBlack(boolean isBlack) {
         this.isBlack = isBlack;
+    }
+
+    public boolean isCareShow() {
+        return careShow;
+    }
+
+    public void setCareShow(boolean careShow) {
+        this.careShow = careShow;
     }
 }

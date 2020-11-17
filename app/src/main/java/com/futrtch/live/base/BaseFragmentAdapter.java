@@ -3,16 +3,16 @@ package com.futrtch.live.base;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import java.util.ArrayList;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 
-public class BaseFragmentAdapter extends FragmentPagerAdapter {
+public class BaseFragmentAdapter extends FragmentStatePagerAdapter {
 
     protected List<Fragment> mFragmentList;
-
     protected String[] mTitles;
 
     public BaseFragmentAdapter(FragmentManager fm) {
@@ -21,30 +21,20 @@ public class BaseFragmentAdapter extends FragmentPagerAdapter {
 
     public BaseFragmentAdapter(FragmentManager fm, List<Fragment> fragmentList, String[] mTitles) {
         super(fm);
-        if (fragmentList == null) {
-            fragmentList = new ArrayList<>();
-        }
         this.mFragmentList = fragmentList;
         this.mTitles = mTitles;
     }
 
-    public void add(Fragment fragment) {
-        if (isEmpty()) {
-            mFragmentList = new ArrayList<>();
 
-        }
-        mFragmentList.add(fragment);
+    @NotNull
+    @Override
+    public Fragment getItem (int position) {
+        return mFragmentList.get(position);
     }
 
     @Override
-    public Fragment getItem(int position) {
-        //        Logger.i("BaseFragmentAdapter position=" +position);
-        return isEmpty() ? null : mFragmentList.get(position);
-    }
-
-    @Override
-    public int getCount() {
-        return isEmpty() ? 0 : mFragmentList.size();
+    public int getCount () {
+        return mFragmentList == null ? 0 : mFragmentList.size();
     }
 
     public boolean isEmpty() {
@@ -57,10 +47,6 @@ public class BaseFragmentAdapter extends FragmentPagerAdapter {
         return mTitles[position];
     }
 
-    /*  @Override
-    public int getItemPosition(Object object) {
-        return PagerAdapter.POSITION_NONE;
-    }*/
 
 
 }

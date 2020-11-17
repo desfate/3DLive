@@ -114,6 +114,7 @@ public class LivePlayViewModel extends BaseMessageViewModel {
             mLiveRoom.sendRoomCustomMsg(String.valueOf(TCConstants.IMCMD_EXIT_LIVE), "", null);
             mRepository.exitRoom(mLiveRoom);
             mPlaying = false;
+            mLiveRoom.setPlayViewChange(null);
             mLiveRoom.setListener(null);
         }
     }
@@ -129,7 +130,10 @@ public class LivePlayViewModel extends BaseMessageViewModel {
         Intent rstData = new Intent();
         rstData.putExtra(TCConstants.ACTIVITY_RESULT, errorMsg);
         activity.setResult(LiveListFragment.START_LIVE_PLAY, rstData);
-        if (mErrDlgFragment == null) mErrDlgFragment = new ErrorDialogFragment();
+        if (mErrDlgFragment == null) {
+            mErrDlgFragment = new ErrorDialogFragment();
+            mErrDlgFragment.setType(ErrorDialogFragment.FINISH_TRANSITION_TYPE);
+        }
         if (!mErrDlgFragment.isAdded() && !activity.isFinishing()) {
             Bundle args = new Bundle();
             args.putString("errorMsg", errorMsg);
@@ -182,7 +186,7 @@ public class LivePlayViewModel extends BaseMessageViewModel {
         rstData.putExtra(TCConstants.PUSHER_ID, livePlayBean.getmPusherId());
         activity.setResult(0,rstData);
         stopLivePlay();
-        activity.finish();
+        activity.supportFinishAfterTransition();;
     }
 
     public Size getLiveSize(){
@@ -219,6 +223,20 @@ public class LivePlayViewModel extends BaseMessageViewModel {
 
     public String getPusherId() {
         return livePlayBean.getmPusherId() == null ? "0" : livePlayBean.getmPusherId();
+    }
+
+    public void release(){
+        if (mDanMuMgr != null) {
+            mDanMuMgr.destroy();
+            mDanMuMgr = null;
+        }
+        if(mLiveRoom == null) {
+            mLiveRoom.setPlayViewChange(null);
+            mLiveRoom.setListener(null);
+            mLiveRoom.stopLocalPreview();
+        }
+        stopLivePlay();
+
     }
 
 

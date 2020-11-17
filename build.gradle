@@ -4,10 +4,7 @@ buildscript {
     addRepos(repositories)
     dependencies {
         classpath deps.android_gradle_plugin
-    }
-    repositories {
-        google()
-        jcenter()
+//        classpath deps.android_gradle_hilt
     }
 }
 

@@ -17,7 +17,7 @@ public class FriendListRepository {
     public List<FriendBean> onRecommendRequest(){
         List<FriendBean> beans = new ArrayList<>();
         for(int i = 0 ; i < 50; i ++) {
-            beans.add(new FriendBean("用户"+i, "", false, false));
+            beans.add(new FriendBean("用户"+i, "", false, false, true));
         }
         return beans;
     }
@@ -28,7 +28,7 @@ public class FriendListRepository {
     public List<FriendBean> onRecommendByAddressBook(){
         List<FriendBean> beans = new ArrayList<>();
         for(int i = 0 ; i < 50; i ++) {
-            beans.add(new FriendBean("用户"+i, "", false, false));
+            beans.add(new FriendBean("用户"+i, "", false, false, false));
         }
         return beans;
     }
