@@ -14,9 +14,11 @@ import androidx.lifecycle.ViewModelProviders;
 import com.futrtch.live.R;
 import com.futrtch.live.adapters.MineListAdapter;
 import com.futrtch.live.databinding.FragmentMineListBinding;
+import com.futrtch.live.databinding.LayoutEmptyListBinding;
 import com.futrtch.live.mvvm.MVVMFragment;
 import com.futrtch.live.mvvm.vm.MineListViewModel;
 import com.futrtch.live.mvvm.vm.MineListViewModelFactory;
+import com.futrtch.live.views.ViewsBuilder;
 
 import java.util.Objects;
 
@@ -25,6 +27,7 @@ public class MineListFragment extends MVVMFragment {
     MineListViewModel mViewModel;
     FragmentMineListBinding mDataBinding;
     MineListAdapter mAdapter;
+    LayoutEmptyListBinding mEmptyBinding; // 页面为空
 
     public static MineListFragment getInstance(int index){
         MineListFragment fragment = new MineListFragment();
@@ -57,6 +60,16 @@ public class MineListFragment extends MVVMFragment {
     public void init() {
         mAdapter = new MineListAdapter(R.layout.listview_mine_item, mViewModel.getmListData());
         mDataBinding.recyclerList.setAdapter(mAdapter);
+
+        mEmptyBinding = (LayoutEmptyListBinding) new ViewsBuilder()
+                .setParent(mDataBinding.recyclerList)
+                .setInflater(getLayoutInflater())
+                .setLayoutId(R.layout.layout_empty_list)
+                .setAttachToParent(false)
+                .build()
+                .getDataBinding();
+
+        mAdapter.setEmptyView(mEmptyBinding.getRoot());
     }
 
     @Override

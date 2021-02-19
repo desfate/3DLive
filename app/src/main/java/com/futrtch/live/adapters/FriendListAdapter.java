@@ -8,6 +8,7 @@ import android.content.Context;
 import android.view.View;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -67,11 +68,11 @@ public class FriendListAdapter extends BaseQuickAdapter<FriendBean, BaseDataBind
 
     private void setCareState(LayoutFriendItemBinding binding, boolean isCare) {
         if (!isCare) {
-            binding.careBtn.setBackground(context.getDrawable(R.drawable.friend_care_background));
+            binding.careBtn.setBackground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.friend_care_background, null));
             binding.careBtn.setText("关注");
             binding.closeImg.setVisibility(View.VISIBLE);
         } else {
-            binding.careBtn.setBackground(context.getDrawable(R.drawable.friend_cared_background));
+            binding.careBtn.setBackground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.friend_cared_background, null));
             binding.careBtn.setText("已关注");
             binding.closeImg.setVisibility(View.GONE);
         }

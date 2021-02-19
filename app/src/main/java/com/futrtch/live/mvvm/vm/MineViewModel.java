@@ -11,9 +11,12 @@ import com.futrtch.live.mvvm.repository.MineRepository;
 import com.futrtch.live.mvvm.repository.ViewPagerRepository;
 import com.futrtch.live.tencent.live.TCVideoInfo;
 import com.google.android.material.appbar.AppBarLayout;
+import com.mob.MobSDK;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.sharesdk.onekeyshare.OnekeyShare;
 
 public class MineViewModel extends ViewModel {
 
@@ -91,5 +94,21 @@ public class MineViewModel extends ViewModel {
 
     public MutableLiveData<List<TCVideoInfo>> getMineListData() {
         return mineListData;
+    }
+
+    public void share() {
+        OnekeyShare oks = new OnekeyShare();
+        // title标题，微信、QQ和QQ空间等平台使用
+        oks.setTitle("分享标题");
+        // titleUrl QQ和QQ空间跳转链接
+        oks.setTitleUrl("http://sharesdk.cn");
+        // text是分享文本，所有平台都需要这个字段
+        oks.setText("我是分享文本");
+        // setImageUrl是网络图片的url
+        oks.setImageUrl("https://hmls.hfbank.com.cn/hfapp-api/9.png");
+        // url在微信、Facebook等平台中使用
+        oks.setUrl("http://sharesdk.cn");
+        // 启动分享GUI
+        oks.show(MobSDK.getContext());
     }
 }

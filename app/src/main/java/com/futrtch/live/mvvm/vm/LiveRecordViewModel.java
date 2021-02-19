@@ -9,6 +9,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.TextureView;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
@@ -23,6 +24,7 @@ import com.futrtch.live.tencent.common.msg.TCSimpleUserInfo;
 import com.futrtch.live.tencent.common.ui.ErrorDialogFragment;
 import com.futrtch.live.tencent.common.utils.TCUtils;
 import com.futrtch.live.tencent.common.widget.FinishDetailDialogFragment;
+import com.futrtch.live.tencent.live.LiveMessageCommand;
 import com.futrtch.live.utils.AnimatorUtils;
 import com.futrtch.live.utils.BroadcastTimerTask;
 import com.tencent.rtmp.TXLivePusher;
@@ -30,10 +32,10 @@ import com.tencent.rtmp.TXLivePusher;
 import java.util.List;
 import java.util.Locale;
 
-import github.com.desfate.livekit.LivePushView;
+import github.com.desfate.livekit.live.LiveCallBack;
 import github.com.desfate.livekit.live.LiveConfig;
-import github.com.desfate.livekit.live.LiveManager;
-import github.com.desfate.livekit.live.LiveMessageCommand;
+import github.com.desfate.livekit.live.LivePushControl;
+import github.com.desfate.livekit.utils.LiveSupportUtils;
 
 /**
  * 直播录制 viewModel
@@ -51,6 +53,7 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
     String liveTitle = "直播测试2"; //                                                                        直播标题
     String liveCover; //                                                                        直播图片
     String location;  //                                                                        直播位置信息
+    private LiveConfig liveConfig;
     /***********************************************  LiveData ******************************************************/
     MutableLiveData<Integer> liveState = new MutableLiveData<>();  //                           直播状态
     /***********************************************  用于直播控制的  *************************************************/
@@ -58,6 +61,7 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
     @SuppressLint("StaticFieldLeak")
     private ErrorDialogFragment mErrDlgFragment; //                                             错误提示弹窗
     private BroadcastTimerTask timerTask;//                                                     直播时间计时器
+    private LivePushControl control;//                                                          推流控制器 只有texture模式会初始化它 其实 data模式也会  只是封装在DataLivePushView里
 
     /**
      * 初始化相关
@@ -82,64 +86,81 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
      *
      * @param mDataBinding 视图的双向持有对象
      */
-    public void bindView(ActivityRecordBinding mDataBinding) {
+    public void bindView(Context context, ActivityRecordBinding mDataBinding) {
         animatorUtils = new AnimatorUtils(mDataBinding.layoutLivePusherInfo.anchorIvRecordBall);   //                         录制原点的view
+        liveConfig = new LiveConfig();
+        liveConfig.setLiveQuality(LiveSupportUtils.LIVE_SIZE_720);  //  设置分辨率
+        liveConfig.setLivePushType(LiveConfig.LIVE_PUSH_TEXTURE);  //   设置推送模式
+        liveConfig.setPushCameraType(LiveConfig.LIVE_CAMERA_FRONT);//   设置摄像头
         // 这里做自己本地预览和开启摄像头的工作
-        LiveConfig liveConfig = new LiveConfig();
-        liveConfig.setLivePushType(LiveConfig.LIVE_PUSH_DATA);  // 采用byte[]推流模式
-        mDataBinding.anchorPushView.setParentLayout(mDataBinding.rootLayout);
-        mDataBinding.anchorPushView.setLiveConfig(liveConfig);
-        mDataBinding.anchorPushView.setLivePushListener(new LiveManager() {
-            @Override
-            public void startPushByData(byte[] buffer, int w, int h) {
-                /*
-                  returnCode
-                  0：发送成功；
-                  1：视频分辨率非法；
-                  2：YUV 数据长度与设置的视频分辨率所要求的长度不一致；
-                  3：视频格式非法；
-                  4：视频图像长宽不符合要求，画面比要求的小了；
-                  1000：SDK 内部错误。
-                 */
-                int returnCode = mLiveRoom.customerDataPush(buffer, TXLivePusher.YUV_420P, w, h);
-                if (returnCode != 0) Log.e(TAG, "push error code = " + returnCode);
-            }
+        if(liveConfig.getLivePushType() == LiveConfig.LIVE_PUSH_TEXTURE){
+            TextureView textureView = new TextureView(context);
+            control = new LivePushControl.LivePushControlBuilder()
+                    .setContext(context)
+                    .setLiveConfig(liveConfig)
+                    .setSurfaceTexture(textureView.getSurfaceTexture())
+                    .setTextureView(textureView)
+                    .setLiveCallBack(new LiveCallBack() {
+                        @Override
+                        public void startPushByData(byte[] buffer, int w, int h) {
 
-            @Override
-            public void startPushByTextureId(int textureID, int w, int h) {
-                /*
-                 * returnCode
-                 * 0：发送成功；
-                 * 1：视频分辨率非法；
-                 * 3：视频格式非法；
-                 * 4：视频图像长宽不符合要求，画面比要求的小了；
-                 * 1000：SDK 内部错误。
-                 */
-                int returnCode = mLiveRoom.customerTexturePush(textureID, w, h);
-                if (returnCode != 0) Log.e(TAG, "push error code = " + returnCode);
-            }
-        });
+                        }
+
+                        @Override
+                        public void startPushByTextureId(int textureID, int w, int h) {
+                            int returnCode = mLiveRoom.customerTexturePush(textureID, w, h);
+                            if (returnCode != 0) Log.e(TAG, "push error code = " + returnCode);
+                        }
+                    }).build();
+            mDataBinding.txCloudView.addVideoView(textureView);//        绑定本地预览UI
+        }else if(liveConfig.getLivePushType() == LiveConfig.LIVE_PUSH_DATA){
+            mDataBinding.anchorPushView.init(
+                    liveConfig,
+                    mDataBinding.rootLayout,
+                    new LiveCallBack() {
+                        @Override
+                        public void startPushByData(byte[] buffer, int w, int h) {
+                        /*
+                          returnCode
+                          0：发送成功；
+                          1：视频分辨率非法；
+                          2：YUV 数据长度与设置的视频分辨率所要求的长度不一致；
+                          3：视频格式非法；
+                          4：视频图像长宽不符合要求，画面比要求的小了；
+                          1000：SDK 内部错误。
+                         */
+                            int returnCode = mLiveRoom.customerDataPush(buffer, TXLivePusher.YUV_420P, w, h);
+                            if (returnCode != 0) Log.e(TAG, "push error code = " + returnCode);
+                        }
+
+                        @Override
+                        public void startPushByTextureId(int textureID, int w, int h) {
+
+                        }
+                    }
+            );
+            control = mDataBinding.anchorPushView.getControl();
+        }
     }
 
     /**
      * 切换相机
      *
      * @param activity     上下文
-     * @param livePushView 控制类
      */
-    public void switchCamera(Activity activity, LivePushView livePushView) {
+    public void switchCamera(Activity activity) {
         //fixme 通过文字消息通知观众 主播正在进行前后摄像头切换 用户也要跟随进行切换
-        if (livePushView.cameraStata()) {
+        if (control.getCameraState() == LiveConfig.LIVE_CAMERA_FRONT) {
             onTextSend(activity, LiveMessageCommand.addCommand(LiveMessageCommand.SWITCH_CAMERA_BACK), false);
         } else {
             onTextSend(activity, LiveMessageCommand.addCommand(LiveMessageCommand.SWITCH_CAMERA_FRONT), false);
         }
-        if (livePushView.cameraStata()) {
+        if (control.getCameraState() == LiveConfig.LIVE_CAMERA_FRONT) {
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);  // 切换为横屏
         } else {
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);  // 切换为竖屏
         }
-        livePushView.switchCamera();
+        control.switchCamera();
     }
 
     /**
@@ -149,7 +170,21 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
         mLiveRoom.setListener(activity);
         mLiveRoom.setCameraMuteImage(BitmapFactory.decodeResource(activity.getResources(), R.mipmap.pause_publish));
         mLiveRoom.startLocalPreview(true, null); // 初始化pusher
-        mRepository.createRoom(liveState, mLiveRoom, liveTitle, liveCover, location);  // 创建直播间
+        mRepository.createRoom(liveState, mLiveRoom, liveTitle, liveCover, location, liveConfig);  // 创建直播间
+    }
+
+    /**
+     * 开始预览
+     */
+    public void startPreview(){
+        if(control != null) control.startPreview();
+    }
+
+    /**
+     * 开始推送
+     */
+    public void startPush(){
+        if(control != null) control.startPush();
     }
 
     /**
@@ -262,6 +297,10 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
         return currentAudienceList;
     }
 
+    public LiveConfig getLiveConfig(){
+        return liveConfig;
+    }
+
     /**
      * release
      */
@@ -271,6 +310,7 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
             mDanMuMgr = null;
         }
         animatorUtils.release();  // 动画释放
+        if(control != null) control.releaseRes();
     }
 
 

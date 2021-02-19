@@ -2,6 +2,7 @@ package com.futrtch.live.adapters;
 
 import android.content.Context;
 
+import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -46,10 +47,10 @@ public class AddressBookAdapter extends BaseQuickAdapter<AddressBookBean, BaseDa
 
     private void setCareState(LayoutAddressBookItemBinding binding, boolean isCare) {
         if (!isCare) {
-            binding.careBtn.setBackground(context.getDrawable(R.drawable.friend_care_background));
+            binding.careBtn.setBackground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.friend_care_background, null));
             binding.careBtn.setText("关注");
         } else {
-            binding.careBtn.setBackground(context.getDrawable(R.drawable.friend_cared_background));
+            binding.careBtn.setBackground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.friend_cared_background, null));
             binding.careBtn.setText("已关注");
         }
     }

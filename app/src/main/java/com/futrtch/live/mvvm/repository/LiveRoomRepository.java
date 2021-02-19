@@ -8,8 +8,8 @@ import androidx.lifecycle.MutableLiveData;
 import com.futrtch.live.base.ApiException;
 import com.futrtch.live.base.BaseResponBean;
 import com.futrtch.live.beans.RoomCreateResponseBean;
-import com.futrtch.live.http.LiveRoomJsonBuilder;
-import com.futrtch.live.http.RoomRequestBuilder;
+import com.futrtch.live.http.LiveRoomReqUtils;
+import com.futrtch.live.http.flowables.RoomReqFlowable;
 import com.futrtch.live.tencent.common.utils.TCConstants;
 import com.futrtch.live.tencent.common.utils.TCErrorConstants;
 import com.futrtch.live.tencent.liveroom.IMLVBLiveRoomListener;
@@ -20,7 +20,8 @@ import org.reactivestreams.Subscription;
 
 import autodispose2.AutoDispose;
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
-import github.com.desfate.livekit.LivePlayView;
+import github.com.desfate.livekit.live.LiveConfig;
+import github.com.desfate.livekit.ui.LivePlayView;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import io.reactivex.rxjava3.core.Flowable;
@@ -46,10 +47,11 @@ public class LiveRoomRepository {
      * @param liveState 回调通知UI
      * @param mLiveRoom 腾讯组件
      */
-    public void createRoom(MutableLiveData liveState, MLVBLiveRoom mLiveRoom, String liveTitle, String liveCover, String location) {
+    public void createRoom(MutableLiveData liveState, MLVBLiveRoom mLiveRoom, String liveTitle, String liveCover, String location, LiveConfig liveConfig) {
         Flowable.create((FlowableOnSubscribe<RoomCreateResponseBean>) emitter -> mLiveRoom.createRoom(//      创建房间请求
                 "",
-                LiveRoomJsonBuilder.toRoomInfoString(liveTitle, liveCover, location),
+                LiveRoomReqUtils.toRoomInfoString(liveTitle, liveCover, location),
+                liveConfig,
                 new IMLVBLiveRoomListener.CreateRoomCallback() {
                     @Override
                     public void onError(int errCode, String errInfo) {
@@ -71,7 +73,7 @@ public class LiveRoomRepository {
         ), BackpressureStrategy.BUFFER)
                 .flatMap((Function<RoomCreateResponseBean, Flowable<BaseResponBean>>) roomCreateResponseBean -> {//   链式请求房间建权
                     if (roomCreateResponseBean.getReturnCode() == -1) { //                                            房间创建成功
-                        return RoomRequestBuilder.roomSuccessFlowable( //                                             建权请求
+                        return RoomReqFlowable.roomSuccessFlowable( //                                             建权请求
                                 LoginRepository.getInstance().getUserId()
                                 , liveTitle
                                 , liveCover
@@ -136,7 +138,6 @@ public class LiveRoomRepository {
     /**
      * 退出房间  不需要关心回调返回
      * @param mLiveRoom
-     * @param lifecycleOwner
      */
     public void exitRoom(MLVBLiveRoom mLiveRoom) {
         Flowable.create((FlowableOnSubscribe<RoomCreateResponseBean>) emitter ->

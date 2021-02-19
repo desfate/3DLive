@@ -18,6 +18,8 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 
+import androidx.core.content.res.ResourcesCompat;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.futrtch.live.R;
@@ -238,7 +240,7 @@ public class TCDanmuMgr {
 //                            top + danmaku.paintHeight - DANMU_PADDING_INNER + 6),//+6 主要是底部被截得太厉害了，+6是增加padding的效果
 //                    DANMU_RADIUS, DANMU_RADIUS, paint);
 
-            NinePatchDrawable bg =  (NinePatchDrawable) mContext.getResources().getDrawable(R.mipmap.barrage);
+            NinePatchDrawable bg =  (NinePatchDrawable) ResourcesCompat.getDrawable(mContext.getResources(), R.mipmap.barrage, null);
             if (bg != null) {
                 bg.setBounds((int)left+7, (int)top+5, (int)danmaku.paintWidth, (int)danmaku.paintHeight);
                 bg.draw(canvas);

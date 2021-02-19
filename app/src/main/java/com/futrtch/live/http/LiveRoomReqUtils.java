@@ -3,7 +3,7 @@ package com.futrtch.live.http;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class LiveRoomJsonBuilder {
+public class LiveRoomReqUtils {
 
     /**
      * 生成用户上传的直播房间信息

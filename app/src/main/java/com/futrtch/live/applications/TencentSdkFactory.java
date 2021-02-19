@@ -26,7 +26,7 @@ public class TencentSdkFactory implements InitSDK {
         if(application == null) return;
         // 必须：初始化 LiteAVSDK Licence。 用于直播推流鉴权。
         TXLiveBase.getInstance().setLicence(application, LICENCE_URL, LICENCE_KEY);
-//        // 必须：初始化 MLVB 组件
+        // 必须：初始化 MLVB 组件
         MLVBLiveRoomImpl.sharedInstance(application);
         // 必须：初始化全局的 用户信息管理类，记录个人信息。
         TCUserMgr.getInstance().initContext(application);

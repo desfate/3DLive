@@ -70,6 +70,14 @@ public class MineFragment extends MVVMFragment {
         RxView.clicks(mDataBinding.moreBtn)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(unit -> Objects.requireNonNull(getActivity()).startActivity(new Intent(getActivity(), SettingActivity.class)));
+
+        RxView.clicks(mDataBinding.share)
+                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .subscribe(unit -> mViewModel.share());
+
+        RxView.clicks(mDataBinding.shareBtn)
+                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .subscribe(unit -> mViewModel.share());
     }
 
     @Override

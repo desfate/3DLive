@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import com.futrtch.live.activitys.fragments.main.LiveCareFragment;
 import com.futrtch.live.activitys.fragments.main.LiveListFragment;
 import com.futrtch.live.activitys.fragments.main.LiveReplayFragment;
+import com.futrtch.live.mvvm.vm.LiveReplayViewModel;
 
 public class LiveFragmentFactory {
     public static Fragment getFragment(int index){

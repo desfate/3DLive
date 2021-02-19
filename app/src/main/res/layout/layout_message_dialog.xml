@@ -69,7 +69,6 @@
                     android:textSize="14sp"
                     android:background="@color/transparent"
                     android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@+id/scan_img"
                     >
 
                 </EditText>

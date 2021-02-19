@@ -36,6 +36,7 @@ import java.util.concurrent.TimeUnit;
 
 import autodispose2.AutoDispose;
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
+import github.com.desfate.livekit.live.LiveConfig;
 
 import static com.futrtch.live.tencent.common.utils.TCErrorConstants.ERROR_CUSTOMER_CREATE_ROOM_ERROR;
 import static com.futrtch.live.tencent.common.utils.TCErrorConstants.SUCCESS_CUSTOMER_CREATE_ROOM;
@@ -43,6 +44,8 @@ import static com.futrtch.live.tencent.common.utils.TCErrorConstants.SUCCESS_CUS
 
 /**
  * 主播录制页面
+ *  1.支持texture 推送模式
+ *  2.支持data    推送模式
  */
 public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCallBack {
 
@@ -79,10 +82,11 @@ public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCal
         mDataBinding.imMsgListview.setAdapter(mChatMsgListAdapter);
         mDataBinding.imMsgListview.setVisibility(View.VISIBLE);
 
-        mViewModel.bindView(mDataBinding); //                                        绑定view 和 viewModel
+        mViewModel.bindView(this, mDataBinding); //                                        绑定view 和 viewModel
         mViewModel.prepareRecord(this, callBack, mDataBinding); //           初始化必要控件
         mViewModel.startPush(this);//                                        开始推送
-        mDataBinding.anchorPushView.startPush();//                                   控件打开推送开关
+        mViewModel.startPreview();//                                                 开启预览
+        mViewModel.startPush();//                                                    开始推流
     }
 
     @Override
@@ -96,7 +100,7 @@ public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCal
                 .throttleFirst(2, TimeUnit.SECONDS)  //                                                            防抖
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(unit -> {
-                    mViewModel.switchCamera(LiveRecordActivity.this, mDataBinding.anchorPushView);//                     切换横竖屏
+                    mViewModel.switchCamera(LiveRecordActivity.this);//                     切换横竖屏
                 });
         //  聊天按钮
         RxView.clicks(mDataBinding.btnMessageInput)
@@ -145,9 +149,8 @@ public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCal
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mViewModel.stopPush();
         mViewModel.release();
-        mDataBinding.anchorPushView.release();
-        mDataBinding.anchorPushView.setLivePushListener(null);
     }
 
     @Override
@@ -164,13 +167,23 @@ public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCal
         int H = mDisplayMetrics.heightPixels;
         if(getResources() == null || getResources().getConfiguration() == null) return;
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            mDataBinding.anchorPushView.getLayoutParams().width = W;
-            mDataBinding.anchorPushView.getLayoutParams().height = H;
+            if(mViewModel.getLiveConfig().getLivePushType() == LiveConfig.LIVE_PUSH_TEXTURE){
+//                mDataBinding.txCloudView.getLayoutParams().width = W;
+//                mDataBinding.txCloudView.getLayoutParams().height = H;
+            }else{
+                mDataBinding.anchorPushView.getLayoutParams().width = W;
+                mDataBinding.anchorPushView.getLayoutParams().height = H;
+            }
             // land do nothing is ok
         } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            // port do nothing is ok
-            mDataBinding.anchorPushView.getLayoutParams().width = W;
-            mDataBinding.anchorPushView.getLayoutParams().height = H;
+            if(mViewModel.getLiveConfig().getLivePushType() == LiveConfig.LIVE_PUSH_TEXTURE) {
+//                mDataBinding.txCloudView.getLayoutParams().width = W;
+//                mDataBinding.txCloudView.getLayoutParams().height = H;
+            }else {
+                // port do nothing is ok
+                mDataBinding.anchorPushView.getLayoutParams().width = W;
+                mDataBinding.anchorPushView.getLayoutParams().height = H;
+            }
         }
     }
 

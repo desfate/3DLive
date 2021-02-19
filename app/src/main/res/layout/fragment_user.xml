@@ -129,6 +129,18 @@
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
+                    <ImageView
+                        android:id="@+id/share_btn"
+                        android:layout_width="@dimen/live_btn_size"
+                        android:layout_height="@dimen/live_btn_size"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/live_icon_background"
+                        android:scaleType="centerInside"
+                        android:src="@mipmap/share_icon"
+                        app:layout_constraintRight_toLeftOf="@+id/more_btn"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+
                     <Button
                         android:id="@+id/edt_user_info_btn"
                         android:layout_width="150dp"
@@ -171,8 +183,21 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
-                            android:layout_marginRight="10dp"
+                            android:paddingRight="10dp"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
                             android:src="@mipmap/more_icon" />
+
+                        <ImageView
+                            android:id="@+id/share"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toLeftOf="@+id/more"
+                            android:layout_centerVertical="true"
+                            android:paddingRight="20dp"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
+                            android:src="@mipmap/share_icon" />
                     </RelativeLayout>
 
 

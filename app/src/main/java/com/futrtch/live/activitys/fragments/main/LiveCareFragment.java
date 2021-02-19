@@ -17,6 +17,7 @@ import com.futrtch.live.R;
 import com.futrtch.live.activitys.LiveRecordActivity;
 import com.futrtch.live.adapters.LiveListAdapter;
 import com.futrtch.live.base.BaseResponBean;
+import com.futrtch.live.databinding.FragmentLiveCareBinding;
 import com.futrtch.live.databinding.FragmentLiveListBinding;
 import com.futrtch.live.databinding.LayoutEmptyListBinding;
 import com.futrtch.live.http.RequestTags;
@@ -46,7 +47,7 @@ public class LiveCareFragment extends MVVMFragment {
     LiveListAdapter mAdapter;
     LiveCareViewModel mViewModel;
 
-    FragmentLiveListBinding mDataBinding;
+    FragmentLiveCareBinding mDataBinding;
     LayoutEmptyListBinding mEmptyBinding; // 页面为空
 
     public static LiveCareFragment getInstance(int index){
@@ -60,7 +61,7 @@ public class LiveCareFragment extends MVVMFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mDataBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_live_list, container, false);
+        mDataBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_live_care, container, false);
         return mDataBinding.getRoot();
     }
 
@@ -72,6 +73,11 @@ public class LiveCareFragment extends MVVMFragment {
 
     @Override
     public void init() {
+        mAdapter = new LiveListAdapter(R.layout.listview_video_item, getActivity(), mViewModel.getListData());
+        mDataBinding.grid.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        mDataBinding.grid.addItemDecoration(new GridSectionAverageGapItemDecoration(10, 10, 20, 15));
+        mDataBinding.grid.setAdapter(mAdapter);
+
         mEmptyBinding = (LayoutEmptyListBinding) new ViewsBuilder()
                 .setParent(mDataBinding.grid)
                 .setInflater(getLayoutInflater())
@@ -80,34 +86,16 @@ public class LiveCareFragment extends MVVMFragment {
                 .build()
                 .getDataBinding();
 
-        mAdapter = new LiveListAdapter(R.layout.listview_video_item, getActivity(), mViewModel.getListData());
         mAdapter.setEmptyView(mEmptyBinding.getRoot());
-        mDataBinding.grid.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        mDataBinding.grid.addItemDecoration(new GridSectionAverageGapItemDecoration(10, 10, 20, 15));
-        mDataBinding.grid.setAdapter(mAdapter);
     }
 
     public void bindUi() {
-        RxView.clicks(mDataBinding.fab)
-                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
-                .subscribe(unit -> mDataBinding.fab.setExpanded(true));
-        RxView.clicks(mDataBinding.scrim)
-                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
-                .subscribe(unit -> mDataBinding.fab.setExpanded(false));
         RxView.clicks(mEmptyBinding.emptyImg)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(unit -> {
                     mDataBinding.swipeLayout.setRefreshing(true);
                     initRequest();
                 });
-        RxView.clicks(mDataBinding.startLive3Btn)
-                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
-                .subscribe(unit -> {
-                    if (TCUtils.checkRecordPermission(getActivity())) {
-                        Objects.requireNonNull(getActivity()).startActivity(new Intent(getActivity(), LiveRecordActivity.class));
-                    }
-                });
-
         mDataBinding.swipeLayout.setOnRefreshListener(() -> mViewModel.onRefresh());
     }
 

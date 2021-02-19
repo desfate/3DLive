@@ -22,7 +22,6 @@ public class ViewPagerViewModel extends ViewModel {
         return mRepository.getFriendTitles();
     }
 
-
     public List<Integer> getIndexThree() {
         return mRepository.getIndexThree();
     }

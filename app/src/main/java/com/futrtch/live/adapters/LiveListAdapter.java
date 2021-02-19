@@ -2,6 +2,7 @@ package com.futrtch.live.adapters;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.view.View;
 
 import androidx.core.view.ViewCompat;
 import androidx.databinding.DataBindingUtil;
@@ -17,23 +18,18 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 
-public class LiveListAdapter extends BaseQuickAdapter<TCVideoInfo, BaseDataBindingHolder<ListviewVideoItemBinding>>{
-    private final Context mContext;
+public class LiveListAdapter extends BaseQuickAdapter<TCVideoInfo, BaseDataBindingHolder<ListviewVideoItemBinding>> {
 
     public LiveListAdapter(int layoutResId, Context context, List<TCVideoInfo> mList) {
         super(layoutResId, mList);
-        this.mContext = context;
     }
 
     @Override
     protected void convert(@NotNull BaseDataBindingHolder<ListviewVideoItemBinding> bindingBaseDataBindingHolder, TCVideoInfo info) {
         ListviewVideoItemBinding binding = DataBindingUtil.getBinding(bindingBaseDataBindingHolder.itemView);
         if(binding == null || info == null) return;
-        ViewCompat.setTransitionName(binding.anchorTvTitle, "title-" + info.userId);
+
         ViewCompat.setTransitionName(binding.anchorBtnCover, "btn");
-        ViewCompat.setTransitionName(binding.hostName, "host-" + info.userId);
-        ViewCompat.setTransitionName(binding.liveLbs, "libs-" + info.userId);
-        ViewCompat.setTransitionName(binding.liveMembers, "members-" + info.userId);
         //直播封面
         String cover = info.frontCover;
         binding.anchorBtnCover.setImageResource(Integer.parseInt(info.frontCover));

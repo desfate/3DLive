@@ -28,7 +28,8 @@ import com.futrtch.live.utils.PressTimeControl;
 
 import java.util.List;
 
-import github.com.desfate.livekit.LivePlayView;
+import github.com.desfate.livekit.ui.DataLivePushView;
+import github.com.desfate.livekit.ui.LivePlayView;
 import master.flame.danmaku.controller.IDanmakuView;
 
 public class LivePlayViewModel extends BaseMessageViewModel {
@@ -65,8 +66,6 @@ public class LivePlayViewModel extends BaseMessageViewModel {
         bean.setmGroupId(intent.getStringExtra(TCConstants.GROUP_ID));
         bean.setmPusherNickname(intent.getStringExtra(TCConstants.PUSHER_NAME));
         bean.setmPusherAvatar(intent.getStringExtra(TCConstants.PUSHER_AVATAR));
-        bean.setmHeartCount(Long.decode(intent.getStringExtra(TCConstants.HEART_COUNT)));
-        bean.setmCurrentAudienceCount(Long.decode(intent.getStringExtra(TCConstants.MEMBER_COUNT)));
         bean.setmFileId(intent.getStringExtra(TCConstants.FILE_ID));
         bean.setmTimeStamp(intent.getStringExtra(TCConstants.TIMESTAMP));
         bean.setmTitle(intent.getStringExtra(TCConstants.ROOM_TITLE));

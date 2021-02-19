@@ -6,8 +6,11 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.futrtch.live.R;
 
 /**
  * https://github.com/CymChad/BaseRecyclerViewAdapterHelper
@@ -22,11 +25,11 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     public GridItemDecoration(Context context, int resId) {
-        dividerDrawable = context.getResources().getDrawable(resId);
+        dividerDrawable = ResourcesCompat.getDrawable(context.getResources(), resId, null);
     }
 
     public GridItemDecoration(Context context, int resId, int orientation) {
-        dividerDrawable = context.getResources().getDrawable(resId);
+        dividerDrawable =  ResourcesCompat.getDrawable(context.getResources(), resId, null);
         this.orientation = orientation;
     }
 

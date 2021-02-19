@@ -29,7 +29,6 @@ public class SplashActivity extends MVVMActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_splash);
-        init();
     }
 
     @Override
@@ -69,5 +68,11 @@ public class SplashActivity extends MVVMActivity {
     @Override
     public void onBackPressed() {
         // 禁止使用返回键
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDataBinding.unbind();
     }
 }

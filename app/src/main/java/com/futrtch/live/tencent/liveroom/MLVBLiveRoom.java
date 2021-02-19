@@ -14,8 +14,11 @@ import com.tencent.rtmp.TXLiveConstants;
 import com.tencent.rtmp.TXLivePusher;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 
-import github.com.desfate.livekit.LivePlayView;
 import github.com.desfate.livekit.camera.interfaces.CameraChangeCallback;
+import github.com.desfate.livekit.live.LiveConfig;
+import github.com.desfate.livekit.ui.DataLivePushView;
+import github.com.desfate.livekit.ui.LivePlayView;
+
 
 /*
  * Module:   MLVBLiveRoom
@@ -781,5 +784,19 @@ public abstract class MLVBLiveRoom {
      * @param callBack
      */
     public abstract void setPlayViewChange(CameraChangeCallback callBack);
+
+    /**
+     * 创建房间（主播调用）
+     *
+     * 主播开播的正常调用流程是：
+     * 1.【主播】调用 startLocalPreview() 打开摄像头预览，此时可以调整美颜参数。
+     * 2.【主播】调用 createRoom 创建直播间，房间创建成功与否会通过 {@link IMLVBLiveRoomListener.CreateRoomCallback} 通知给主播。
+     *
+     * @param roomID 房间标识，推荐做法是用主播的 userID 作为房间的 roomID，这样省去了后台映射的成本。room ID 可以填空，此时由后台生成。
+     * @param roomInfo 房间信息（非必填），用于房间描述的信息，比如房间名称，允许使用 JSON 格式作为房间信息。
+     * @param callback 创建房间的结果回调
+     * @param liveConfig 直播配置
+     */
+    public abstract void createRoom(final String roomID, final String roomInfo, LiveConfig liveConfig, final IMLVBLiveRoomListener.CreateRoomCallback callback);
 
 }

@@ -32,6 +32,7 @@ import com.futrtch.live.http.RequestTags;
 import com.futrtch.live.mvvm.MVVMFragment;
 import com.futrtch.live.mvvm.vm.LiveListViewModel;
 import com.futrtch.live.mvvm.vm.LiveListViewModelFactory;
+import com.futrtch.live.mvvm.vm.LiveReplayViewModel;
 import com.futrtch.live.tencent.common.utils.TCConstants;
 import com.futrtch.live.tencent.common.utils.TCUtils;
 import com.futrtch.live.tencent.live.TCVideoInfo;
@@ -83,6 +84,7 @@ public class LiveListFragment extends MVVMFragment {
 
     @Override
     public void init() {
+        mBannerBinding = DataBindingUtil.inflate(getLayoutInflater(),R.layout.layout_banner, mDataBinding.grid, false);
         mBannerBinding = (LayoutBannerBinding) new ViewsBuilder()
                 .setParent(mDataBinding.grid)
                 .setInflater(getLayoutInflater())
@@ -90,7 +92,6 @@ public class LiveListFragment extends MVVMFragment {
                 .setAttachToParent(false)
                 .build()
                 .getDataBinding();
-
         mEmptyBinding = (LayoutEmptyListBinding) new ViewsBuilder()
                 .setParent(mDataBinding.grid)
                 .setInflater(getLayoutInflater())
@@ -98,11 +99,9 @@ public class LiveListFragment extends MVVMFragment {
                 .setAttachToParent(false)
                 .build()
                 .getDataBinding();
-
         mBannerAdpater = new BannerImageAdapter(mViewModel.getmBannerBean());
         mBannerAdpater.setDatas(mViewModel.getmBannerBean());
         mBannerBinding.banner.setAdapter(mBannerAdpater);
-
         mAdapter = new LiveListAdapter(R.layout.listview_video_item, getActivity(), mViewModel.getListData());
         mAdapter.setHeaderView(mBannerBinding.getRoot());
         mAdapter.setEmptyView(mEmptyBinding.getRoot());
@@ -135,7 +134,6 @@ public class LiveListFragment extends MVVMFragment {
             TCVideoInfo info = mViewModel.getListData().get(position);
             ListviewVideoItemBinding binding = DataBindingUtil.getBinding(view);
             if(binding == null || info == null) return;
-            ViewCompat.setTransitionName(binding.anchorBtnCover, "btn");
             Intent intent = new Intent(getActivity(), LivePlayActivity.class);
             intent.putExtra("btn", info.frontCover);
             intent.putExtra(TCConstants.PUSHER_ID, info.userId !=null?info.userId :"");
@@ -164,16 +162,14 @@ public class LiveListFragment extends MVVMFragment {
                         mViewModel.getIsRefresh().postValue(false);
                         mViewModel.getListData().clear();
                         mViewModel.getListData().addAll((List<TCVideoInfo>) baseResponBean.getData());
-                        mAdapter.notifyDataSetChanged();
                     }
                 });
-
         mViewModel.getIsRefresh().observe(this, aBoolean -> mDataBinding.swipeLayout.setRefreshing(aBoolean));
     }
 
     @Override
     public void initRequest() {
-        mViewModel.onDemoRefresh();
+        mViewModel.onRefresh();
     }
 
     @Override

@@ -20,4 +20,13 @@ public interface AccountService {
      */
     @POST("/get_user_info")
     Flowable<BaseResponBean<AccountInfoBean>> accountInfo(@Header ("Liteav-Sig") String sign, @Body RequestBody requestBody);
+
+    /**
+     * 更新账户信息
+     * @param sign token
+     * @param requestBody 请求信息
+     * @return 
+     */
+    @POST("/upload_user_info")
+    Flowable<BaseResponBean> updateInfo(@Header ("Liteav-Sig") String sign, @Body RequestBody requestBody);
 }

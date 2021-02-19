@@ -77,6 +77,10 @@ public class LoginActivity extends MVVMActivity {
         RxView.clicks(mDataBinding.registerImg)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(unit -> startActivity(new Intent(LoginActivity.this, RegisterActivity.class)));  //  跳转注册页面
+
+        RxView.clicks(mDataBinding.phoneImg)
+                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .subscribe(unit -> mViewModel.sendCode(this));
     }
 
     /**
@@ -121,6 +125,7 @@ public class LoginActivity extends MVVMActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mDataBinding.unbind();
         Optional.ofNullable(mLoading).ifPresent(builder -> mLoading.getObj().dismiss()); // 取消 Loading
     }
 

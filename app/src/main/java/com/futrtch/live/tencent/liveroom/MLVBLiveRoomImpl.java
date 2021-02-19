@@ -54,8 +54,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import github.com.desfate.livekit.LivePlayView;
 import github.com.desfate.livekit.camera.interfaces.CameraChangeCallback;
+import github.com.desfate.livekit.live.LiveConfig;
+import github.com.desfate.livekit.ui.DataLivePushView;
+import github.com.desfate.livekit.ui.LivePlayView;
+import github.com.desfate.livekit.utils.LiveSupportUtils;
 
 public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.HeartBeatCallback, IMMessageMgr.IMMessageListener {
 
@@ -362,19 +365,8 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         }
     }
 
-    /**
-     * 创建房间（主播调用）
-     *
-     * 主播开播的正常调用流程是：
-     * 1.【主播】调用 startLocalPreview() 打开摄像头预览，此时可以调整美颜参数。
-     * 2.【主播】调用 createRoom 创建直播间，房间创建成功与否会通过 {@link IMLVBLiveRoomListener.CreateRoomCallback} 通知给主播。
-     *
-     * @param roomID   房间标识，推荐做法是用主播的 userID 作为房间的 roomID，这样省去了后台映射的成本。room ID 可以填空，此时由后台生成。
-     * @param roomInfo 房间信息（非必填），用于房间描述的信息，比如房间名称，允许使用 JSON 格式作为房间信息。
-     * @param callback 创建房间的结果回调
-     */
     @Override
-    public void createRoom(final String roomID, final String roomInfo, final IMLVBLiveRoomListener.CreateRoomCallback callback) {
+    public void createRoom(String roomID, String roomInfo, IMLVBLiveRoomListener.CreateRoomCallback callback) {
         TXCLog.i(TAG, "API -> createRoom:" + roomID + ":" + roomInfo);
         mSelfRoleType = LIVEROOM_ROLE_PUSHER;
 
@@ -392,6 +384,114 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
 
                     //3.开始推流
                     startPushStream(pushURL, TXLiveConstants.VIDEO_QUALITY_HIGH_DEFINITION, new StandardCallback() {
+                        @Override
+                        public void onError(int errCode, String errInfo) {
+                            callbackOnThread(callback, "onError", errCode, errInfo);
+                        }
+
+                        @Override
+                        public void onSuccess() {
+                            //推流过程中，可能会重复收到PUSH_EVT_PUSH_BEGIN事件，onSuccess可能会被回调多次，如果已经创建的房间，直接返回
+                            if (mCurrRoomID != null && mCurrRoomID.length() > 0) {
+                                return;
+                            }
+
+                            if (mTXLivePusher != null) {
+                                TXLivePushConfig config = mTXLivePusher.getConfig();
+                                config.setVideoEncodeGop(2);
+                                mTXLivePusher.setConfig(config);
+                            }
+
+                            mBackground = false;
+                            //4.推流成功，请求CGI:create_room，获取roomID、roomSig
+                            doCreateRoom(roomID, roomInfo, new StandardCallback() {
+                                @Override
+                                public void onError(int errCode, String errInfo) {
+                                    callbackOnThread(callback, "onError", errCode, errInfo);
+                                }
+
+                                @Override
+                                public void onSuccess() {
+
+                                    //5.请求CGI：add_pusher，加入房间
+                                    addAnchor(mCurrRoomID, pushURL, new StandardCallback() {
+                                        @Override
+                                        public void onError(int errCode, String errInfo) {
+                                            callbackOnThread(callback, "onError", errCode, errInfo);
+                                        }
+
+                                        @Override
+                                        public void onSuccess() {
+                                            //6.创建IM群
+                                            createIMGroup(mCurrRoomID, mCurrRoomID, new StandardCallback() {
+                                                @Override
+                                                public void onError(int errCode, String errInfo) {
+                                                    if (errCode == 10025) {
+                                                        //群组 ID 已被使用，并且操作者为群主，可以直接使用
+                                                        Log.w(TAG, "[IM] 群组 " + mCurrRoomID + " 已被使用，并且操作者为群主，可以直接使用");
+                                                        mJoinPusher = true;
+                                                        mHeartBeatThread.startHeartbeat(); //启动心跳
+                                                        mStreamMixturer.setMainVideoStream(pushURL);
+                                                        callbackOnThread(callback, "onSuccess", mCurrRoomID);
+                                                    } else {
+                                                        callbackOnThread(callback, "onError", errCode, errInfo);
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onSuccess() {
+                                                    mJoinPusher = true;
+                                                    mHeartBeatThread.startHeartbeat(); //启动心跳
+                                                    mStreamMixturer.setMainVideoStream(pushURL);
+                                                    callbackOnThread(callback, "onSuccess", mCurrRoomID);
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+
+                }
+                else {
+                    callbackOnThread(callback, "onError", retcode, "[LiveRoom] 创建房间失败[获取推流地址失败]");
+                }
+            }
+        });
+    }
+
+
+    /**
+     * 创建房间（主播调用）
+     *
+     * 主播开播的正常调用流程是：
+     * 1.【主播】调用 startLocalPreview() 打开摄像头预览，此时可以调整美颜参数。
+     * 2.【主播】调用 createRoom 创建直播间，房间创建成功与否会通过 {@link IMLVBLiveRoomListener.CreateRoomCallback} 通知给主播。
+     *
+     * @param roomID   房间标识，推荐做法是用主播的 userID 作为房间的 roomID，这样省去了后台映射的成本。room ID 可以填空，此时由后台生成。
+     * @param roomInfo 房间信息（非必填），用于房间描述的信息，比如房间名称，允许使用 JSON 格式作为房间信息。
+     * @param callback 创建房间的结果回调
+     */
+    @Override
+    public void createRoom(final String roomID, final String roomInfo, final LiveConfig liveConfig ,final IMLVBLiveRoomListener.CreateRoomCallback callback) {
+        TXCLog.i(TAG, "API -> createRoom:" + roomID + ":" + roomInfo);
+        mSelfRoleType = LIVEROOM_ROLE_PUSHER;
+
+        if (mSelfAccountInfo == null) return;
+        //1. 在应用层调用startLocalPreview，启动本地预览
+
+        //2. 请求CGI:get_push_url，异步获取到推流地址pushUrl
+        mHttpRequest.getPushUrl(mSelfAccountInfo.userID, roomID, new HttpRequests.OnResponseCallback<HttpResponse.PushUrl>() {
+            @Override
+            public void onResponse(int retcode, String retmsg, HttpResponse.PushUrl data) {
+                if (retcode == HttpResponse.CODE_OK && data != null && data.pushURL != null) {
+                    final String pushURL = data.pushURL;
+                    mSelfPushUrl = data.pushURL;
+                    mSelfAccelerateURL = data.accelerateURL;
+
+                    //3.开始推流
+                    startPushStream(pushURL, liveConfig, TXLiveConstants.VIDEO_QUALITY_HIGH_DEFINITION, new StandardCallback() {
                         @Override
                         public void onError(int errCode, String errInfo) {
                             callbackOnThread(callback, "onError", errCode, errInfo);
@@ -1991,7 +2091,52 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
         mHeartBeatThread.stopHeartbeat();
     }
 
-
+    protected void startPushStream(final String url, LiveConfig liveConfig ,final int videoQuality, final StandardCallback callback){
+        //在主线程开启推流
+        Handler handler = new Handler(mAppContext.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mTXLivePusher != null && mTXLivePushListener != null) {
+                    mTXLivePushListener.setCallback(callback);
+                    mTXLivePusher.setVideoQuality(videoQuality, false, false);
+                    // fixme 这里是保证推流前设置都已经设置完成
+                    TXLivePushConfig config = mTXLivePusher.getConfig();
+                    if(liveConfig != null){
+                        if(liveConfig.getLivePushType() == LiveConfig.LIVE_PUSH_TEXTURE){  //  数据推流模式
+                            config.setCustomModeType(TXLiveConstants.CUSTOM_MODE_VIDEO_CAPTURE);
+                            config.setVideoEncodeGop(5);
+                            if(liveConfig.getLiveQuality() == LiveSupportUtils.LIVE_SIZE_720){
+                                config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_720_1280);
+                            }else if(liveConfig.getLiveQuality() == LiveSupportUtils.LIVE_SIZE_1080){
+                                config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1080_1920);
+                            }
+                        }else if(liveConfig.getLivePushType() == LiveConfig.LIVE_PUSH_DATA){
+                            config.setCustomModeType(TXLiveConstants.CUSTOM_MODE_VIDEO_CAPTURE);
+                            config.setVideoEncodeGop(2);
+                            if(liveConfig.getLiveQuality() == LiveSupportUtils.LIVE_SIZE_720){
+                                config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1280_720);
+                            }else if(liveConfig.getLiveQuality() == LiveSupportUtils.LIVE_SIZE_1080){
+                                config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1920_1080);
+                            }
+                        }
+                    }
+                    mTXLivePusher.setConfig(config);
+                    Log.e(TAG, "启动推流");
+                    int ret = mTXLivePusher.startPusher(url);
+                    if (ret == -5) {
+                        String msg = "[LiveRoom] 推流失败[license 校验失败]";
+                        TXCLog.e(TAG, msg);
+                        if (callback != null) callback.onError(MLVBCommonDef.LiveRoomErrorCode.ERROR_LICENSE_INVALID, msg);
+                    }
+                } else {
+                    String msg = "[LiveRoom] 推流失败[TXLivePusher未初始化，请确保已经调用startLocalPreview]";
+                    TXCLog.e(TAG, msg);
+                    if (callback != null) callback.onError(MLVBCommonDef.LiveRoomErrorCode.ERROR_PUSH, msg);
+                }
+            }
+        });
+    }
 
     protected void startPushStream(final String url, final int videoQuality, final StandardCallback callback){
         //在主线程开启推流
@@ -2004,6 +2149,8 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                     mTXLivePusher.setVideoQuality(videoQuality, false, false);
                     // fixme 这里是保证推流前设置都已经设置完成
                     TXLivePushConfig config = mTXLivePusher.getConfig();
+
+                    // fixme
                     config.setCustomModeType(TXLiveConstants.CUSTOM_MODE_VIDEO_CAPTURE);    //使用自定义视频采集
                     Log.e(TAG, "设置自定义视频采集");
                     config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1920_1080);  //设置推流视频分辨率
@@ -3260,7 +3407,6 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                             // 以前的代码我不动
                             mTXLivePlayer.setSurface(view.getmSurface());  // 绑定surface
                             mTXLivePlayer.setSurfaceSize(1920, 1080);
-
                             mTXLivePlayer.startPlay(mixedPlayUrl, playType);
                             if (mHttpRequest != null) {
                                 String userInfo = "";

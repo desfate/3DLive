@@ -1,4 +1,4 @@
-package com.futrtch.live.http;
+package com.futrtch.live.http.flowables;
 
 import androidx.core.util.Pair;
 
@@ -12,7 +12,7 @@ import java.util.HashMap;
 import io.reactivex.rxjava3.core.Flowable;
 import okhttp3.RequestBody;
 
-public class RoomRequestBuilder {
+public class RoomReqFlowable {
     /**
      * 直播间建权
      * @param mUserId 账户id

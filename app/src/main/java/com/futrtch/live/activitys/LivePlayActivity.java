@@ -24,6 +24,7 @@ import com.futrtch.live.tencent.common.msg.TCSimpleUserInfo;
 import com.futrtch.live.tencent.common.utils.TCErrorConstants;
 import com.futrtch.live.tencent.common.utils.TCUtils;
 import com.futrtch.live.tencent.common.widget.RTCUserAvatarListAdapter;
+import com.futrtch.live.tencent.live.LiveMessageCommand;
 import com.futrtch.live.tencent.liveroom.roomutil.commondef.MLVBCommonDef;
 import com.futrtch.live.utils.AnimatorUtils;
 import com.futrtch.live.utils.ToastUtil;
@@ -37,8 +38,8 @@ import java.util.Optional;
 
 import autodispose2.AutoDispose;
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
-import github.com.desfate.livekit.live.LiveMessageCommand;
 
+import github.com.desfate.livekit.ui.LivePlayView;
 /**
  * 直播播放页面
  */

@@ -9,11 +9,18 @@
         android:layout_height="match_parent"
         android:background="@color/color_mine_background">
 
-        <github.com.desfate.livekit.LivePushView
+        <github.com.desfate.livekit.ui.DataLivePushView
             android:id="@+id/anchor_push_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerInParent="true" />
+            android:layout_centerInParent="true"
+            android:visibility="invisible"/>
+
+        <com.tencent.rtmp.ui.TXCloudVideoView
+            android:id="@+id/tx_cloud_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"/>
 
         <!-- 主播空间区 -->
         <RelativeLayout

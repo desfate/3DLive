@@ -9,7 +9,8 @@ import android.util.Log;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.futrtch.live.beans.LoginSaveBean;
-import com.futrtch.live.http.LoginRequestBuilder;
+import com.futrtch.live.http.flowables.AccountReqFlowable;
+import com.futrtch.live.http.flowables.LoginReqFlowable;
 import com.futrtch.live.http.RequestTags;
 import com.futrtch.live.base.ApiException;
 import com.futrtch.live.base.BaseRepository;
@@ -92,7 +93,7 @@ public class LoginRepository extends BaseRepository {
      * @param passWord 密码
      */
     public void loginReq(LifecycleOwner lifecycleOwner, String userName, String passWord) {
-        LoginRequestBuilder.loginFlowable(userName, passWord)
+        LoginReqFlowable.loginFlowable(userName, passWord)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap((Function<BaseResponBean<LoginResponBean>, Flowable<BaseResponBean<AccountInfoBean>>>) loginBean -> {
@@ -110,7 +111,7 @@ public class LoginRepository extends BaseRepository {
                             setToken(loginBean.getData().getToken());  //                                              Token 保存到本地 用于后期请求鉴权
                             setUserId(loginBean.getData().getRoomservice_sign().getUserID());//                        UserId 保存到本地 当前登录的账号
                             initMLVB();//                                                                              初始化直播SDK
-                            return LoginRequestBuilder.accountFlowable(getUserId(), getToken()); //                             请求账户信息
+                            return AccountReqFlowable.accountFlowable(getUserId(), getToken()); //                     请求账户信息
                         } else {
                             return Flowable.error(new ApiException(loginBean.getCode(), loginBean.getMessage()));  // 抛出登录异常  不会继续链式调用
                         }
@@ -163,7 +164,7 @@ public class LoginRepository extends BaseRepository {
      * @param password 密码
      */
     public void registerReq(LifecycleOwner lifecycleOwner,String username, String password) {
-        LoginRequestBuilder.registerFlowable(username, password)
+        LoginReqFlowable.registerFlowable(username, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(lifecycleOwner)))

@@ -53,9 +53,11 @@ versions.liteavSdk = '8.0.9639' // 腾讯直播SDK版本
 // 腾讯云存储服务
 versions.cosxml = '5.4.+'// 腾讯对象存储 cosml
 // 自定义直播采集插件
-versions.livekit = '0.94'
+versions.livekit = '1.01'
 // 内存泄漏查看工具
 versions.leakCanary = "2.5"
+// 错误捕捉
+versions.bugly = "latest.release"
 
 ext.deps = [:]
 deps.android_gradle_plugin = "com.android.tools.build:gradle:$versions.android_gradle_plugin"
@@ -160,6 +162,11 @@ deps.hilt = hilt
 def leakCanary = [:]
 leakCanary.runtime = "com.squareup.leakcanary:leakcanary-android:$versions.leakCanary"
 deps.leakCanary = leakCanary
+
+def bugly = [:]
+bugly.runtime = "com.tencent.bugly:crashreport:$versions.bugly"
+bugly.native = "com.tencent.bugly:nativecrashreport:$versions.bugly"
+deps.bugly = bugly
 
 def addRepos(RepositoryHandler handler) {
     handler.google()

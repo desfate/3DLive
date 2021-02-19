@@ -34,8 +34,10 @@ public class LiveListRepository {
     public void getLiveRoomList(){
         LiveListService.fetchLiveList(liveRoom)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(lifecycleOwner)))
-                .subscribe(listBaseResponBean -> LiveEventBus.get(RequestTags.LIVEROOMLIST_REQ, BaseResponBean.class)
-                        .post(listBaseResponBean));
+                .subscribe(listBaseResponBean -> {
+                    System.out.println("getLiveRoomList");
+                    LiveEventBus.get(RequestTags.LIVEROOMLIST_REQ, BaseResponBean.class).post(listBaseResponBean);
+                });
     }
 
     public void getLiveCareList(){

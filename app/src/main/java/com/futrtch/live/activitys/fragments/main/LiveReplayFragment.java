@@ -18,6 +18,7 @@ import com.futrtch.live.activitys.LiveRecordActivity;
 import com.futrtch.live.adapters.LiveListAdapter;
 import com.futrtch.live.base.BaseResponBean;
 import com.futrtch.live.databinding.FragmentLiveListBinding;
+import com.futrtch.live.databinding.FragmentLiveReplayBinding;
 import com.futrtch.live.databinding.LayoutEmptyListBinding;
 import com.futrtch.live.http.RequestTags;
 import com.futrtch.live.mvvm.MVVMFragment;
@@ -46,7 +47,7 @@ public class LiveReplayFragment extends MVVMFragment {
     LiveListAdapter mAdapter;
     LiveReplayViewModel mViewModel;
 
-    FragmentLiveListBinding mDataBinding;
+    FragmentLiveReplayBinding mDataBinding;
     LayoutEmptyListBinding mEmptyBinding; // 页面为空
 
     public static LiveReplayFragment getInstance(int index){
@@ -60,7 +61,7 @@ public class LiveReplayFragment extends MVVMFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mDataBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_live_list, container, false);
+        mDataBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_live_replay, container, false);
         return mDataBinding.getRoot();
     }
 
@@ -88,26 +89,12 @@ public class LiveReplayFragment extends MVVMFragment {
     }
 
     public void bindUi() {
-        RxView.clicks(mDataBinding.fab)
-                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
-                .subscribe(unit -> mDataBinding.fab.setExpanded(true));
-        RxView.clicks(mDataBinding.scrim)
-                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
-                .subscribe(unit -> mDataBinding.fab.setExpanded(false));
         RxView.clicks(mEmptyBinding.emptyImg)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(unit -> {
                     mDataBinding.swipeLayout.setRefreshing(true);
                     initRequest();
                 });
-        RxView.clicks(mDataBinding.startLive3Btn)
-                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
-                .subscribe(unit -> {
-                    if (TCUtils.checkRecordPermission(getActivity())) {
-                        Objects.requireNonNull(getActivity()).startActivity(new Intent(getActivity(), LiveRecordActivity.class));
-                    }
-                });
-
         mDataBinding.swipeLayout.setOnRefreshListener(() -> mViewModel.onRefresh());
     }
 

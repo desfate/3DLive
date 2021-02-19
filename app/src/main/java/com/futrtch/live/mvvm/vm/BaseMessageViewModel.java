@@ -19,6 +19,7 @@ import com.futrtch.live.tencent.common.msg.TCSimpleUserInfo;
 import com.futrtch.live.tencent.common.utils.TCConstants;
 import com.futrtch.live.tencent.common.widget.TCInputTextMsgDialog;
 import com.futrtch.live.tencent.common.widget.danmaku.TCDanmuMgr;
+import com.futrtch.live.tencent.live.LiveMessageCommand;
 import com.futrtch.live.tencent.liveroom.MLVBLiveRoom;
 import com.futrtch.live.tencent.login.TCUserMgr;
 import com.jeremyliao.liveeventbus.LiveEventBus;
@@ -31,7 +32,6 @@ import java.util.Optional;
 
 import autodispose2.AutoDispose;
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
-import github.com.desfate.livekit.live.LiveMessageCommand;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.ObservableSource;

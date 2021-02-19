@@ -41,10 +41,10 @@ import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 public class FindFriendFragment extends MVVMFragment {
 
     private FragmentFriendListBinding mDataBinding;
+    private LayoutFriendHeadBinding mHeadBinding;
     private FriendListViewModel mViewModel;
     private FriendListAdapter mAdapter;
     private LinearLayoutManager manager;
-    private LayoutFriendHeadBinding mHeadBinding;
 
     public static FindFriendFragment getInstance(int index){
         FindFriendFragment fragment = new FindFriendFragment();
@@ -122,13 +122,10 @@ public class FindFriendFragment extends MVVMFragment {
                     ToastUtil.showToast(getContext(), "全部推荐");
                 });
 
-        mAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                Intent intent = new Intent(getActivity(), UserActivity.class);
-                intent.putExtra(UserViewModel.USER_ID, Objects.requireNonNull(mViewModel.getFriendList()).get(position).getUserName());
-                startActivity(intent);
-            }
+        mAdapter.setOnItemClickListener((adapter, view, position) -> {
+            Intent intent = new Intent(getActivity(), UserActivity.class);
+            intent.putExtra(UserViewModel.USER_ID, Objects.requireNonNull(mViewModel.getFriendList()).get(position).getUserName());
+            startActivity(intent);
         });
 
     }
