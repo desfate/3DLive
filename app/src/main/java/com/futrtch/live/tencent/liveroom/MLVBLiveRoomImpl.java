@@ -56,6 +56,7 @@ import java.util.Vector;
 
 import github.com.desfate.livekit.camera.interfaces.CameraChangeCallback;
 import github.com.desfate.livekit.live.LiveConfig;
+import github.com.desfate.livekit.ui.BaseLiveView;
 import github.com.desfate.livekit.ui.DataLivePushView;
 import github.com.desfate.livekit.ui.LivePlayView;
 import github.com.desfate.livekit.utils.LiveSupportUtils;
@@ -568,6 +569,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             }
         });
     }
+
 
     /**
      * 进入房间（观众调用）
@@ -1400,7 +1402,6 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                 view.setVisibility(View.VISIBLE);
                 player.setPlayerView(view);
                 player.enableHardwareDecode(true);
-                player.setRenderMode(TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
 
                 PlayerItem anchorPlayer = new PlayerItem(view, anchorInfo, player);
                 mPlayers.put(anchorInfo.userID, anchorPlayer);
@@ -2074,7 +2075,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                         if (ratio > 1.3f) {
                             mTXLivePlayer.setRenderMode(TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
                         } else {
-                            mTXLivePlayer.setRenderMode(TXLiveConstants.RENDER_MODE_ADJUST_RESOLUTION);
+                            mTXLivePlayer.setRenderMode(TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
                         }
                     }
                 }
@@ -2101,6 +2102,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                     mTXLivePushListener.setCallback(callback);
                     mTXLivePusher.setVideoQuality(videoQuality, false, false);
                     // fixme 这里是保证推流前设置都已经设置完成
+                    // 这里定义清晰度
                     TXLivePushConfig config = mTXLivePusher.getConfig();
                     if(liveConfig != null){
                         if(liveConfig.getLivePushType() == LiveConfig.LIVE_PUSH_TEXTURE){  //  数据推流模式
@@ -2110,6 +2112,9 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                                 config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_720_1280);
                             }else if(liveConfig.getLiveQuality() == LiveSupportUtils.LIVE_SIZE_1080){
                                 config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1080_1920);
+                            }else{
+                                // 只支持后置拍摄
+                                config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1920_1080);
                             }
                         }else if(liveConfig.getLivePushType() == LiveConfig.LIVE_PUSH_DATA){
                             config.setCustomModeType(TXLiveConstants.CUSTOM_MODE_VIDEO_CAPTURE);
@@ -2117,6 +2122,9 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                             if(liveConfig.getLiveQuality() == LiveSupportUtils.LIVE_SIZE_720){
                                 config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1280_720);
                             }else if(liveConfig.getLiveQuality() == LiveSupportUtils.LIVE_SIZE_1080){
+                                config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1920_1080);
+                            }else{
+                                // 只支持后置拍摄
                                 config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1920_1080);
                             }
                         }
@@ -3369,7 +3377,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
      * @param callback 进入房间的结果回调
      */
     @Override
-    public void enterRoom(final String roomID, final LivePlayView view, final IMLVBLiveRoomListener.EnterRoomCallback callback) {
+    public void enterRoom(final String roomID, final BaseLiveView view, final IMLVBLiveRoomListener.EnterRoomCallback callback) {
         TXCLog.i(TAG, "API -> enterRoom:" + roomID);
         if (roomID == null || roomID.length() == 0) {
             callbackOnThread(callback, "onError", MLVBCommonDef.LiveRoomErrorCode.ERROR_PARAMETERS_INVALID, "[LiveRoom] 进房失败[房间号为空]");
@@ -3406,7 +3414,11 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                             //此功能为高级特性，除非您需要使用该特性，否则建议您使用 setPlayerView(TXCloudVideoView)。
                             // 以前的代码我不动
                             mTXLivePlayer.setSurface(view.getmSurface());  // 绑定surface
-                            mTXLivePlayer.setSurfaceSize(1920, 1080);
+                            mTXLivePlayer.setSurfaceSize(1920, 1088);
+                            mTXLivePlayer.setRenderMode(TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
+//                            mTXLivePlayer.setRenderRotation(TXLiveConstants.RENDER_ROTATION_PORTRAIT);
+
+//
                             mTXLivePlayer.startPlay(mixedPlayUrl, playType);
                             if (mHttpRequest != null) {
                                 String userInfo = "";
@@ -3429,6 +3441,22 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             }
         });
     }
+
+    @Override
+    public void setPlaySurfaceSize(int width, int height) {
+        if(mTXLivePlayer != null){
+            mTXLivePlayer.setSurfaceSize(width, height);
+        }
+    }
+
+    @Override
+    public void setPlayScreenType(int type) {
+        if(mTXLivePlayer != null){
+            mTXLivePlayer.setRenderRotation(type);    // 设置图像渲染角度 竖屏：播放是竖屏播放的时候使用。  横屏：播放是横屏播放的时候使用。
+        }
+    }
+
+
 
     private void callbackOnThread(final Object object, final String methodName, final Object... args) {
         if (object == null || methodName == null || methodName.length() == 0) {

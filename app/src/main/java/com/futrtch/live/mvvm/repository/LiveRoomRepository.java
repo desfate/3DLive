@@ -21,6 +21,7 @@ import org.reactivestreams.Subscription;
 import autodispose2.AutoDispose;
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import github.com.desfate.livekit.live.LiveConfig;
+import github.com.desfate.livekit.ui.BaseLiveView;
 import github.com.desfate.livekit.ui.LivePlayView;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
@@ -49,7 +50,7 @@ public class LiveRoomRepository {
      */
     public void createRoom(MutableLiveData liveState, MLVBLiveRoom mLiveRoom, String liveTitle, String liveCover, String location, LiveConfig liveConfig) {
         Flowable.create((FlowableOnSubscribe<RoomCreateResponseBean>) emitter -> mLiveRoom.createRoom(//      创建房间请求
-                "",
+                "10089",
                 LiveRoomReqUtils.toRoomInfoString(liveTitle, liveCover, location),
                 liveConfig,
                 new IMLVBLiveRoomListener.CreateRoomCallback() {
@@ -114,7 +115,7 @@ public class LiveRoomRepository {
      * @param mLivePlayView
      * @param liveState
      */
-    public void enterRoom(MLVBLiveRoom mLiveRoom, LivePlayView mLivePlayView, MutableLiveData liveState, String groupId) {
+    public void enterRoom(MLVBLiveRoom mLiveRoom, BaseLiveView mLivePlayView, MutableLiveData liveState, String groupId) {
         Flowable.create((FlowableOnSubscribe<RoomCreateResponseBean>) emitter ->
                 mLiveRoom.enterRoom(groupId, mLivePlayView, new IMLVBLiveRoomListener.EnterRoomCallback() {
                     @Override

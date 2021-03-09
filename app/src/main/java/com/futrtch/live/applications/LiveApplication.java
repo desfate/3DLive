@@ -23,7 +23,7 @@ public class LiveApplication extends MultiDexApplication {
         super.onCreate();
         initSDK();
 
-        CrashReport.initCrashReport(getApplicationContext(), "b0aa43dc1c", false);  // 异常上报
+        CrashReport.initCrashReport(getApplicationContext(), "3048fae6fc", false);  // 异常上报
 
         LiveEventBus
                 .config()

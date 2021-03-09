@@ -1,5 +1,6 @@
 package com.futrtch.live.activitys.fragments.main;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -24,6 +25,7 @@ import com.futrtch.live.adapters.BannerImageAdapter;
 import com.futrtch.live.adapters.LiveListAdapter;
 import com.futrtch.live.anims.CustomAnimDown;
 import com.futrtch.live.base.BaseResponBean;
+import com.futrtch.live.configs.Constants;
 import com.futrtch.live.databinding.FragmentLiveListBinding;
 import com.futrtch.live.databinding.LayoutBannerBinding;
 import com.futrtch.live.databinding.LayoutEmptyListBinding;
@@ -123,11 +125,22 @@ public class LiveListFragment extends MVVMFragment {
                     mViewModel.getIsRefresh().postValue(true);
                     initRequest();
                 });
+        RxView.clicks(mDataBinding.startLive2Btn)
+                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .subscribe(unit -> {
+                    if (TCUtils.checkRecordPermission(getActivity())) {
+                        Intent M2dIntent = new Intent(getActivity(), LiveRecordActivity.class);
+                        M2dIntent.putExtra(Constants.INTENT_LIVE_TYPE, Constants.LIVE_TYPE_2D);
+                        Objects.requireNonNull(getActivity()).startActivity(M2dIntent);
+                    }
+                });
         RxView.clicks(mDataBinding.startLive3Btn)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(unit -> {
                     if (TCUtils.checkRecordPermission(getActivity())) {
-                        Objects.requireNonNull(getActivity()).startActivity(new Intent(getActivity(), LiveRecordActivity.class));
+                        Intent M2dIntent = new Intent(getActivity(), LiveRecordActivity.class);
+                        M2dIntent.putExtra(Constants.INTENT_LIVE_TYPE, Constants.LIVE_TYPE_3D);
+                        Objects.requireNonNull(getActivity()).startActivity(M2dIntent);
                     }
                 });
         mAdapter.setOnItemClickListener((adapter, view, position) -> {
@@ -147,13 +160,14 @@ public class LiveListFragment extends MVVMFragment {
             intent.putExtra(TCConstants.COVER_PIC, info.frontCover);
             intent.putExtra(TCConstants.TIMESTAMP, info.createTime);
             intent.putExtra(TCConstants.ROOM_TITLE, info.title);
-            Pair<View,String> pair1 = new Pair<>((View)binding.anchorBtnCover, ViewCompat.getTransitionName(binding.anchorBtnCover));
-            Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()), pair1).toBundle();
-            getActivity().startActivity(intent,bundle);
+//            Pair<View,String> pair1 = new Pair<>((View)binding.anchorBtnCover, ViewCompat.getTransitionName(binding.anchorBtnCover));
+//            Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()), pair1).toBundle();
+            getActivity().startActivity(intent);
         });
         mDataBinding.swipeLayout.setOnRefreshListener(() -> mViewModel.onRefresh());
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void subscribeUi() {
         // 收到列表数据返回
         LiveEventBus.get(RequestTags.LIVEROOMLIST_REQ, BaseResponBean.class)
@@ -162,6 +176,7 @@ public class LiveListFragment extends MVVMFragment {
                         mViewModel.getIsRefresh().postValue(false);
                         mViewModel.getListData().clear();
                         mViewModel.getListData().addAll((List<TCVideoInfo>) baseResponBean.getData());
+                        mAdapter.notifyDataSetChanged();
                     }
                 });
         mViewModel.getIsRefresh().observe(this, aBoolean -> mDataBinding.swipeLayout.setRefreshing(aBoolean));

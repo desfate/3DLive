@@ -16,6 +16,7 @@ import com.tencent.rtmp.ui.TXCloudVideoView;
 
 import github.com.desfate.livekit.camera.interfaces.CameraChangeCallback;
 import github.com.desfate.livekit.live.LiveConfig;
+import github.com.desfate.livekit.ui.BaseLiveView;
 import github.com.desfate.livekit.ui.DataLivePushView;
 import github.com.desfate.livekit.ui.LivePlayView;
 
@@ -777,7 +778,7 @@ public abstract class MLVBLiveRoom {
      * @param callback 进入房间的结果回调
      *
      */
-    public abstract void enterRoom(final String roomID, final LivePlayView view, final IMLVBLiveRoomListener.EnterRoomCallback callback);
+    public abstract void enterRoom(final String roomID, final BaseLiveView view, final IMLVBLiveRoomListener.EnterRoomCallback callback);
 
     /**
      * 直播中视频大小可能会变化 通过这个接口回调信息
@@ -798,5 +799,18 @@ public abstract class MLVBLiveRoom {
      * @param liveConfig 直播配置
      */
     public abstract void createRoom(final String roomID, final String roomInfo, LiveConfig liveConfig, final IMLVBLiveRoomListener.CreateRoomCallback callback);
+
+    /**
+     * 设置播放surfaceView的大小
+     * @param width 宽
+     * @param height 高
+     */
+    public abstract void setPlaySurfaceSize(int width, int height);
+
+    /**
+     * 设置当前播放类型
+     * @param type 横屏/竖屏
+     */
+    public abstract void setPlayScreenType(int type);
 
 }

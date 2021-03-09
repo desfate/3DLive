@@ -12,6 +12,7 @@ import com.chad.library.adapter.base.viewholder.BaseDataBindingHolder;
 import com.futrtch.live.databinding.ListviewVideoItemBinding;
 import com.futrtch.live.tencent.common.utils.TCUtils;
 import com.futrtch.live.tencent.live.TCVideoInfo;
+import com.futrtch.live.utils.RandomUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -30,9 +31,14 @@ public class LiveListAdapter extends BaseQuickAdapter<TCVideoInfo, BaseDataBindi
         if(binding == null || info == null) return;
 
         ViewCompat.setTransitionName(binding.anchorBtnCover, "btn");
+
         //直播封面
-        String cover = info.frontCover;
-        binding.anchorBtnCover.setImageResource(Integer.parseInt(info.frontCover));
+//        String cover = info.frontCover;
+        String cover = RandomUtils.RandomStringPic();
+        info.frontCover = cover;
+        if(!cover.isEmpty()) {
+            binding.anchorBtnCover.setImageResource(RandomUtils.RandomPic());
+        }
 
         //主播头像
         //主播昵称

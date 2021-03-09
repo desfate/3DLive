@@ -51,13 +51,13 @@ public abstract class MVVMFragment extends Fragment {
         initViewModel();
         init();
         subscribeUi();
-        initRequest();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         bindUi();
+        initRequest();
     }
 
     @Override

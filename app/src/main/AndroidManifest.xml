@@ -50,17 +50,25 @@
 
         <activity
             android:name=".activitys.LivePlayActivity"
-            android:configChanges="keyboardHidden|orientation"></activity>
+            android:screenOrientation="landscape">
+<!--            android:screenOrientation="landscape">-->
+
+        </activity>
 
         <activity
             android:name=".activitys.LiveRecordActivity"
-            android:configChanges="keyboardHidden|orientation"></activity>
+            android:screenOrientation="landscape">
+        </activity>
 
         <activity android:name=".activitys.LoginActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+
+        </activity>
 
         <activity android:name=".activitys.RegisterActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+
+        </activity>
 
         <activity android:name=".activitys.EditActivity"></activity>
 
@@ -77,7 +85,8 @@
         <activity android:name=".activitys.ChatActivity"></activity>
         <activity
             android:name=".activitys.SplashActivity"
-            android:theme="@style/AppTheme.Splash">
+            android:theme="@style/AppTheme.Splash"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

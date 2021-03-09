@@ -10,12 +10,14 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.TextureView;
+import android.view.View;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
 import com.futrtch.live.R;
 import com.futrtch.live.activitys.BaseIMLVBActivity;
+import com.futrtch.live.configs.Constants;
 import com.futrtch.live.databinding.ActivityRecordBinding;
 import com.futrtch.live.mvvm.repository.LiveRoomRepository;
 import com.futrtch.live.mvvm.repository.LoginRepository;
@@ -32,6 +34,8 @@ import com.tencent.rtmp.TXLivePusher;
 import java.util.List;
 import java.util.Locale;
 
+import github.com.desfate.livekit.dual.CameraSetting;
+import github.com.desfate.livekit.dual.M3dConfig;
 import github.com.desfate.livekit.live.LiveCallBack;
 import github.com.desfate.livekit.live.LiveConfig;
 import github.com.desfate.livekit.live.LivePushControl;
@@ -50,10 +54,11 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
 
     /***********************************************  Data *********************************************************/
     private final LiveRoomRepository mRepository;//                                             直播推流 数据仓库
-    String liveTitle = "直播测试2"; //                                                                        直播标题
+    String liveTitle = LoginRepository.getInstance().getUserId(); //                                                           直播标题 fixme 暂时写死
     String liveCover; //                                                                        直播图片
     String location;  //                                                                        直播位置信息
     private LiveConfig liveConfig;
+    private int liveType; //                                                                    直播类型
     /***********************************************  LiveData ******************************************************/
     MutableLiveData<Integer> liveState = new MutableLiveData<>();  //                           直播状态
     /***********************************************  用于直播控制的  *************************************************/
@@ -69,8 +74,9 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
      * @param activity     上下文
      * @param timeCallBack 直播时长计时器回调
      * @param binding      视图
+     * @param liveType     直播类型 1：2d 2：3d
      */
-    public void prepareRecord(BaseIMLVBActivity activity, BroadcastTimerTask.TimeCallBack timeCallBack, ActivityRecordBinding binding) {
+    public void prepareRecord(BaseIMLVBActivity activity, BroadcastTimerTask.TimeCallBack timeCallBack, ActivityRecordBinding binding, int liveType) {
         timerTask = new BroadcastTimerTask(activity);
         timerTask.setTimeCallBack(timeCallBack);
         mErrDlgFragment = new ErrorDialogFragment();
@@ -79,6 +85,7 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
                 , LoginRepository.getInstance().getLoginInfo().getmUserAvatar()
                 , LoginRepository.getInstance().getUserId()
                 , LoginRepository.getInstance().getUserId());
+        this.liveType = liveType;
     }
 
     /**
@@ -89,11 +96,12 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
     public void bindView(Context context, ActivityRecordBinding mDataBinding) {
         animatorUtils = new AnimatorUtils(mDataBinding.layoutLivePusherInfo.anchorIvRecordBall);   //                         录制原点的view
         liveConfig = new LiveConfig();
-        liveConfig.setLiveQuality(LiveSupportUtils.LIVE_SIZE_720);  //  设置分辨率
-        liveConfig.setLivePushType(LiveConfig.LIVE_PUSH_TEXTURE);  //   设置推送模式
-        liveConfig.setPushCameraType(LiveConfig.LIVE_CAMERA_FRONT);//   设置摄像头
+        liveConfig.setLiveQuality(LiveSupportUtils.LIVE_SIZE_2560);  //  设置分辨率
+        liveConfig.setLivePushType(LiveConfig.LIVE_PUSH_DATA);  //   设置推送模式
+        liveConfig.setPushCameraType(LiveConfig.LIVE_CAMERA_DUAL);//   设置摄像头
+        CameraSetting.getInstance().setPreviewType(M3dConfig.Preview_type.PREVIEW_16TO9); // 设置16:9的模式
         // 这里做自己本地预览和开启摄像头的工作
-        if(liveConfig.getLivePushType() == LiveConfig.LIVE_PUSH_TEXTURE){
+        if (liveConfig.getLivePushType() == LiveConfig.LIVE_PUSH_TEXTURE) {
             TextureView textureView = new TextureView(context);
             control = new LivePushControl.LivePushControlBuilder()
                     .setContext(context)
@@ -113,10 +121,13 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
                         }
                     }).build();
             mDataBinding.txCloudView.addVideoView(textureView);//        绑定本地预览UI
-        }else if(liveConfig.getLivePushType() == LiveConfig.LIVE_PUSH_DATA){
+            mDataBinding.txCloudView.setVisibility(View.VISIBLE);
+            mDataBinding.anchorPushView.setVisibility(View.INVISIBLE);
+        } else if (liveConfig.getLivePushType() == LiveConfig.LIVE_PUSH_DATA) {
+            mDataBinding.txCloudView.setVisibility(View.INVISIBLE);
+            mDataBinding.anchorPushView.setVisibility(View.VISIBLE);
             mDataBinding.anchorPushView.init(
                     liveConfig,
-                    mDataBinding.rootLayout,
                     new LiveCallBack() {
                         @Override
                         public void startPushByData(byte[] buffer, int w, int h) {
@@ -146,27 +157,32 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
     /**
      * 切换相机
      *
-     * @param activity     上下文
+     * @param activity 上下文
      */
     public void switchCamera(Activity activity) {
         //fixme 通过文字消息通知观众 主播正在进行前后摄像头切换 用户也要跟随进行切换
-        if (control.getCameraState() == LiveConfig.LIVE_CAMERA_FRONT) {
-            onTextSend(activity, LiveMessageCommand.addCommand(LiveMessageCommand.SWITCH_CAMERA_BACK), false);
-        } else {
-            onTextSend(activity, LiveMessageCommand.addCommand(LiveMessageCommand.SWITCH_CAMERA_FRONT), false);
-        }
-        if (control.getCameraState() == LiveConfig.LIVE_CAMERA_FRONT) {
+        // FIXME: 2021/3/5 现在这个版本 3D模式下不支持前置摄像头  所以如果是3D情况下直接使用后置横屏的模式
+        if (liveType == Constants.LIVE_TYPE_3D) {
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);  // 切换为横屏
         } else {
-            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);  // 切换为竖屏
+            if (control.getCameraState() == LiveConfig.LIVE_CAMERA_FRONT) {
+                onTextSend(activity, LiveMessageCommand.addCommand(LiveMessageCommand.SWITCH_CAMERA_BACK), false);
+            } else {
+                onTextSend(activity, LiveMessageCommand.addCommand(LiveMessageCommand.SWITCH_CAMERA_FRONT), false);
+            }
+            if (control.getCameraState() == LiveConfig.LIVE_CAMERA_FRONT) {
+                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);  // 切换为横屏
+            } else {
+                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);  // 切换为竖屏
+            }
+            control.switchCamera();
         }
-        control.switchCamera();
     }
 
     /**
-     * 开始推流
+     * 准备推流
      */
-    public void startPush(BaseIMLVBActivity activity) {
+    public void preparePush(BaseIMLVBActivity activity) {
         mLiveRoom.setListener(activity);
         mLiveRoom.setCameraMuteImage(BitmapFactory.decodeResource(activity.getResources(), R.mipmap.pause_publish));
         mLiveRoom.startLocalPreview(true, null); // 初始化pusher
@@ -176,15 +192,15 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
     /**
      * 开始预览
      */
-    public void startPreview(){
-        if(control != null) control.startPreview();
+    public void startPreview() {
+        if (control != null) control.startPreview();
     }
 
     /**
      * 开始推送
      */
-    public void startPush(){
-        if(control != null) control.startPush();
+    public void startPush() {
+        if (control != null) control.startPush();
     }
 
     /**
@@ -297,7 +313,7 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
         return currentAudienceList;
     }
 
-    public LiveConfig getLiveConfig(){
+    public LiveConfig getLiveConfig() {
         return liveConfig;
     }
 
@@ -310,7 +326,7 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
             mDanMuMgr = null;
         }
         animatorUtils.release();  // 动画释放
-        if(control != null) control.releaseRes();
+        if (control != null) control.releaseRes();
     }
 
 

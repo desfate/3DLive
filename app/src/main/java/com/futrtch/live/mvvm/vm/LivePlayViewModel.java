@@ -28,7 +28,9 @@ import com.futrtch.live.utils.PressTimeControl;
 
 import java.util.List;
 
+import github.com.desfate.livekit.ui.BaseLiveView;
 import github.com.desfate.livekit.ui.DataLivePushView;
+import github.com.desfate.livekit.ui.DualLivePlayView;
 import github.com.desfate.livekit.ui.LivePlayView;
 import master.flame.danmaku.controller.IDanmakuView;
 
@@ -95,12 +97,12 @@ public class LivePlayViewModel extends BaseMessageViewModel {
     /**
      * 开始观看直播
      */
-    public void startLivePlay(LivePlayView mLivePlayView, IMLVBLiveRoomListener listener) {
+    public void startLivePlay(DualLivePlayView mLivePlayView, IMLVBLiveRoomListener listener) {
         if (mPlaying) return;
         if (mLiveRoom == null) return;
         mLiveRoom.setSelfProfile(livePlayBean.getmNickname(), livePlayBean.getmAvatar());
         mLiveRoom.setListener(listener);
-        mLiveRoom.setPlayViewChange(mLivePlayView.getVideoChange());
+//        mLiveRoom.setPlayViewChange(mLivePlayView.getVideoChange());
         mRepository.enterRoom(mLiveRoom, mLivePlayView, liveState, livePlayBean.getmGroupId());  // 进入房间
         mPlaying = true;
     }
@@ -190,6 +192,14 @@ public class LivePlayViewModel extends BaseMessageViewModel {
 
     public Size getLiveSize(){
         return mLiveRoom.getPlaySize();
+    }
+
+    public void setSurfaceSize(int width, int height){
+        if(mLiveRoom != null) mLiveRoom.setPlaySurfaceSize(width, height);
+    }
+
+    public void setScreenType(int type){
+        if(mLiveRoom != null) mLiveRoom.setPlayScreenType(type);
     }
 
     public TCSwipeAnimationController getSwipControl(){

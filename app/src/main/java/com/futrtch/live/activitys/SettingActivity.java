@@ -41,7 +41,7 @@ public class SettingActivity extends MVVMActivity {
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                System.out.println(mViewModel.getmListData().get(position));
+//                System.out.println(mViewModel.getmListData().get(position));
             }
         });
         mAdapter.addFooterView(getFootView());

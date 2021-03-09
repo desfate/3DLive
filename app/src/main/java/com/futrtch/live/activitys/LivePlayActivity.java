@@ -7,6 +7,8 @@ import android.util.DisplayMetrics;
 import android.util.Size;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
@@ -29,7 +31,9 @@ import com.futrtch.live.tencent.liveroom.roomutil.commondef.MLVBCommonDef;
 import com.futrtch.live.utils.AnimatorUtils;
 import com.futrtch.live.utils.ToastUtil;
 import com.futrtch.live.utils.TransitionUtils;
+import com.future.Holography.Holography;
 import com.jakewharton.rxbinding4.view.RxView;
+import com.tencent.rtmp.TXLiveConstants;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -53,11 +57,14 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
     private RTCUserAvatarListAdapter mAvatarListAdapter;  // 头像列表适配器
     private TCChatMsgListAdapter mChatMsgListAdapter;    // 消息列表的Adapter
 
-    private AnimatorUtils animatorUtils;
+//    private AnimatorUtils animatorUtils;
 
     @Override
     public void initViewModel() {
         super.setLiveRoomCallBack(this);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);  //                      全屏
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_live);
         ViewModelProvider.Factory factory = new LivePlayViewModelFactory(getApplication(), this);
         mViewModel = ViewModelProviders.of(this, factory).get(LivePlayViewModel.class);
@@ -65,8 +72,7 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
 
     @Override
     public void init() {
-
-        TransitionUtils.setTransitionAnim(mDataBinding.audienceBackground, getWindow(), TRANSITION_NAME_IMAGE); // 设置过场动画
+//        TransitionUtils.setTransitionAnim(mDataBinding.audienceBackground, getWindow(), TRANSITION_NAME_IMAGE); // 设置过场动画
         mViewModel.getIntentData(getIntent()); //   拿到主播相关数据
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -78,9 +84,9 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
         mDataBinding.imMsgListview.setVisibility(View.VISIBLE);
         mViewModel.prepareLive(this, mDataBinding.anchorDanmakuView, mDataBinding.anchorControlLayer);  // 直播前准备
         mViewModel.startLivePlay(mDataBinding.anchorPlayView, this);
-
-        int pic = Integer.parseInt(getIntent().getStringExtra("btn"));
-        mDataBinding.audienceBackground.setImageResource(pic);
+        mDataBinding.anchorPlayView.setFrontChange(false);
+//        int pic = Integer.parseInt(getIntent().getStringExtra("btn"));
+//        mDataBinding.audienceBackground.setImageResource(pic);
     }
 
     @Override
@@ -111,6 +117,9 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
         RxView.clicks(mDataBinding.btnMessageInput)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(unit -> mViewModel.showInputMsgDialog(LivePlayActivity.this));
+
+        RxView.clicks(mDataBinding.btnMore).to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .subscribe(unit -> switchWatchModel(LiveMessageCommand.SWITCH_CAMERA_BACK));
     }
 
     @Override
@@ -119,11 +128,11 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
             switch (integer) {
                 case TCErrorConstants.SUCCESS_CUSTOMER_IN_ROOM:  //                 进入LiveRoom成功
                     mDataBinding.anchorPlayView.setVisibility(View.VISIBLE);//      解决白色闪屏问题
-                    mDataBinding.audienceBackground.setVisibility(View.INVISIBLE);
+//                    mDataBinding.audienceBackground.setVisibility(View.INVISIBLE);
                     break;
                 case TCErrorConstants.ERROR_CUSTOMER_IN_ROOM_ERROR: //              进入LiveRoom失败
                     mDataBinding.anchorPlayView.setVisibility(View.INVISIBLE);
-                    mDataBinding.audienceBackground.setVisibility(View.VISIBLE);
+//                    mDataBinding.audienceBackground.setVisibility(View.VISIBLE);
                     mViewModel.showErrorAndQuit(TCErrorConstants.getErrorInfo(integer), LivePlayActivity.this);
                     break;
             }
@@ -209,32 +218,6 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
     @Override
     public void onConfigurationChanged(@NotNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        DisplayMetrics mDisplayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
-        int W = mDisplayMetrics.widthPixels;
-        int H = mDisplayMetrics.heightPixels;
-        Size playSize = mViewModel.getLiveSize();
-        if(getResources() == null || getResources().getConfiguration() == null) return;
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            // 这个大小要根据推过来的视频流进行变换
-            if (playSize != null) {
-                // 当前是横屏状态
-                mDataBinding.anchorPlayView.getLayoutParams().height = H;
-                mDataBinding.anchorPlayView.getLayoutParams().width = H
-                        * (Math.max(playSize.getWidth(), playSize.getHeight()))
-                        / (Math.min(playSize.getWidth(), playSize.getHeight()));
-            }
-            // land do nothing is ok
-        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            // port do nothing is ok
-            // 当前是竖屏状态
-            if (playSize != null) {
-                mDataBinding.anchorPlayView.getLayoutParams().width = W;
-                mDataBinding.anchorPlayView.getLayoutParams().height = W
-                        * (Math.max(playSize.getWidth(), playSize.getHeight()))
-                        / (Math.min(playSize.getWidth(), playSize.getHeight()));
-            }
-        }
     }
 
     @Override
@@ -252,7 +235,8 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
     protected void onDestroy() {
         super.onDestroy();
         mViewModel.release();
-        Optional.ofNullable(animatorUtils).ifPresent(AnimatorUtils::release);
+//        Optional.ofNullable(animatorUtils).ifPresent(AnimatorUtils::release);
+        Holography.deinitHolography();
         Optional.ofNullable(ToastUtil.mToast).ifPresent(Toast::cancel);
     }
 }

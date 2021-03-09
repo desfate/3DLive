@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.futrtch.live.R;
 import com.futrtch.live.base.BaseResponBean;
+import com.futrtch.live.configs.Constants;
 import com.futrtch.live.databinding.ActivityRecordBinding;
 import com.futrtch.live.http.RequestTags;
 import com.futrtch.live.interfaces.LiveRoomCallBack;
@@ -26,6 +29,7 @@ import com.futrtch.live.tencent.common.utils.TCUtils;
 import com.futrtch.live.tencent.common.widget.RTCUserAvatarListAdapter;
 import com.futrtch.live.tencent.liveroom.roomutil.commondef.MLVBCommonDef;
 import com.futrtch.live.utils.BroadcastTimerTask;
+import com.future.Holography.Holography;
 import com.jakewharton.rxbinding4.view.RxView;
 import com.jeremyliao.liveeventbus.LiveEventBus;
 
@@ -61,6 +65,9 @@ public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCal
     public void initViewModel() {
         super.setLiveRoomCallBack(this);
         ViewModelProvider.Factory factory = new LiveRecordViewModelFactory(getApplication(), this);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);  //                      全屏
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mViewModel = ViewModelProviders.of(this, factory).get(LiveRecordViewModel.class);
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_record);
     }
@@ -82,11 +89,16 @@ public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCal
         mDataBinding.imMsgListview.setAdapter(mChatMsgListAdapter);
         mDataBinding.imMsgListview.setVisibility(View.VISIBLE);
 
-        mViewModel.bindView(this, mDataBinding); //                                        绑定view 和 viewModel
-        mViewModel.prepareRecord(this, callBack, mDataBinding); //           初始化必要控件
-        mViewModel.startPush(this);//                                        开始推送
-        mViewModel.startPreview();//                                                 开启预览
-        mViewModel.startPush();//                                                    开始推流
+
+        mViewModel.bindView(this, mDataBinding); //                                       绑定view 和 viewModel
+        mViewModel.prepareRecord(this,
+                callBack,
+                mDataBinding,
+                getIntent().getIntExtra(Constants.INTENT_LIVE_TYPE, Constants.LIVE_TYPE_3D)); //    初始化必要控件 默认3d
+        mViewModel.preparePush(this);//                                                  开始准备推流
+        mViewModel.switchCamera(this);
+        mViewModel.startPreview();//                                                                开启预览
+        mViewModel.startPush();//                                                                   开始推流
     }
 
     @Override
@@ -151,6 +163,7 @@ public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCal
         super.onDestroy();
         mViewModel.stopPush();
         mViewModel.release();
+        Holography.deinitHolography();
     }
 
     @Override
@@ -161,30 +174,30 @@ public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCal
     @Override
     public void onConfigurationChanged(@NotNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        DisplayMetrics mDisplayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
-        int W = mDisplayMetrics.widthPixels;
-        int H = mDisplayMetrics.heightPixels;
-        if(getResources() == null || getResources().getConfiguration() == null) return;
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if(mViewModel.getLiveConfig().getLivePushType() == LiveConfig.LIVE_PUSH_TEXTURE){
-//                mDataBinding.txCloudView.getLayoutParams().width = W;
-//                mDataBinding.txCloudView.getLayoutParams().height = H;
-            }else{
-                mDataBinding.anchorPushView.getLayoutParams().width = W;
-                mDataBinding.anchorPushView.getLayoutParams().height = H;
-            }
-            // land do nothing is ok
-        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            if(mViewModel.getLiveConfig().getLivePushType() == LiveConfig.LIVE_PUSH_TEXTURE) {
-//                mDataBinding.txCloudView.getLayoutParams().width = W;
-//                mDataBinding.txCloudView.getLayoutParams().height = H;
-            }else {
-                // port do nothing is ok
-                mDataBinding.anchorPushView.getLayoutParams().width = W;
-                mDataBinding.anchorPushView.getLayoutParams().height = H;
-            }
-        }
+//        DisplayMetrics mDisplayMetrics = new DisplayMetrics();
+//        getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
+//        int W = mDisplayMetrics.widthPixels;
+//        int H = mDisplayMetrics.heightPixels;
+//        if(getResources() == null || getResources().getConfiguration() == null) return;
+//        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            if(mViewModel.getLiveConfig().getLivePushType() == LiveConfig.LIVE_PUSH_TEXTURE){
+////                mDataBinding.txCloudView.getLayoutParams().width = W;
+////                mDataBinding.txCloudView.getLayoutParams().height = H;
+//            }else{
+//                mDataBinding.anchorPushView.getLayoutParams().width = W;
+//                mDataBinding.anchorPushView.getLayoutParams().height = H;
+//            }
+//            // land do nothing is ok
+//        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//            if(mViewModel.getLiveConfig().getLivePushType() == LiveConfig.LIVE_PUSH_TEXTURE) {
+////                mDataBinding.txCloudView.getLayoutParams().width = W;
+////                mDataBinding.txCloudView.getLayoutParams().height = H;
+//            }else {
+//                // port do nothing is ok
+//                mDataBinding.anchorPushView.getLayoutParams().width = W;
+//                mDataBinding.anchorPushView.getLayoutParams().height = H;
+//            }
+//        }
     }
 
     @Override
