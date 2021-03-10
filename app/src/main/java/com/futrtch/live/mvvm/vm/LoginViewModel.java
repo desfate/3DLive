@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.futrtch.live.beans.LoginSaveBean;
 import com.futrtch.live.mvvm.repository.LoginRepository;
 import com.futrtch.live.tencent.common.utils.TCUtils;
 
@@ -32,6 +33,7 @@ public class LoginViewModel extends ViewModel {
     public LoginViewModel(LoginRepository repository,LifecycleOwner lifecycleOwner) {
         this.repository = repository;
         this.lifecycleOwner = lifecycleOwner;
+        LoginRepository.getInstance().loadUserInfo();
     }
 
     /**
@@ -45,6 +47,13 @@ public class LoginViewModel extends ViewModel {
             loginState.postValue(ERROR_CUSTOMER_SUCCESS_PASS);
             repository.loginReq(lifecycleOwner, userName, passWord);
         }
+    }
+
+    /**
+     * 获取上次登录的账号密码
+     */
+    public LoginSaveBean loadUserInfo(){
+        return LoginRepository.getInstance().getLoginInfo();
     }
 
     /**

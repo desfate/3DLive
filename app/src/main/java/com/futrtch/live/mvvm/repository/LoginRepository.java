@@ -68,7 +68,7 @@ public class LoginRepository extends BaseRepository {
         loadUserInfo(); //  是否有缓存账号数据
     }
 
-    private void loadUserInfo() {
+    public void loadUserInfo() {
         if (mContext == null) return;
         TXLog.d(TAG, "xzb_process: load local user info");
         SharedPreferences settings = mContext.getSharedPreferences("TCUserInfo", Context.MODE_PRIVATE);
@@ -110,6 +110,8 @@ public class LoginRepository extends BaseRepository {
                                 && loginBean.getData().getRoomservice_sign().getUserID() != null) {
                             setToken(loginBean.getData().getToken());  //                                              Token 保存到本地 用于后期请求鉴权
                             setUserId(loginBean.getData().getRoomservice_sign().getUserID());//                        UserId 保存到本地 当前登录的账号
+                            loginSaveBean.setmUserId(userName);
+                            loginSaveBean.setmUserPwd(passWord);
                             initMLVB();//                                                                              初始化直播SDK
                             return AccountReqFlowable.accountFlowable(getUserId(), getToken()); //                     请求账户信息
                         } else {
@@ -219,6 +221,7 @@ public class LoginRepository extends BaseRepository {
             @Override
             public void onSuccess() {
                 Log.i(TAG, "MLVB init onSuccess: ");
+                saveUserInfo();
             }
         });
     }

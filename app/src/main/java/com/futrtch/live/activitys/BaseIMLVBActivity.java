@@ -12,6 +12,7 @@ import com.futrtch.live.tencent.common.utils.TCConstants;
 import com.futrtch.live.tencent.liveroom.IMLVBLiveRoomListener;
 import com.futrtch.live.tencent.liveroom.roomutil.commondef.AnchorInfo;
 import com.futrtch.live.tencent.liveroom.roomutil.commondef.AudienceInfo;
+import com.futrtch.live.utils.ActivityUtils;
 
 import java.util.Optional;
 

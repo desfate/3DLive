@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.futrtch.live.R;
 import com.futrtch.live.activitys.LivePlayActivity;
 import com.futrtch.live.activitys.LiveRecordActivity;
+import com.futrtch.live.activitys.LoginActivity;
 import com.futrtch.live.adapters.BannerImageAdapter;
 import com.futrtch.live.adapters.LiveListAdapter;
 import com.futrtch.live.anims.CustomAnimDown;
@@ -38,6 +39,7 @@ import com.futrtch.live.mvvm.vm.LiveReplayViewModel;
 import com.futrtch.live.tencent.common.utils.TCConstants;
 import com.futrtch.live.tencent.common.utils.TCUtils;
 import com.futrtch.live.tencent.live.TCVideoInfo;
+import com.futrtch.live.utils.ToastUtil;
 import com.futrtch.live.views.ViewsBuilder;
 import com.jakewharton.rxbinding4.view.RxView;
 import com.jeremyliao.liveeventbus.LiveEventBus;
@@ -47,6 +49,7 @@ import java.util.Objects;
 
 import autodispose2.AutoDispose;
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 
 /**
  * 直播列表页面  主页 -> 推荐 -> 直播列表
@@ -126,13 +129,15 @@ public class LiveListFragment extends MVVMFragment {
                     initRequest();
                 });
         RxView.clicks(mDataBinding.startLive2Btn)
+                .subscribeOn(AndroidSchedulers.mainThread())
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(unit -> {
-                    if (TCUtils.checkRecordPermission(getActivity())) {
-                        Intent M2dIntent = new Intent(getActivity(), LiveRecordActivity.class);
-                        M2dIntent.putExtra(Constants.INTENT_LIVE_TYPE, Constants.LIVE_TYPE_2D);
-                        Objects.requireNonNull(getActivity()).startActivity(M2dIntent);
-                    }
+                    ToastUtil.showToast(getActivity(), "功能还在准备中，敬请期待");
+//                    if (TCUtils.checkRecordPermission(getActivity())) {
+//                        Intent M2dIntent = new Intent(getActivity(), LiveRecordActivity.class);
+//                        M2dIntent.putExtra(Constants.INTENT_LIVE_TYPE, Constants.LIVE_TYPE_2D);
+//                        Objects.requireNonNull(getActivity()).startActivity(M2dIntent);
+//                    }
                 });
         RxView.clicks(mDataBinding.startLive3Btn)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
@@ -144,25 +149,27 @@ public class LiveListFragment extends MVVMFragment {
                     }
                 });
         mAdapter.setOnItemClickListener((adapter, view, position) -> {
-            TCVideoInfo info = mViewModel.getListData().get(position);
-            ListviewVideoItemBinding binding = DataBindingUtil.getBinding(view);
-            if(binding == null || info == null) return;
-            Intent intent = new Intent(getActivity(), LivePlayActivity.class);
-            intent.putExtra("btn", info.frontCover);
-            intent.putExtra(TCConstants.PUSHER_ID, info.userId !=null?info.userId :"");
-            intent.putExtra(TCConstants.PUSHER_NAME, TextUtils.isEmpty(info.nickname) ? info.userId : info.nickname);
-            intent.putExtra(TCConstants.PUSHER_AVATAR, info.avatar);
-            intent.putExtra(TCConstants.HEART_COUNT, "" + info.likeCount);
-            intent.putExtra(TCConstants.MEMBER_COUNT, "" + info.viewerCount);
-            intent.putExtra(TCConstants.GROUP_ID, info.groupId);
-            intent.putExtra(TCConstants.PLAY_TYPE, info.livePlay);
-            intent.putExtra(TCConstants.FILE_ID, info.fileId !=null?info.fileId :"");
-            intent.putExtra(TCConstants.COVER_PIC, info.frontCover);
-            intent.putExtra(TCConstants.TIMESTAMP, info.createTime);
-            intent.putExtra(TCConstants.ROOM_TITLE, info.title);
+            if (TCUtils.checkRecordPermission(getActivity())) {
+                TCVideoInfo info = mViewModel.getListData().get(position);
+                ListviewVideoItemBinding binding = DataBindingUtil.getBinding(view);
+                if (binding == null || info == null) return;
+                Intent intent = new Intent(getActivity(), LivePlayActivity.class);
+                intent.putExtra("btn", info.frontCover);
+                intent.putExtra(TCConstants.PUSHER_ID, info.userId != null ? info.userId : "");
+                intent.putExtra(TCConstants.PUSHER_NAME, TextUtils.isEmpty(info.nickname) ? info.userId : info.nickname);
+                intent.putExtra(TCConstants.PUSHER_AVATAR, info.avatar);
+                intent.putExtra(TCConstants.HEART_COUNT, "" + info.likeCount);
+                intent.putExtra(TCConstants.MEMBER_COUNT, "" + info.viewerCount);
+                intent.putExtra(TCConstants.GROUP_ID, info.groupId);
+                intent.putExtra(TCConstants.PLAY_TYPE, info.livePlay);
+                intent.putExtra(TCConstants.FILE_ID, info.fileId != null ? info.fileId : "");
+                intent.putExtra(TCConstants.COVER_PIC, info.frontCover);
+                intent.putExtra(TCConstants.TIMESTAMP, info.createTime);
+                intent.putExtra(TCConstants.ROOM_TITLE, info.title);
 //            Pair<View,String> pair1 = new Pair<>((View)binding.anchorBtnCover, ViewCompat.getTransitionName(binding.anchorBtnCover));
 //            Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()), pair1).toBundle();
-            getActivity().startActivity(intent);
+                getActivity().startActivity(intent);
+            }
         });
         mDataBinding.swipeLayout.setOnRefreshListener(() -> mViewModel.onRefresh());
     }

@@ -33,8 +33,8 @@ ext {
     // App dependencies
     supportSdkVersion = "25.4.0"
     // version info
-    versionCode = 10001
-    versionName = "v1.1"
+    versionCode = 12001
+    versionName = "v1.2 alpha"
     ndkAbi = 'armeabi-v7a'//'armeabi'//, 'arm64-v8a'
     databinding = true
 }

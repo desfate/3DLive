@@ -1,5 +1,6 @@
 package com.futrtch.live.activitys;
 
+import android.content.Intent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -13,8 +14,12 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.futrtch.live.R;
 import com.futrtch.live.adapters.SettingAdpater;
 import com.futrtch.live.databinding.ActivitySettingBinding;
+import com.futrtch.live.databinding.LayoutSettingFooterBinding;
 import com.futrtch.live.mvvm.MVVMActivity;
 import com.futrtch.live.mvvm.vm.SettingViewModel;
+import com.futrtch.live.tencent.login.TCUserMgr;
+import com.futrtch.live.utils.ActivityUtils;
+import com.futrtch.live.utils.VersionUtils;
 import com.jakewharton.rxbinding4.view.RxView;
 
 import autodispose2.AutoDispose;
@@ -42,6 +47,13 @@ public class SettingActivity extends MVVMActivity {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
 //                System.out.println(mViewModel.getmListData().get(position));
+                if(mViewModel.getmListData().get(position).getSettingName().equals("退出登录")){
+                    TCUserMgr.getInstance().logout();
+                    Intent intent = new Intent(SettingActivity.this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
+                }
             }
         });
         mAdapter.addFooterView(getFootView());
@@ -67,6 +79,8 @@ public class SettingActivity extends MVVMActivity {
     }
 
     private View getFootView(){
-        return DataBindingUtil.inflate(getLayoutInflater(), R.layout.layout_setting_footer, mDataBinding.recyclerList, false).getRoot();
+        LayoutSettingFooterBinding footerBinding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.layout_setting_footer, mDataBinding.recyclerList, false);
+        footerBinding.footView.setText(VersionUtils.getAppVersionName(this));
+        return footerBinding.getRoot();
     }
 }

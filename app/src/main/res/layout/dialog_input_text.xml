@@ -9,7 +9,7 @@
         android:id="@+id/rl_inputdlg_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/color_input_dialog_background"
+        android:background="@color/black"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true">
 
@@ -43,11 +43,10 @@
             android:layout_width="match_parent"
             android:layout_weight="4"
             android:layout_height="wrap_content"
-            android:imeActionId="@+id/login"
             android:imeOptions="actionUnspecified"
             android:inputType="text"
             android:maxLength="32"
-            android:textColor="@color/black"
+            android:textColor="@color/colorTextWhite"
             android:maxLines="1"
             android:singleLine="true" />
 

@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.futrtch.live.utils.ActivityUtils;
+
 public abstract class MVVMActivity extends AppCompatActivity {
 
     public abstract void initViewModel();
@@ -22,6 +24,7 @@ public abstract class MVVMActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        ActivityUtils.addActivity(this);
         super.onCreate(savedInstanceState);
         initViewModel();
         init();
@@ -33,5 +36,11 @@ public abstract class MVVMActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         bindUi();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityUtils.finishActivity(this);
     }
 }

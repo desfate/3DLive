@@ -301,4 +301,7 @@ public class BaseMessageViewModel extends ViewModel {
     public void release(){
 
     }
+
+
+
 }

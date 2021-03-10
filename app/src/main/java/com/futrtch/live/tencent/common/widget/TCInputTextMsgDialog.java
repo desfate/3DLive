@@ -113,7 +113,7 @@ public class TCInputTextMsgDialog extends Dialog {
                             //imm.showSoftInput(messageTextView, InputMethodManager.SHOW_FORCED);
                             imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
 //                            messageTextView.setText("");
-                            dismiss();
+//                            dismiss();
                         } else {
                             Toast.makeText(mContext, "input can not be empty!", Toast.LENGTH_LONG).show();
                         }

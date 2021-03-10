@@ -17,6 +17,7 @@ import com.futrtch.live.mvvm.MVVMActivity;
 import com.futrtch.live.mvvm.vm.LoginViewModel;
 import com.futrtch.live.mvvm.vm.LoginViewModelFactory;
 import com.futrtch.live.tencent.common.utils.TCErrorConstants;
+import com.futrtch.live.utils.ActivityUtils;
 import com.futrtch.live.utils.ToastUtil;
 import com.futrtch.live.widgets.LoadingDialog;
 import com.hjq.permissions.Permission;
@@ -60,6 +61,9 @@ public class LoginActivity extends MVVMActivity {
         mLoading = new LoadingDialog.Builder(LoginActivity.this);
         mLoading.setMessage(getString(R.string.login_loading_text));
         mLoading.create();
+
+        mDataBinding.userNameEdt.setText(mViewModel.loadUserInfo().getmUserId());
+        mDataBinding.passwordEdt.setText(mViewModel.loadUserInfo().getmUserPwd());
     }
 
     @Override
@@ -129,4 +133,9 @@ public class LoginActivity extends MVVMActivity {
         Optional.ofNullable(mLoading).ifPresent(builder -> mLoading.getObj().dismiss()); // 取消 Loading
     }
 
+    @Override
+    public void onBackPressed() {
+        ActivityUtils.finishAllActivity();
+        super.onBackPressed();
+    }
 }

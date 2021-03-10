@@ -18,6 +18,8 @@ import com.tencent.rtmp.TXLog;
 
 import org.reactivestreams.Subscription;
 
+import java.util.Random;
+
 import autodispose2.AutoDispose;
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import github.com.desfate.livekit.live.LiveConfig;
@@ -50,7 +52,7 @@ public class LiveRoomRepository {
      */
     public void createRoom(MutableLiveData liveState, MLVBLiveRoom mLiveRoom, String liveTitle, String liveCover, String location, LiveConfig liveConfig) {
         Flowable.create((FlowableOnSubscribe<RoomCreateResponseBean>) emitter -> mLiveRoom.createRoom(//      创建房间请求
-                "10089",
+                String.valueOf(new Random().nextInt(10000)),
                 LiveRoomReqUtils.toRoomInfoString(liveTitle, liveCover, location),
                 liveConfig,
                 new IMLVBLiveRoomListener.CreateRoomCallback() {
