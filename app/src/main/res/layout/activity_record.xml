@@ -15,9 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             android:visibility="visible"/>
 
         <com.tencent.rtmp.ui.TXCloudVideoView
@@ -33,6 +31,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@color/transparent"
+            app:layout_constraintDimensionRatio="16:9"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -146,7 +145,6 @@
                 android:visibility="gone" />
 
         </RelativeLayout>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

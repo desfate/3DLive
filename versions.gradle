@@ -53,7 +53,7 @@ versions.liteavSdk = '8.0.9639' // 腾讯直播SDK版本
 // 腾讯云存储服务
 versions.cosxml = '5.4.+'// 腾讯对象存储 cosml
 // 自定义直播采集插件
-versions.livekit = '1.29'
+versions.livekit = '1.32'
 // 内存泄漏查看工具
 versions.leakCanary = "2.5"
 // 错误捕捉

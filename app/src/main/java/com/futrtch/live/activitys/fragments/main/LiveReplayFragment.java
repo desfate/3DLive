@@ -89,7 +89,7 @@ public class LiveReplayFragment extends MVVMFragment {
     }
 
     public void bindUi() {
-        RxView.clicks(mEmptyBinding.emptyImg)
+        RxView.clicks(mEmptyBinding.emptyRly)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(unit -> {
                     mDataBinding.swipeLayout.setRefreshing(true);

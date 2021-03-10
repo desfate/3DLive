@@ -119,7 +119,7 @@ public class LiveListFragment extends MVVMFragment {
         RxView.clicks(mDataBinding.scrim)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(unit -> mDataBinding.fab.setExpanded(false));
-        RxView.clicks(mEmptyBinding.emptyImg)
+        RxView.clicks(mEmptyBinding.emptyRly)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(unit -> {
                     mViewModel.getIsRefresh().postValue(true);
