@@ -102,7 +102,7 @@ public class LivePlayViewModel extends BaseMessageViewModel {
         if (mLiveRoom == null) return;
         mLiveRoom.setSelfProfile(livePlayBean.getmNickname(), livePlayBean.getmAvatar());
         mLiveRoom.setListener(listener);
-//        mLiveRoom.setPlayViewChange(mLivePlayView.getVideoChange());
+        mLiveRoom.setPlayViewChange(mLivePlayView.getVideoChange());
         mRepository.enterRoom(mLiveRoom, mLivePlayView, liveState, livePlayBean.getmGroupId());  // 进入房间
         mPlaying = true;
     }

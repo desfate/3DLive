@@ -34,6 +34,7 @@ import com.tencent.rtmp.TXLivePusher;
 import java.util.List;
 import java.util.Locale;
 
+import github.com.desfate.livekit.LiveConstant;
 import github.com.desfate.livekit.dual.CameraSetting;
 import github.com.desfate.livekit.dual.M3dConfig;
 import github.com.desfate.livekit.live.LiveCallBack;
@@ -43,6 +44,9 @@ import github.com.desfate.livekit.utils.LiveSupportUtils;
 
 /**
  * 直播录制 viewModel
+ * @time 2021/3/25  这里的texture推流模式是生成一个EGLSurface 再通过渲染线程 实现背屏渲染 而预览部分则沿用之前data模式的
+ *
+ *
  */
 public class LiveRecordViewModel extends BaseMessageViewModel {
 
@@ -96,36 +100,28 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
     public void bindView(Context context, ActivityRecordBinding mDataBinding) {
         animatorUtils = new AnimatorUtils(mDataBinding.layoutLivePusherInfo.anchorIvRecordBall);   //                         录制原点的view
         liveConfig = new LiveConfig();
-        liveConfig.setLiveQuality(LiveSupportUtils.LIVE_SIZE_2560);  //  设置分辨率
-        liveConfig.setLivePushType(LiveConfig.LIVE_PUSH_DATA);  //   设置推送模式
-        liveConfig.setPushCameraType(LiveConfig.LIVE_CAMERA_DUAL);//   设置摄像头
-        CameraSetting.getInstance().setPreviewType(M3dConfig.Preview_type.PREVIEW_16TO9); // 设置16:9的模式
+        liveConfig.setLiveQuality(LiveSupportUtils.LIVE_SIZE_1080);  //  设置分辨率
+        liveConfig.setLivePushType(LiveConstant.LIVE_PUSH_TEXTURE);  //   设置推送模式
+        liveConfig.setPushCameraType(LiveConstant.LIVE_CAMERA_DUAL);//   设置摄像头
+        CameraSetting.getInstance().setPreviewType(M3dConfig.Preview_type.PREVIEW_16TO9_DUAL); // 设置16:9的模式
         // 这里做自己本地预览和开启摄像头的工作
-        if (liveConfig.getLivePushType() == LiveConfig.LIVE_PUSH_TEXTURE) {
-            TextureView textureView = new TextureView(context);
-            control = new LivePushControl.LivePushControlBuilder()
-                    .setContext(context)
-                    .setLiveConfig(liveConfig)
-                    .setSurfaceTexture(textureView.getSurfaceTexture())
-                    .setTextureView(textureView)
-                    .setLiveCallBack(new LiveCallBack() {
+        if (liveConfig.getLivePushType() == LiveConstant.LIVE_PUSH_TEXTURE) {  // 这是针对texture模式
+            mDataBinding.anchorPushView.setVisibility(View.VISIBLE);  // 我是预览部分
+            mDataBinding.anchorPushView.init(
+                    liveConfig,
+                    new LiveCallBack() {
                         @Override
                         public void startPushByData(byte[] buffer, int w, int h) {
-
                         }
-
                         @Override
                         public void startPushByTextureId(int textureID, int w, int h) {
-                            int returnCode = mLiveRoom.customerTexturePush(textureID, w, h);
-                            if (returnCode != 0) Log.e(TAG, "push error code = " + returnCode);
+                            int returnCode = mLiveRoom.customerTexturePush(textureID, 1280, 720);
+                            if (returnCode != 0) Log.e(TAG, "textureId = "+ textureID + "  push error code = " + returnCode);
                         }
-                    }).build();
-            mDataBinding.txCloudView.addVideoView(textureView);//        绑定本地预览UI
-            mDataBinding.txCloudView.setVisibility(View.VISIBLE);
-            mDataBinding.anchorPushView.setVisibility(View.INVISIBLE);
-        } else if (liveConfig.getLivePushType() == LiveConfig.LIVE_PUSH_DATA) {
-            mDataBinding.txCloudView.setVisibility(View.INVISIBLE);
-            mDataBinding.anchorPushView.setVisibility(View.VISIBLE);
+                    }
+            );
+        } else if (liveConfig.getLivePushType() == LiveConstant.LIVE_PUSH_DATA) {
+            mDataBinding.anchorPushView.setVisibility(View.VISIBLE);   // 我是预览部分
             mDataBinding.anchorPushView.init(
                     liveConfig,
                     new LiveCallBack() {
@@ -150,8 +146,8 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
                         }
                     }
             );
-            control = mDataBinding.anchorPushView.getControl();
         }
+        control = mDataBinding.anchorPushView.getControl();
     }
 
     /**
@@ -165,12 +161,12 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
         if (liveType == Constants.LIVE_TYPE_3D) {
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);  // 切换为横屏
         } else {
-            if (control.getCameraState() == LiveConfig.LIVE_CAMERA_FRONT) {
+            if (control.getCameraState() == LiveConstant.LIVE_CAMERA_FRONT) {
                 onTextSend(activity, LiveMessageCommand.addCommand(LiveMessageCommand.SWITCH_CAMERA_BACK), false);
             } else {
                 onTextSend(activity, LiveMessageCommand.addCommand(LiveMessageCommand.SWITCH_CAMERA_FRONT), false);
             }
-            if (control.getCameraState() == LiveConfig.LIVE_CAMERA_FRONT) {
+            if (control.getCameraState() == LiveConstant.LIVE_CAMERA_FRONT) {
                 activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);  // 切换为横屏
             } else {
                 activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);  // 切换为竖屏

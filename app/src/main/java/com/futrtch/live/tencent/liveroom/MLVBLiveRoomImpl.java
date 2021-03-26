@@ -54,6 +54,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import github.com.desfate.livekit.LiveConstant;
 import github.com.desfate.livekit.camera.interfaces.CameraChangeCallback;
 import github.com.desfate.livekit.live.LiveConfig;
 import github.com.desfate.livekit.ui.BaseLiveView;
@@ -2104,31 +2105,34 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                     // fixme 这里是保证推流前设置都已经设置完成
                     // 这里定义清晰度
                     TXLivePushConfig config = mTXLivePusher.getConfig();
-                    if(liveConfig != null){
-                        if(liveConfig.getLivePushType() == LiveConfig.LIVE_PUSH_TEXTURE){  //  数据推流模式
-                            config.setCustomModeType(TXLiveConstants.CUSTOM_MODE_VIDEO_CAPTURE);
-                            config.setVideoEncodeGop(5);
-                            if(liveConfig.getLiveQuality() == LiveSupportUtils.LIVE_SIZE_720){
-                                config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_720_1280);
-                            }else if(liveConfig.getLiveQuality() == LiveSupportUtils.LIVE_SIZE_1080){
-                                config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1080_1920);
-                            }else{
-                                // 只支持后置拍摄
-                                config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1920_1080);
-                            }
-                        }else if(liveConfig.getLivePushType() == LiveConfig.LIVE_PUSH_DATA){
-                            config.setCustomModeType(TXLiveConstants.CUSTOM_MODE_VIDEO_CAPTURE);
-                            config.setVideoEncodeGop(2);
-                            if(liveConfig.getLiveQuality() == LiveSupportUtils.LIVE_SIZE_720){
-                                config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1280_720);
-                            }else if(liveConfig.getLiveQuality() == LiveSupportUtils.LIVE_SIZE_1080){
-                                config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1920_1080);
-                            }else{
-                                // 只支持后置拍摄
-                                config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1920_1080);
-                            }
-                        }
-                    }
+//                    if(liveConfig != null){
+//                        if(liveConfig.getLivePushType() == LiveConstant.LIVE_PUSH_TEXTURE){  //  数据推流模式
+//                            config.setCustomModeType(TXLiveConstants.CUSTOM_MODE_VIDEO_CAPTURE);
+//                            config.setVideoEncodeGop(5);
+//                            if(liveConfig.getLiveQuality() == LiveSupportUtils.LIVE_SIZE_720){
+//                                config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_720_1280);
+//                            }else if(liveConfig.getLiveQuality() == LiveSupportUtils.LIVE_SIZE_1080){
+//                                config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1920_1080);
+//                            }else{
+//                                // 只支持后置拍摄
+//                                config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1920_1080);
+//                            }
+//                        }else if(liveConfig.getLivePushType() == LiveConstant.LIVE_PUSH_DATA){
+//                            config.setCustomModeType(TXLiveConstants.CUSTOM_MODE_VIDEO_CAPTURE);
+//                            config.setVideoEncodeGop(2);
+//                            if(liveConfig.getLiveQuality() == LiveSupportUtils.LIVE_SIZE_720){
+//                                config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1280_720);
+//                            }else if(liveConfig.getLiveQuality() == LiveSupportUtils.LIVE_SIZE_1080){
+//                                config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1920_1080);
+//                            }else{
+//                                // 只支持后置拍摄
+//                                config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1920_1080);
+//                            }
+//                        }
+//                    }
+                    config.setCustomModeType(TXLiveConstants.CUSTOM_MODE_VIDEO_CAPTURE);
+                    config.setVideoEncodeGop(2);
+                    config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1920_1080);
                     mTXLivePusher.setConfig(config);
                     Log.e(TAG, "启动推流");
                     int ret = mTXLivePusher.startPusher(url);
@@ -2154,17 +2158,16 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
             public void run() {
                 if (mTXLivePusher != null && mTXLivePushListener != null) {
                     mTXLivePushListener.setCallback(callback);
-                    mTXLivePusher.setVideoQuality(videoQuality, false, false);
+//                    mTXLivePusher.setVideoQuality(videoQuality, false, false);
                     // fixme 这里是保证推流前设置都已经设置完成
-                    TXLivePushConfig config = mTXLivePusher.getConfig();
-
-                    // fixme
-                    config.setCustomModeType(TXLiveConstants.CUSTOM_MODE_VIDEO_CAPTURE);    //使用自定义视频采集
-                    Log.e(TAG, "设置自定义视频采集");
-                    config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1920_1080);  //设置推流视频分辨率
-                    Log.e(TAG, "设置采集分辨率 1920_1080");
-                    mTXLivePusher.setConfig(config);
-                    Log.e(TAG, "启动推流");
+//                    TXLivePushConfig config = mTXLivePusher.getConfig();
+//                    // fixme
+//                    config.setCustomModeType(TXLiveConstants.CUSTOM_MODE_VIDEO_CAPTURE);    //使用自定义视频采集
+//                    Log.e(TAG, "设置自定义视频采集");
+//                    config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1920_1080);  //设置推流视频分辨率
+//                    Log.e(TAG, "设置采集分辨率 1920_1080");
+//                    mTXLivePusher.setConfig(config);
+//                    Log.e(TAG, "启动推流");
                     int ret = mTXLivePusher.startPusher(url);
                     if (ret == -5) {
                         String msg = "[LiveRoom] 推流失败[license 校验失败]";

@@ -1,6 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable-v24/btn_send_message.xml" value="0.3203125" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable-v24/camera_head_background.xml" value="0.3203125" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable-v24/chat_btn_background.xml" value="0.3203125" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable-v24/friend_head_background.xml" value="0.3203125" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3880208333333333" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable-v24/live_icon_background.xml" value="0.3203125" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable-v24/liveshow_item_dot.xml" value="0.3203125" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable-v24/message_background.xml" value="0.3203125" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable-v24/message_line_background.xml" value="0.3203125" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable-v24/mine_btn_background.xml" value="0.3203125" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable-v24/mine_head_background.xml" value="0.3203125" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable-v24/mine_intr_btn_background.xml" value="0.3203125" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable-v24/myspace_bg_5.xml" value="0.3203125" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable-v24/pusher_info_background.xml" value="0.3203125" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable/bottom_navigation_item_selector.xml" value="0.3880208333333333" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable/chat_background.xml" value="0.3880208333333333" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable/chat_btn_background.xml" value="0.3880208333333333" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable/custom_dialog_back.xml" value="0.3880208333333333" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable/friend_care_background.xml" value="0.3880208333333333" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable/friend_cared_background.xml" value="0.3880208333333333" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable/ic_launcher_background.xml" value="0.3880208333333333" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable/send_chat_background.xml" value="0.3880208333333333" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable/splash.xml" value="0.3880208333333333" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/activity_chat.xml" value="0.2269021739130435" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/activity_live.xml" value="0.27898550724637683" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/activity_record.xml" value="0.27898550724637683" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/activity_setting.xml" value="0.27898550724637683" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/dialog_input_text.xml" value="0.34601449275362317" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/dialog_publish_detail.xml" value="0.37092391304347827" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/fragment_friend_list.xml" value="0.21770833333333334" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/fragment_live_list.xml" value="0.2796875" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/fragment_user.xml" value="0.2859375" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/layout_empty_list.xml" value="0.25" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/layout_setting_footer.xml" value="0.2635416666666667" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/layout_toast_view.xml" value="0.26666666666666666" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/menu/main_bottom_navigation.xml" value="0.30416666666666664" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.3880208333333333" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

@@ -236,7 +236,11 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
         super.onDestroy();
         mViewModel.release();
 //        Optional.ofNullable(animatorUtils).ifPresent(AnimatorUtils::release);
-        Holography.deinitHolography();
+        try {
+            Holography.deinitHolography();
+        }catch (ArithmeticException exception){
+            // 除数不能为0 fixme v1.1 先不处理
+        }
         Optional.ofNullable(ToastUtil.mToast).ifPresent(Toast::cancel);
     }
 }

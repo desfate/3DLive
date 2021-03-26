@@ -16,16 +16,10 @@
             android:layout_centerInParent="true"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintDimensionRatio="16:9"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:visibility="visible"/>
-
-        <com.tencent.rtmp.ui.TXCloudVideoView
-            android:id="@+id/tx_cloud_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:visibility="gone"/>
 
         <!-- 主播空间区 -->
         <RelativeLayout

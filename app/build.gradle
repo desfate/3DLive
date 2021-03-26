@@ -30,6 +30,7 @@ android {
         dataBinding = true
     }
 
+    // 混淆
     buildTypes {
         release {
             minifyEnabled false
@@ -49,6 +50,9 @@ android {
         doNotStrip "*/x86/libYTCommon.so"
         doNotStrip "*/arm64-v8a/libYTCommon.so"
     }
+
+    aaptOptions.cruncherEnabled = false
+    aaptOptions.useNewCruncher = false
 }
 
 MobSDK {
@@ -179,6 +183,8 @@ dependencies {
 //    implementation deps.hilt.lifecycle
 //    kapt deps.hilt.kapt
 //    kapt deps.hilt.compiler
+    // xlog
+    implementation deps.xlog.runtime
     // leakCanary
     debugImplementation deps.leakCanary.runtime
 

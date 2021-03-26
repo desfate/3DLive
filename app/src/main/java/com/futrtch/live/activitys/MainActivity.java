@@ -102,7 +102,7 @@ public class MainActivity extends BaseIMLVBActivity implements LiveRoomCallBack 
         lastIndex = position;
         ft.hide(lastFragment);
         if (!currentFragment.isAdded()) {
-            getSupportFragmentManager().beginTransaction().remove(currentFragment).commit();
+            getSupportFragmentManager().beginTransaction().remove(currentFragment).commitAllowingStateLoss();
             ft.add(R.id.contentPanel, currentFragment);
         }
         ft.show(currentFragment);

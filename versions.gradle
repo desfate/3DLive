@@ -49,15 +49,17 @@ versions.hiltLifecycle = "1.0.0-alpha01"//    hilt lifecycle
 // IM 服务相关
 versions.imsdk = '4.5.45'
 // Live 相关
-versions.liteavSdk = '8.0.9639' // 腾讯直播SDK版本
+versions.liteavSdk = 'latest.release' // 腾讯直播SDK版本
 // 腾讯云存储服务
 versions.cosxml = '5.4.+'// 腾讯对象存储 cosml
 // 自定义直播采集插件
-versions.livekit = '1.32'
+versions.livekit = '1.63'
 // 内存泄漏查看工具
 versions.leakCanary = "2.5"
 // 错误捕捉
 versions.bugly = "latest.release"
+// 日志相关
+versions.xlog = "1.8.0"
 
 ext.deps = [:]
 deps.android_gradle_plugin = "com.android.tools.build:gradle:$versions.android_gradle_plugin"
@@ -167,6 +169,10 @@ def bugly = [:]
 bugly.runtime = "com.tencent.bugly:crashreport:$versions.bugly"
 bugly.native = "com.tencent.bugly:nativecrashreport:$versions.bugly"
 deps.bugly = bugly
+
+def xlog = [:]
+xlog.runtime = "com.elvishew:xlog:$versions.xlog"
+deps.xlog = xlog
 
 def addRepos(RepositoryHandler handler) {
     handler.google()

@@ -2,6 +2,7 @@ package com.futrtch.live.applications;
 
 import androidx.multidex.MultiDexApplication;
 
+import com.futrtch.live.base.BaseApplication;
 import com.jeremyliao.liveeventbus.LiveEventBus;
 import com.tencent.bugly.crashreport.CrashReport;
 
@@ -12,7 +13,7 @@ import static com.futrtch.live.configs.LiveConfigs.liveSDKType;
 /**
  * 直播Application
  */
-public class LiveApplication extends MultiDexApplication {
+public class LiveApplication extends BaseApplication {
 
     private final static String TAG = "LiveApplication";
     private InitSDK mSdk;
@@ -22,13 +23,6 @@ public class LiveApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         initSDK();
-
-        CrashReport.initCrashReport(getApplicationContext(), "3048fae6fc", false);  // 异常上报
-
-        LiveEventBus
-                .config()
-                .autoClear(true) //                        配置在没有Observer关联的时候是否自动清除LiveEvent以释放内存
-                .lifecycleObserverAlwaysActive(false);  // 激活状态（Started）可以实时收到消息，非激活状态（Stoped）无法实时收到消息
     }
 
     /**

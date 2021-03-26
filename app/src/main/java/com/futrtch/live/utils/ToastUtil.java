@@ -29,7 +29,7 @@ public class ToastUtil {
 
     public static void showToast(Context context, String message, int duration) {
         mHandler.removeCallbacks(mRunnable);
-        if (mToast == null) {
+        if (mToast == null || mToast.getView() == null) {
             mToast = Toast.makeText(context.getApplicationContext(), message, duration);
         } else {
             mToast.setText(message);
@@ -40,7 +40,7 @@ public class ToastUtil {
 
     public static void showToastGravity(Context context, String message, int duration, int gravity){
         mHandler.removeCallbacks(mRunnable);
-        if (mToast == null) {
+        if (mToast == null || mToast.getView() == null) {
             mToast = Toast.makeText(context.getApplicationContext(), message, duration);
             mToast.setGravity(gravity, 0, 0);
         } else {
