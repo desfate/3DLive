@@ -180,6 +180,9 @@ dependencies {
     implementation deps.bravh.runtime
     // buyle
     implementation deps.bugly.runtime
+    // commitkit
+    implementation deps.desfate.commonKit
+
     // hilt
 //    implementation deps.hilt.runtime
 //    implementation deps.hilt.lifecycle

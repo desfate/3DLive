@@ -15,4 +15,6 @@ public class RequestTags {
     public final static String LIVECARELIST_REQ = "livecarelist_req";//           直播间关注
     public final static String REPLAYLIST_REQ = "livereplay_req";//               回放数据
 
+    public final static String SELECT_URL = "select_url";//                       选择地址
+
 }

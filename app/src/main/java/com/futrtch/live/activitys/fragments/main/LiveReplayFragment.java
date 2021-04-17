@@ -1,6 +1,8 @@
 package com.futrtch.live.activitys.fragments.main;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -18,6 +21,7 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.futrtch.live.R;
 import com.futrtch.live.activitys.LivePlayActivity;
 import com.futrtch.live.activitys.LiveRecordActivity;
+import com.futrtch.live.activitys.LoginActivity;
 import com.futrtch.live.activitys.VideoPlayActivity;
 import com.futrtch.live.adapters.LiveListAdapter;
 import com.futrtch.live.adapters.LiveReplayAdapter;
@@ -34,13 +38,18 @@ import com.futrtch.live.tencent.common.utils.TCUtils;
 import com.futrtch.live.tencent.live.TCVideoInfo;
 import com.futrtch.live.utils.decoration.GridSectionAverageGapItemDecoration;
 import com.futrtch.live.views.ViewsBuilder;
+import com.futrtch.live.widgets.LoadingDialog;
+import com.github.desfate.commonlib.tools.FileUtils;
 import com.github.desfate.videokit.controls.VideoRequestControls;
+import com.github.desfate.videokit.controls.VideoUploadControls;
 import com.github.desfate.videokit.dates.VideoInfoDate;
+import com.github.desfate.videokit.videoupload.TXUGCPublishTypeDef;
 import com.jakewharton.rxbinding4.view.RxView;
 import com.jeremyliao.liveeventbus.LiveEventBus;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import autodispose2.AutoDispose;
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
@@ -48,7 +57,7 @@ import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 /**
  * 直播列表页面  主页 -> 推荐 -> 直播列表
  */
-public class LiveReplayFragment extends MVVMFragment {
+public class LiveReplayFragment extends MVVMFragment implements VideoUploadControls.ProgressCallBack {
 
     public final static int START_LIVE_PLAY = 10090;
 
@@ -57,6 +66,8 @@ public class LiveReplayFragment extends MVVMFragment {
 
     FragmentLiveReplayBinding mDataBinding;
     LayoutEmptyListBinding mEmptyBinding; // 页面为空
+
+    private LoadingDialog.Builder mLoading; // 加载页面
 
     public static LiveReplayFragment getInstance(int index){
         LiveReplayFragment fragment = new LiveReplayFragment();
@@ -77,10 +88,16 @@ public class LiveReplayFragment extends MVVMFragment {
     public void initViewModel() {
         ViewModelProvider.Factory factory = new LiveReplayViewModelFactory(Objects.requireNonNull(getActivity()).getApplication(), this);
         mViewModel = ViewModelProviders.of(this, factory).get(LiveReplayViewModel.class);
+        mViewModel.setUploadControls(new VideoUploadControls(getActivity(), this));
     }
 
     @Override
     public void init() {
+        mLoading = new LoadingDialog.Builder(getActivity());
+        mLoading.setMessage(getString(R.string.login_loading_text));
+        mLoading.setType(LoadingDialog.Builder.PROGRESS);
+        mLoading.create();
+
         mEmptyBinding = (LayoutEmptyListBinding) new ViewsBuilder()
                 .setParent(mDataBinding.grid)
                 .setInflater(getLayoutInflater())
@@ -107,6 +124,7 @@ public class LiveReplayFragment extends MVVMFragment {
         RxView.clicks(mDataBinding.fab)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(unit -> {
+                    mViewModel.chooseVideo(Objects.requireNonNull(getActivity()));
                 });
 
         mDataBinding.swipeLayout.setOnRefreshListener(() -> mViewModel.onRefresh());
@@ -130,6 +148,17 @@ public class LiveReplayFragment extends MVVMFragment {
                     mViewModel.getListData().addAll((List<VideoInfoDate>) baseResponBean.getData());
                     mAdapter.notifyDataSetChanged();
                 });
+
+        mViewModel.getUrl().observe(this, s -> {
+            mLoading.setMessage("上传中, 请稍后");
+            mLoading.getObj().show();
+            mViewModel.getUploadControls().beginUpload(s);
+        });
+
+        LiveEventBus.get(RequestTags.SELECT_URL, Uri.class)
+                .observe(this, baseResponBean -> {
+                    mViewModel.getUrl().postValue(FileUtils.getRealPathFromUri(getActivity(), baseResponBean));
+                });
     }
 
     @Override
@@ -142,4 +171,13 @@ public class LiveReplayFragment extends MVVMFragment {
         releaseBindingList(mDataBinding, mEmptyBinding);
     }
 
+    @Override
+    public void onProgress(long upload, long total) {
+        if(mLoading != null) mLoading.setProgress(upload * 100 / total);
+    }
+
+    @Override
+    public void success(TXUGCPublishTypeDef.TXPublishResult result) {
+        Optional.ofNullable(mLoading).ifPresent(builder -> mLoading.getObj().dismiss());  // 取消 Loading
+    }
 }

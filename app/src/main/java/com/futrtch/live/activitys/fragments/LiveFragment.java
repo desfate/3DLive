@@ -1,5 +1,6 @@
 package com.futrtch.live.activitys.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,8 @@ import com.futrtch.live.databinding.FragmentLiveBinding;
 import com.futrtch.live.mvvm.MVVMFragment;
 import com.futrtch.live.mvvm.vm.ViewPagerViewModel;
 import com.futrtch.live.mvvm.vm.ViewPagerViewModelFactory;
+
+import java.util.function.Consumer;
 
 public class LiveFragment extends MVVMFragment {
     LiveFragmentAdapter mAdapter;
@@ -60,4 +63,5 @@ public class LiveFragment extends MVVMFragment {
     public void releaseBinding() {
         releaseBindingList(mDataBinding);
     }
+
 }

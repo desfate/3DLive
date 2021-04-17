@@ -38,4 +38,6 @@
     <string name="btn_return_home">返回首页</string>
     <string name="image_background">image_background</string>
 
+    <string name="upload_text">上传中</string>
+
 </resources>

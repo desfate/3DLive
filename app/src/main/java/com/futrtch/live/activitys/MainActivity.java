@@ -4,11 +4,14 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -16,8 +19,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.futrtch.live.R;
+import com.futrtch.live.base.BaseResponBean;
 import com.futrtch.live.databinding.ActivityMainBinding;
 import com.futrtch.live.databinding.LayoutToastViewBinding;
+import com.futrtch.live.http.RequestTags;
 import com.futrtch.live.interfaces.LiveRoomCallBack;
 import com.futrtch.live.mvvm.vm.MainViewModel;
 import com.futrtch.live.mvvm.vm.MainViewModelFactory;
@@ -26,9 +31,11 @@ import com.futrtch.live.tencent.common.utils.TCUtils;
 import com.futrtch.live.tencent.liveroom.roomutil.commondef.MLVBCommonDef;
 import com.futrtch.live.utils.ToastUtil;
 import com.futrtch.live.views.ViewsBuilder;
+import com.jeremyliao.liveeventbus.LiveEventBus;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class MainActivity extends BaseIMLVBActivity implements LiveRoomCallBack {
 
@@ -156,5 +163,12 @@ public class MainActivity extends BaseIMLVBActivity implements LiveRoomCallBack 
         if (errorCode == MLVBCommonDef.LiveRoomErrorCode.ERROR_IM_FORCE_OFFLINE) { // IM 被强制下线。
             TCUtils.showKickOut(MainActivity.this);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        LiveEventBus.get(RequestTags.SELECT_URL, Uri.class)
+                .post(data.getData());         // 页面要处理的逻辑（注册返回）
     }
 }

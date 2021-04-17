@@ -46,6 +46,8 @@ versions.bravh = '3.0.4'//                    bravh（BaseAdapter）
 versions.hilt = "2.28-alpha"//                dagger hilt IoC & DI
 versions.hiltLifecycle = "1.0.0-alpha01"//    hilt lifecycle
 
+// commit包
+versions.commonKit = "1.10"//                 自定义通用组件
 // IM 服务相关
 versions.imsdk = '4.5.45'
 // Live 相关
@@ -169,6 +171,12 @@ def bugly = [:]
 bugly.runtime = "com.tencent.bugly:crashreport:$versions.bugly"
 bugly.native = "com.tencent.bugly:nativecrashreport:$versions.bugly"
 deps.bugly = bugly
+
+//   mine提供的库
+def desfate = [:]
+desfate.commonKit = "com.github.desfate:CommonKit:$versions.commonKit"
+desfate.liveKit   = "com.github.desfate:liveKit:$versions.livekit"
+deps.desfate = desfate
 
 def xlog = [:]
 xlog.runtime = "com.elvishew:xlog:$versions.xlog"
