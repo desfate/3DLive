@@ -51,9 +51,9 @@ versions.imsdk = '4.5.45'
 // Live 相关
 versions.liteavSdk = 'latest.release' // 腾讯直播SDK版本
 // 腾讯云存储服务
-versions.cosxml = '5.4.+'// 腾讯对象存储 cosml
+versions.cosxml = '5.5.3'// 腾讯对象存储 cosml
 // 自定义直播采集插件
-versions.livekit = '1.63'
+versions.livekit = '2.0.5'
 // 内存泄漏查看工具
 versions.leakCanary = "2.5"
 // 错误捕捉

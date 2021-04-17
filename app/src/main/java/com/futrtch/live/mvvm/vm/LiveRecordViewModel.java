@@ -34,11 +34,11 @@ import com.tencent.rtmp.TXLivePusher;
 import java.util.List;
 import java.util.Locale;
 
+import github.com.desfate.livekit.LiveConfig;
 import github.com.desfate.livekit.LiveConstant;
-import github.com.desfate.livekit.dual.CameraSetting;
+import github.com.desfate.livekit.controls.MControl;
 import github.com.desfate.livekit.dual.M3dConfig;
 import github.com.desfate.livekit.live.LiveCallBack;
-import github.com.desfate.livekit.live.LiveConfig;
 import github.com.desfate.livekit.live.LivePushControl;
 import github.com.desfate.livekit.utils.LiveSupportUtils;
 
@@ -70,7 +70,7 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
     @SuppressLint("StaticFieldLeak")
     private ErrorDialogFragment mErrDlgFragment; //                                             错误提示弹窗
     private BroadcastTimerTask timerTask;//                                                     直播时间计时器
-    private LivePushControl control;//                                                          推流控制器 只有texture模式会初始化它 其实 data模式也会  只是封装在DataLivePushView里
+    private MControl control;//                                                          推流控制器 只有texture模式会初始化它 其实 data模式也会  只是封装在DataLivePushView里
 
     /**
      * 初始化相关
@@ -100,12 +100,11 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
     public void bindView(Context context, ActivityRecordBinding mDataBinding) {
         animatorUtils = new AnimatorUtils(mDataBinding.layoutLivePusherInfo.anchorIvRecordBall);   //                         录制原点的view
         liveConfig = new LiveConfig();
-        liveConfig.setLiveQuality(LiveSupportUtils.LIVE_SIZE_1080);  //  设置分辨率
-        liveConfig.setLivePushType(LiveConstant.LIVE_PUSH_TEXTURE);  //   设置推送模式
-        liveConfig.setPushCameraType(LiveConstant.LIVE_CAMERA_DUAL);//   设置摄像头
-        CameraSetting.getInstance().setPreviewType(M3dConfig.Preview_type.PREVIEW_16TO9_DUAL); // 设置16:9的模式
+        liveConfig.setLiveQuality(LiveConstant.LiveQuality.LIVE_1080P);  //  设置分辨率
+        liveConfig.setLivePushType(LiveConstant.LivePushType.TEXTURE);  //   设置推送模式
+        liveConfig.setPushCameraType(LiveConstant.LiveCameraType.CAMERA_DUAL_BACK);//   设置摄像头
         // 这里做自己本地预览和开启摄像头的工作
-        if (liveConfig.getLivePushType() == LiveConstant.LIVE_PUSH_TEXTURE) {  // 这是针对texture模式
+        if (liveConfig.getLivePushType() == LiveConstant.LivePushType.TEXTURE) {  // 这是针对texture模式
             mDataBinding.anchorPushView.setVisibility(View.VISIBLE);  // 我是预览部分
             mDataBinding.anchorPushView.init(
                     liveConfig,
@@ -120,7 +119,7 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
                         }
                     }
             );
-        } else if (liveConfig.getLivePushType() == LiveConstant.LIVE_PUSH_DATA) {
+        } else if (liveConfig.getLivePushType() == LiveConstant.LivePushType.DATA) {
             mDataBinding.anchorPushView.setVisibility(View.VISIBLE);   // 我是预览部分
             mDataBinding.anchorPushView.init(
                     liveConfig,
@@ -158,21 +157,24 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
     public void switchCamera(Activity activity) {
         //fixme 通过文字消息通知观众 主播正在进行前后摄像头切换 用户也要跟随进行切换
         // FIXME: 2021/3/5 现在这个版本 3D模式下不支持前置摄像头  所以如果是3D情况下直接使用后置横屏的模式
-        if (liveType == Constants.LIVE_TYPE_3D) {
-            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);  // 切换为横屏
-        } else {
-            if (control.getCameraState() == LiveConstant.LIVE_CAMERA_FRONT) {
+        // FIXME: 2021/4/1 当前版本3d模式下支持前后摄像头切换
+//        if (liveType == Constants.LIVE_TYPE_3D) {
+//            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);  // 切换为横屏
+//        } else {
+            if (control.isCameraFront()) {
                 onTextSend(activity, LiveMessageCommand.addCommand(LiveMessageCommand.SWITCH_CAMERA_BACK), false);
             } else {
                 onTextSend(activity, LiveMessageCommand.addCommand(LiveMessageCommand.SWITCH_CAMERA_FRONT), false);
             }
-            if (control.getCameraState() == LiveConstant.LIVE_CAMERA_FRONT) {
+            if (control.isCameraFront()) {
+                control.switchCamera();
                 activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);  // 切换为横屏
             } else {
+                control.switchCamera();
                 activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);  // 切换为竖屏
             }
-            control.switchCamera();
-        }
+
+//        }
     }
 
     /**
@@ -322,7 +324,7 @@ public class LiveRecordViewModel extends BaseMessageViewModel {
             mDanMuMgr = null;
         }
         animatorUtils.release();  // 动画释放
-        if (control != null) control.releaseRes();
+        if (control != null) control.release();
     }
 
 

@@ -22,7 +22,7 @@ import java.util.Random;
 
 import autodispose2.AutoDispose;
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
-import github.com.desfate.livekit.live.LiveConfig;
+import github.com.desfate.livekit.LiveConfig;
 import github.com.desfate.livekit.ui.BaseLiveView;
 import github.com.desfate.livekit.ui.LivePlayView;
 import io.reactivex.rxjava3.annotations.NonNull;
@@ -135,7 +135,13 @@ public class LiveRoomRepository {
                     }
                 }), BackpressureStrategy.BUFFER)
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(lifecycleOwner)))
-                .subscribe(roomCreateResponseBean -> Log.w(TAG, roomCreateResponseBean.getErrInfo()));
+                .subscribe(
+                        roomCreateResponseBean -> {
+                            // 这里不用关心 因为已经通知了ui
+                        }, throwable -> {
+                            // 这里不用关心 因为已经通知了ui
+                        }
+                );
     }
 
     /**

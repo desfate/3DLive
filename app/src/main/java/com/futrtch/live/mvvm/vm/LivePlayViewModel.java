@@ -239,10 +239,14 @@ public class LivePlayViewModel extends BaseMessageViewModel {
             mDanMuMgr.destroy();
             mDanMuMgr = null;
         }
-        if(mLiveRoom == null) {
+        if(mLiveRoom != null) {
             mLiveRoom.setPlayViewChange(null);
             mLiveRoom.setListener(null);
             mLiveRoom.stopLocalPreview();
+        }
+
+        if(mErrDlgFragment != null){
+            mErrDlgFragment = null;
         }
         stopLivePlay();
 

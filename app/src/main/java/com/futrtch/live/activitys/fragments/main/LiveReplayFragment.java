@@ -13,9 +13,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.futrtch.live.R;
+import com.futrtch.live.activitys.LivePlayActivity;
 import com.futrtch.live.activitys.LiveRecordActivity;
+import com.futrtch.live.activitys.VideoPlayActivity;
 import com.futrtch.live.adapters.LiveListAdapter;
+import com.futrtch.live.adapters.LiveReplayAdapter;
 import com.futrtch.live.base.BaseResponBean;
 import com.futrtch.live.databinding.FragmentLiveListBinding;
 import com.futrtch.live.databinding.FragmentLiveReplayBinding;
@@ -24,10 +29,13 @@ import com.futrtch.live.http.RequestTags;
 import com.futrtch.live.mvvm.MVVMFragment;
 import com.futrtch.live.mvvm.vm.LiveReplayViewModel;
 import com.futrtch.live.mvvm.vm.LiveReplayViewModelFactory;
+import com.futrtch.live.mvvm.vm.VideoPlayViewModel;
 import com.futrtch.live.tencent.common.utils.TCUtils;
 import com.futrtch.live.tencent.live.TCVideoInfo;
 import com.futrtch.live.utils.decoration.GridSectionAverageGapItemDecoration;
 import com.futrtch.live.views.ViewsBuilder;
+import com.github.desfate.videokit.controls.VideoRequestControls;
+import com.github.desfate.videokit.dates.VideoInfoDate;
 import com.jakewharton.rxbinding4.view.RxView;
 import com.jeremyliao.liveeventbus.LiveEventBus;
 
@@ -44,7 +52,7 @@ public class LiveReplayFragment extends MVVMFragment {
 
     public final static int START_LIVE_PLAY = 10090;
 
-    LiveListAdapter mAdapter;
+    LiveReplayAdapter mAdapter;
     LiveReplayViewModel mViewModel;
 
     FragmentLiveReplayBinding mDataBinding;
@@ -81,7 +89,7 @@ public class LiveReplayFragment extends MVVMFragment {
                 .build()
                 .getDataBinding();
 
-        mAdapter = new LiveListAdapter(R.layout.listview_video_item, getActivity(), mViewModel.getListData());
+        mAdapter = new LiveReplayAdapter(R.layout.listview_video_item, getActivity(), mViewModel.getListData());
         mAdapter.setEmptyView(mEmptyBinding.getRoot());
         mDataBinding.grid.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         mDataBinding.grid.addItemDecoration(new GridSectionAverageGapItemDecoration(10, 10, 20, 15));
@@ -95,7 +103,22 @@ public class LiveReplayFragment extends MVVMFragment {
                     mDataBinding.swipeLayout.setRefreshing(true);
                     initRequest();
                 });
+
+        RxView.clicks(mDataBinding.fab)
+                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .subscribe(unit -> {
+                });
+
         mDataBinding.swipeLayout.setOnRefreshListener(() -> mViewModel.onRefresh());
+
+        mAdapter.setOnItemClickListener((adapter, view, position) -> {
+            VideoInfoDate info = mViewModel.getListData().get(position);
+            if(info.getVideoPlayUrl() != null){
+                Intent intent = new Intent(getActivity(), VideoPlayActivity.class);
+                intent.putExtra("play_url", info.getVideoPlayUrl());
+                startActivity(intent);
+            }
+        });
     }
 
     public void subscribeUi() {
@@ -104,7 +127,7 @@ public class LiveReplayFragment extends MVVMFragment {
                 .observe(this, baseResponBean -> {
                     mDataBinding.swipeLayout.setRefreshing(false);
                     mViewModel.getListData().clear();
-                    mViewModel.getListData().addAll((List<TCVideoInfo>) baseResponBean.getData());
+                    mViewModel.getListData().addAll((List<VideoInfoDate>) baseResponBean.getData());
                     mAdapter.notifyDataSetChanged();
                 });
     }

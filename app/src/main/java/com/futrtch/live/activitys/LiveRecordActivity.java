@@ -1,13 +1,16 @@
 package com.futrtch.live.activitys;
 
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
@@ -40,7 +43,6 @@ import java.util.concurrent.TimeUnit;
 
 import autodispose2.AutoDispose;
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
-import github.com.desfate.livekit.live.LiveConfig;
 
 import static com.futrtch.live.tencent.common.utils.TCErrorConstants.ERROR_CUSTOMER_CREATE_ROOM_ERROR;
 import static com.futrtch.live.tencent.common.utils.TCErrorConstants.SUCCESS_CUSTOMER_CREATE_ROOM;
@@ -96,7 +98,7 @@ public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCal
                 mDataBinding,
                 getIntent().getIntExtra(Constants.INTENT_LIVE_TYPE, Constants.LIVE_TYPE_3D)); //    初始化必要控件 默认3d
         mViewModel.preparePush(this);//                                                  开始准备推流
-        mViewModel.switchCamera(this);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);                         // 切换为横屏  第一次默认横屏
         mViewModel.startPreview();//                                                                开启预览
         mViewModel.startPush();//                                                                   开始推流
     }
@@ -174,30 +176,16 @@ public class LiveRecordActivity extends BaseIMLVBActivity implements LiveRoomCal
     @Override
     public void onConfigurationChanged(@NotNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-//        DisplayMetrics mDisplayMetrics = new DisplayMetrics();
-//        getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
-//        int W = mDisplayMetrics.widthPixels;
-//        int H = mDisplayMetrics.heightPixels;
-//        if(getResources() == null || getResources().getConfiguration() == null) return;
-//        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            if(mViewModel.getLiveConfig().getLivePushType() == LiveConfig.LIVE_PUSH_TEXTURE){
-////                mDataBinding.txCloudView.getLayoutParams().width = W;
-////                mDataBinding.txCloudView.getLayoutParams().height = H;
-//            }else{
-//                mDataBinding.anchorPushView.getLayoutParams().width = W;
-//                mDataBinding.anchorPushView.getLayoutParams().height = H;
-//            }
-//            // land do nothing is ok
-//        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-//            if(mViewModel.getLiveConfig().getLivePushType() == LiveConfig.LIVE_PUSH_TEXTURE) {
-////                mDataBinding.txCloudView.getLayoutParams().width = W;
-////                mDataBinding.txCloudView.getLayoutParams().height = H;
-//            }else {
-//                // port do nothing is ok
-//                mDataBinding.anchorPushView.getLayoutParams().width = W;
-//                mDataBinding.anchorPushView.getLayoutParams().height = H;
-//            }
-//        }
+        if(newConfig.orientation ==
+                Configuration.ORIENTATION_LANDSCAPE){ // 横屏
+            ConstraintLayout.LayoutParams params = ((ConstraintLayout.LayoutParams)mDataBinding.anchorControlLayer.getLayoutParams());
+            params.dimensionRatio = "16:9";
+            mDataBinding.anchorControlLayer.setLayoutParams(params);
+        }else{
+            ConstraintLayout.LayoutParams params = ((ConstraintLayout.LayoutParams)mDataBinding.anchorControlLayer.getLayoutParams());
+            params.dimensionRatio = "9:16";
+            mDataBinding.anchorControlLayer.setLayoutParams(params);
+        }
     }
 
     @Override

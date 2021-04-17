@@ -54,9 +54,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import github.com.desfate.livekit.LiveConfig;
 import github.com.desfate.livekit.LiveConstant;
 import github.com.desfate.livekit.camera.interfaces.CameraChangeCallback;
-import github.com.desfate.livekit.live.LiveConfig;
 import github.com.desfate.livekit.ui.BaseLiveView;
 import github.com.desfate.livekit.ui.DataLivePushView;
 import github.com.desfate.livekit.ui.LivePlayView;
@@ -476,7 +476,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
      * @param callback 创建房间的结果回调
      */
     @Override
-    public void createRoom(final String roomID, final String roomInfo, final LiveConfig liveConfig ,final IMLVBLiveRoomListener.CreateRoomCallback callback) {
+    public void createRoom(final String roomID, final String roomInfo, final LiveConfig liveConfig , final IMLVBLiveRoomListener.CreateRoomCallback callback) {
         TXCLog.i(TAG, "API -> createRoom:" + roomID + ":" + roomInfo);
         mSelfRoleType = LIVEROOM_ROLE_PUSHER;
 
@@ -2132,6 +2132,13 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
 //                    }
                     config.setCustomModeType(TXLiveConstants.CUSTOM_MODE_VIDEO_CAPTURE);
                     config.setVideoEncodeGop(2);
+                    config.setVideoFPS(30);
+
+//                    config.setAutoAdjustBitrate(true); // 码率自适应
+//                    config.setMinVideoBitrate(2500); //   设置最小码率
+//                    config.setMaxVideoBitrate(10000); //   设置最大码率
+
+                    config.setVideoBitrate(6000);
                     config.setVideoResolution(TXLiveConstants.VIDEO_RESOLUTION_TYPE_1920_1080);
                     mTXLivePusher.setConfig(config);
                     Log.e(TAG, "启动推流");
@@ -3416,7 +3423,7 @@ public class MLVBLiveRoomImpl extends MLVBLiveRoom implements HttpRequests.Heart
                             //使用该接口需要 setPlayerView(TXCloudVideoView) 传入 null。
                             //此功能为高级特性，除非您需要使用该特性，否则建议您使用 setPlayerView(TXCloudVideoView)。
                             // 以前的代码我不动
-                            mTXLivePlayer.setSurface(view.getmSurface());  // 绑定surface
+                            mTXLivePlayer.setSurface(view.getSurface());  // 绑定surface
                             mTXLivePlayer.setSurfaceSize(1920, 1088);
                             mTXLivePlayer.setRenderMode(TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN);
 //                            mTXLivePlayer.setRenderRotation(TXLiveConstants.RENDER_ROTATION_PORTRAIT);

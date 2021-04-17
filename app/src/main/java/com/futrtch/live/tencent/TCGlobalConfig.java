@@ -18,7 +18,7 @@ public class TCGlobalConfig {
      *
      * 详情请参考：https://www.qcloud.com/document/product/454/7999
      */
-    public static final String APP_SVR_URL = "http://118.25.142.230"; //如果您的服务器没有部署https证书，这里需要用http
+    public static final String APP_SVR_URL = "http://159.75.27.221"; //如果您的服务器没有部署https证书，这里需要用http
 
     /**
      * bugly 组件的 AppId
@@ -26,4 +26,9 @@ public class TCGlobalConfig {
      * bugly sdk 系腾讯提供用于 APP Crash 收集和分析的组件。
      */
     public static final String BUGLY_APPID = "b0aa43dc1c";
+
+    /**
+     * 用于认证的secret key
+     */
+    public static final String COSKEY_SECRECTKEY = "gFZdx3jjrmW6S02qneRN8VFk37QUK1nM";
 }

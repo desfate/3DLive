@@ -14,8 +14,8 @@ import com.tencent.rtmp.TXLiveConstants;
 import com.tencent.rtmp.TXLivePusher;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 
+import github.com.desfate.livekit.LiveConfig;
 import github.com.desfate.livekit.camera.interfaces.CameraChangeCallback;
-import github.com.desfate.livekit.live.LiveConfig;
 import github.com.desfate.livekit.ui.BaseLiveView;
 import github.com.desfate.livekit.ui.DataLivePushView;
 import github.com.desfate.livekit.ui.LivePlayView;

@@ -8,6 +8,8 @@ import com.futrtch.live.tencent.liveroom.IMLVBLiveRoomListener;
 import com.futrtch.live.tencent.liveroom.MLVBLiveRoom;
 import com.futrtch.live.tencent.liveroom.roomutil.commondef.AnchorInfo;
 import com.futrtch.live.tencent.liveroom.roomutil.commondef.RoomInfo;
+import com.github.desfate.videokit.controls.VideoRequestControls;
+import com.github.desfate.videokit.dates.VideoInfoDate;
 import com.tencent.rtmp.TXLog;
 
 import org.json.JSONObject;
@@ -81,6 +83,18 @@ public class LiveListService {
                 emitter.onNext(resBean);
                 TXLog.w(TAG, "xzb_process: get_live_list success");
             }
+        }));
+    }
+
+    /**
+     * 获取视频列表
+     * @return
+     */
+    public static Observable<BaseResponBean<List<VideoInfoDate>>> fetchVideoList(){
+        return Observable.create(emitter -> new VideoRequestControls().getVideoList(result -> {
+            BaseResponBean resBean = new BaseResponBean<>(0, "success");
+            resBean.setData(result);
+            emitter.onNext(resBean);
         }));
     }
 }

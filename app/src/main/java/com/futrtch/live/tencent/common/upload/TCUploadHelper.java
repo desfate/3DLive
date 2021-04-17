@@ -20,17 +20,16 @@ import com.tencent.cos.xml.model.object.PutObjectRequest;
 
 
 /**
- *  Module:   TCUploadHelper
- *
- *  Function: 上传图片到 Cos 的工具类
- *
- *  直播开播之前，可以设置自己的封面，所以我们需要将图片保存到 cos 存储，提供给观看端查看。
- *
- *  腾讯云对于 COS 存储服务提供了额外的 SDK，他不属于 LiteAVSDK 的组成部分，该工具仅提供一个简单用法；
- *
- *  COS SDK 相关服务的开通可以参考此篇文章：
- *  https://cloud.tencent.com/document/product/454/15187#2.-.E5.BC.80.E9.80.9A.E5.AF.B9.E8.B1.A1.E5.AD.98.E5.82.A8.E6.9C.8D.E5.8A.A1
- *
+ * Module:   TCUploadHelper
+ * <p>
+ * Function: 上传图片到 Cos 的工具类
+ * <p>
+ * 直播开播之前，可以设置自己的封面，所以我们需要将图片保存到 cos 存储，提供给观看端查看。
+ * <p>
+ * 腾讯云对于 COS 存储服务提供了额外的 SDK，他不属于 LiteAVSDK 的组成部分，该工具仅提供一个简单用法；
+ * <p>
+ * COS SDK 相关服务的开通可以参考此篇文章：
+ * https://cloud.tencent.com/document/product/454/15187#2.-.E5.BC.80.E9.80.9A.E5.AF.B9.E8.B1.A1.E5.AD.98.E5.82.A8.E6.9C.8D.E5.8A.A1
  **/
 public class TCUploadHelper {
     private static final String TAG = "TCUploadHelper";
@@ -77,7 +76,7 @@ public class TCUploadHelper {
 
 
     public void uploadPic(final String path) {
-        Log.d(TAG,"uploadPic do upload path:"+path);
+        Log.d(TAG, "uploadPic do upload path:" + path);
         final String netUrl = createNetUrl();
 
         final TCUserMgr.CosInfo cosInfo = TCUserMgr.getInstance().getCosInfo();
@@ -87,14 +86,14 @@ public class TCUploadHelper {
             public void onProgress(long progress, long max) {
             }
         });
-        putObjectRequest.setSign(600,null,null);
+        putObjectRequest.setSign(600, null, null);
         mCosService.putObjectAsync(putObjectRequest, new CosXmlResultListener() {
             @Override
             public void onSuccess(CosXmlRequest cosXmlRequest, CosXmlResult cosXmlResult) {
                 //修改访问权限为公开
                 PutObjectACLRequest putObjectACLRequest = new PutObjectACLRequest(cosInfo.bucket, netUrl);
                 putObjectACLRequest.setXCOSACL("public-read");
-                putObjectACLRequest.setSign(600,null,null);
+                putObjectACLRequest.setSign(600, null, null);
 
                 try {
                     mCosService.putObjectACL(putObjectACLRequest);
@@ -105,28 +104,25 @@ public class TCUploadHelper {
                 }
                 final TCUserMgr.CosInfo cosInfo = TCUserMgr.getInstance().getCosInfo();
                 final String accessUrl;
-                try {
-                    accessUrl = "http://" + cosXmlRequest.getHost(cosXmlServiceConfig, false) + cosXmlRequest.getPath(cosXmlServiceConfig);
-                    Log.d(TAG,"uploadPic do upload sucess, url:" + accessUrl);
-                    mMainHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mCallbackListener != null) {
-                                mCallbackListener.onUploadResult(UPLOAD_RESULT_SUCCESS, accessUrl);
-                            }
+                accessUrl = "http://" + cosXmlRequest.getRequestHost(cosXmlServiceConfig) + cosXmlRequest.getPath(cosXmlServiceConfig);
+                Log.d(TAG, "uploadPic do upload sucess, url:" + accessUrl);
+                mMainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mCallbackListener != null) {
+                            mCallbackListener.onUploadResult(UPLOAD_RESULT_SUCCESS, accessUrl);
                         }
-                    });
-                } catch (CosXmlClientException e) {
-                    e.printStackTrace();
-                }
+                    }
+                });
+
             }
 
             @Override
             public void onFail(CosXmlRequest cosXmlRequest, CosXmlClientException qcloudException, CosXmlServiceException qcloudServiceException) {
                 final StringBuilder stringBuilder = new StringBuilder();
-                if(qcloudException != null){
+                if (qcloudException != null) {
                     stringBuilder.append(qcloudException.getMessage());
-                }else {
+                } else {
                     stringBuilder.append(qcloudServiceException.toString());
                 }
 

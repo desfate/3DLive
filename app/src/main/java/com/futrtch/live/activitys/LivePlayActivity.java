@@ -3,14 +3,13 @@ package com.futrtch.live.activitys;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Size;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
@@ -28,12 +27,9 @@ import com.futrtch.live.tencent.common.utils.TCUtils;
 import com.futrtch.live.tencent.common.widget.RTCUserAvatarListAdapter;
 import com.futrtch.live.tencent.live.LiveMessageCommand;
 import com.futrtch.live.tencent.liveroom.roomutil.commondef.MLVBCommonDef;
-import com.futrtch.live.utils.AnimatorUtils;
 import com.futrtch.live.utils.ToastUtil;
-import com.futrtch.live.utils.TransitionUtils;
 import com.future.Holography.Holography;
 import com.jakewharton.rxbinding4.view.RxView;
-import com.tencent.rtmp.TXLiveConstants;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -43,7 +39,6 @@ import java.util.Optional;
 import autodispose2.AutoDispose;
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 
-import github.com.desfate.livekit.ui.LivePlayView;
 /**
  * 直播播放页面
  */
@@ -72,7 +67,6 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
 
     @Override
     public void init() {
-//        TransitionUtils.setTransitionAnim(mDataBinding.audienceBackground, getWindow(), TRANSITION_NAME_IMAGE); // 设置过场动画
         mViewModel.getIntentData(getIntent()); //   拿到主播相关数据
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -85,8 +79,6 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
         mViewModel.prepareLive(this, mDataBinding.anchorDanmakuView, mDataBinding.anchorControlLayer);  // 直播前准备
         mViewModel.startLivePlay(mDataBinding.anchorPlayView, this);
         mDataBinding.anchorPlayView.setFrontChange(false);
-//        int pic = Integer.parseInt(getIntent().getStringExtra("btn"));
-//        mDataBinding.audienceBackground.setImageResource(pic);
     }
 
     @Override
@@ -218,6 +210,25 @@ public class LivePlayActivity extends BaseIMLVBActivity implements LiveRoomCallB
     @Override
     public void onConfigurationChanged(@NotNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        if(newConfig.orientation ==
+                Configuration.ORIENTATION_LANDSCAPE){ // 横屏
+            ConstraintLayout.LayoutParams params = ((ConstraintLayout.LayoutParams)mDataBinding.anchorControlLayer.getLayoutParams());
+            params.dimensionRatio = "16:9";
+            mDataBinding.anchorControlLayer.setLayoutParams(params);
+
+            ConstraintLayout.LayoutParams paramsPreview = ((ConstraintLayout.LayoutParams) mDataBinding.anchorPlayView.getLayoutParams());
+            paramsPreview.dimensionRatio = "16:9";
+            mDataBinding.anchorPlayView.setLayoutParams(params);
+
+        }else{
+            ConstraintLayout.LayoutParams params = ((ConstraintLayout.LayoutParams)mDataBinding.anchorControlLayer.getLayoutParams());
+            params.dimensionRatio = "9:16";
+            mDataBinding.anchorControlLayer.setLayoutParams(params);
+
+            ConstraintLayout.LayoutParams paramsPreview = ((ConstraintLayout.LayoutParams) mDataBinding.anchorPlayView.getLayoutParams());
+            paramsPreview.dimensionRatio = "9:16";
+            mDataBinding.anchorPlayView.setLayoutParams(params);
+        }
     }
 
     @Override

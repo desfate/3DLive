@@ -135,6 +135,8 @@ dependencies {
     implementation deps.androidX.constraintLayout
     implementation deps.androidX.lifecycle
     implementation deps.androidX.palette
+
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     // material
     implementation deps.material.runtime
 //    implementation deps.support.design

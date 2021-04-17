@@ -26,14 +26,20 @@
         <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable/ic_launcher_background.xml" value="0.3880208333333333" />
         <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable/send_chat_background.xml" value="0.3880208333333333" />
         <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/drawable/splash.xml" value="0.3880208333333333" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/activity_address_book.xml" value="0.26614583333333336" />
         <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/activity_chat.xml" value="0.2269021739130435" />
         <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/activity_live.xml" value="0.27898550724637683" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/activity_play_video.xml" value="0.3645833333333333" />
         <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/activity_record.xml" value="0.27898550724637683" />
         <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/activity_setting.xml" value="0.27898550724637683" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/activity_user.xml" value="0.3645833333333333" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/activity_video_player.xml" value="0.3645833333333333" />
         <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/dialog_input_text.xml" value="0.34601449275362317" />
         <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/dialog_publish_detail.xml" value="0.37092391304347827" />
         <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/fragment_friend_list.xml" value="0.21770833333333334" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/fragment_live_care.xml" value="0.1015625" />
         <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/fragment_live_list.xml" value="0.2796875" />
+        <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/fragment_live_replay.xml" value="0.26614583333333336" />
         <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/fragment_user.xml" value="0.2859375" />
         <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/layout_empty_list.xml" value="0.25" />
         <entry key="..\:/android workspace/github.com/3DLive/app/src/main/res/layout/layout_setting_footer.xml" value="0.2635416666666667" />
@@ -43,7 +49,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
