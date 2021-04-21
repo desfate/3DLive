@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.futrtch.live.databinding.FragmentUserBinding;
+import com.futrtch.live.mvvm.repository.LoginRepository;
 import com.futrtch.live.mvvm.repository.MineRepository;
 import com.futrtch.live.mvvm.repository.ViewPagerRepository;
 import com.futrtch.live.tencent.live.TCVideoInfo;
@@ -32,6 +33,7 @@ public class MineViewModel extends ViewModel {
     public MineViewModel(MineRepository mineRepository){
         this.mineRepository = mineRepository;
         viewPagerRepository = ViewPagerRepository.getInstance();
+        userName.postValue(LoginRepository.getInstance().getLoginInfo().getmUserName());
     }
 
 

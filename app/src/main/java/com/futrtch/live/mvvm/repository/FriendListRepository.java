@@ -10,7 +10,6 @@ import java.util.List;
  */
 public class FriendListRepository {
 
-
     /**
      * 通过网络推荐获取好友
      */

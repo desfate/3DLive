@@ -30,6 +30,7 @@ import autodispose2.AutoDispose;
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subscribers.DisposableSubscriber;
@@ -137,6 +138,8 @@ public class LoginRepository extends BaseRepository {
                                 if (accountBean.getData().getSex() >= 0) {
                                     loginSaveBean.setmSex(accountBean.getData().getSex());//                  用户性别
                                 }
+                                LiveEventBus.get(RequestTags.ACCOUNT_INFO_REQ, BaseResponBean.class)
+                                        .post(accountBean);         // 账户信息返回通知
                             }
                         }
                     }
@@ -156,7 +159,6 @@ public class LoginRepository extends BaseRepository {
                     }
                 });
     }
-
 
 
     /**
@@ -187,6 +189,30 @@ public class LoginRepository extends BaseRepository {
                     @Override
                     public void onComplete() {
 
+                    }
+                });
+    }
+
+    public void getAccountInfo(LifecycleOwner lifecycleOwner){
+        AccountReqFlowable.accountFlowable(getUserId(), getToken())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(lifecycleOwner)))
+                .subscribe(accountBean -> {
+                    if (accountBean != null && accountBean.getCode() == 200) {  // 查询账户信息返回
+                        LiveEventBus.get(RequestTags.ACCOUNT_INFO_REQ, BaseResponBean.class)
+                                .post(accountBean);         // 账户信息返回通知
+                        if (accountBean.getData() != null) {
+                            if (accountBean.getData().getAvatar() != null)
+                                loginSaveBean.setmUserAvatar(accountBean.getData().getAvatar());  //      保存用户头像信息
+                            if (accountBean.getData().getNickname() != null)
+                                loginSaveBean.setmUserName(accountBean.getData().getNickname()); //       用户称呼
+                            if (accountBean.getData().getFrontcover() != null)
+                                loginSaveBean.setmCoverPic(accountBean.getData().getFrontcover());//      直播封面？
+                            if (accountBean.getData().getSex() >= 0) {
+                                loginSaveBean.setmSex(accountBean.getData().getSex());//                  用户性别
+                            }
+                        }
                     }
                 });
     }

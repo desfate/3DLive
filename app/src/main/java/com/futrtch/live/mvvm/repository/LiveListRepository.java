@@ -21,6 +21,12 @@ import io.reactivex.rxjava3.functions.Consumer;
 
 /**
  * 直播列表数据仓库
+ * 视频列表数据仓库
+ *
+ * 这里考虑到有可能在直播间或是视频间频繁切换
+ * 这里做一个持久化的单例  (现在暂时嫌麻烦 后续再做)
+ * fixme 这里做一个持久化处理
+ *
  */
 public class LiveListRepository {
 
@@ -67,9 +73,5 @@ public class LiveListRepository {
                         .post(listBaseResponBean));
 
     }
-
-
-
-
 
 }

@@ -136,6 +136,7 @@ dependencies {
     implementation deps.androidX.lifecycle
     implementation deps.androidX.palette
 
+
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     // material
     implementation deps.material.runtime
@@ -143,8 +144,6 @@ dependencies {
 //    implementation deps.support.recyclerview
     // 腾讯直播SDK
     implementation deps.liteavSdk.liteavsdk_smart
-    // 自定义采集控件
-    implementation deps.liveKit.runtime
     // OkHttp3 + OkHttp3拦截器 腾讯云需要
     implementation deps.okHttp3.runtime
     implementation deps.okHttp3.interceptor
@@ -190,6 +189,8 @@ dependencies {
 //    kapt deps.hilt.compiler
     // xlog
     implementation deps.xlog.runtime
+    implementation project(path: ':videokit')
+    implementation project(path: ':livekit')
     // leakCanary
     debugImplementation deps.leakCanary.runtime
 

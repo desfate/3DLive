@@ -168,6 +168,7 @@ public class MainActivity extends BaseIMLVBActivity implements LiveRoomCallBack 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(data == null) return;
         LiveEventBus.get(RequestTags.SELECT_URL, Uri.class)
                 .post(data.getData());         // 页面要处理的逻辑（注册返回）
     }

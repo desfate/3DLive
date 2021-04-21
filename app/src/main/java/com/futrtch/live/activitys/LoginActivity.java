@@ -109,15 +109,19 @@ public class LoginActivity extends MVVMActivity {
         // 登录信息返回通知
         LiveEventBus.get(RequestTags.LOGIN_REQ, BaseResponBean.class)
                 .observe(this, bean -> {
-                    Optional.ofNullable(mLoading).ifPresent(builder -> mLoading.getObj().dismiss());  // 取消 Loading
                     if (bean.getCode() == 200) { // 登录成功
                         ToastUtil.showToast(LoginActivity.this, "登录成功！");
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                        finish();
                     } else {                     // 登录失败
                         ToastUtil.showToast(LoginActivity.this, "登录失败:" + TCErrorConstants.getErrorInfo(bean.getCode()));
                         mDataBinding.passwordEdt.setText("");  // 清空密码输入框
                     }
+                });
+
+        LiveEventBus.get(RequestTags.ACCOUNT_INFO_REQ, BaseResponBean.class)
+                .observe(this, baseResponBean -> {
+                    Optional.ofNullable(mLoading).ifPresent(builder -> mLoading.getObj().dismiss());  // 取消 Loading
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    finish();
                 });
     }
 

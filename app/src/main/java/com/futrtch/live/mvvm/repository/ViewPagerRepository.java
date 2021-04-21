@@ -13,7 +13,7 @@ public class ViewPagerRepository {
 
     private final String[] mFriendTitles = new String[]{"朋友列表", "发现朋友"};
     private final String[] mMineTitles = new String[]{"作品", "动态", "喜欢"};
-    private final String[] mLiveTitles = new String[]{"推荐", "关注", "回放"};
+    private final String[] mLiveTitles = new String[]{"直播", "关注", "推荐"};
 
     private final List<Integer> mIndexTwo = new ArrayList<>(Arrays.asList(0, 1));
     private final List<Integer> mIndexThree = new ArrayList<>(Arrays.asList(0, 1, 2));

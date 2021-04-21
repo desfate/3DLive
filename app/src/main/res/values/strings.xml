@@ -39,5 +39,6 @@
     <string name="image_background">image_background</string>
 
     <string name="upload_text">上传中</string>
+    <string name="request_text">请求中</string>
 
 </resources>

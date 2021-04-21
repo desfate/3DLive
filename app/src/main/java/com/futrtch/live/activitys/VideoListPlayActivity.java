@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -13,28 +14,46 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.chad.library.adapter.base.viewholder.BaseDataBindingHolder;
 import com.futrtch.live.R;
+import com.futrtch.live.adapters.VideoPlayListAdapter;
+import com.futrtch.live.databinding.ActivityVideoListPlayBinding;
 import com.futrtch.live.databinding.ActivityVideoPlayerBinding;
+import com.futrtch.live.databinding.ItemVideoListBinding;
 import com.futrtch.live.mvvm.MVVMActivity;
+import com.futrtch.live.mvvm.vm.VideoListPlayViewModel;
+import com.futrtch.live.mvvm.vm.VideoListPlayViewModelFactory;
 import com.futrtch.live.mvvm.vm.VideoPlayViewModel;
 import com.futrtch.live.mvvm.vm.VideoPlayViewModelFactory;
+import com.github.desfate.videokit.dates.VideoInfoDate;
+import com.github.desfate.videokit.ui.VideoPlayView;
 import com.jakewharton.rxbinding4.view.RxView;
+
+import java.util.List;
+import java.util.Objects;
 
 import autodispose2.AutoDispose;
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
+import github.com.desfate.livekit.ui.DualLivePlayView;
+import github.com.desfate.livekit.utils.ScreenUtils;
 
 /**
- * 播放视频
+ * 类似抖音的列表播放
  */
-public class VideoPlayActivity extends MVVMActivity implements android.view.GestureDetector.OnGestureListener{
+public class VideoListPlayActivity extends MVVMActivity implements android.view.GestureDetector.OnGestureListener{
 
     ActivityVideoPlayerBinding mDataBinding;
-    VideoPlayViewModel mViewModel;
+    VideoListPlayViewModel mViewModel;
     // 定义手势检测器实例
     GestureDetector detector;
+
 
     @Override
     public void initViewModel() {
@@ -42,14 +61,19 @@ public class VideoPlayActivity extends MVVMActivity implements android.view.Gest
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_video_player);
-        ViewModelProvider.Factory factory = new VideoPlayViewModelFactory(this.getApplication());
-        mViewModel = ViewModelProviders.of(this, factory).get(VideoPlayViewModel.class);
+        ViewModelProvider.Factory factory = new VideoListPlayViewModelFactory(this.getApplication());
+        mViewModel = ViewModelProviders.of(this, factory).get(VideoListPlayViewModel.class);
     }
+
 
     @Override
     public void init() {
-        mDataBinding.videoPlayView.init(getIntent().getStringExtra("play_url"));
+        mViewModel.init(getIntent());
+        mDataBinding.videoPlayView.init(mViewModel.getPlayUrls().get(mViewModel.getCurrentPosition()).getVideoPlayUrl());
         mDataBinding.videoPlayView.setPreviewSurface(mDataBinding.anchorPlayView.getSurface());  // 绑定播放器和本地绘制部分
+        mDataBinding.videoPlayView.getControl().hideAllViewExceptTitle();
+        mDataBinding.videoPlayView.getBackImg().setVisibility(View.VISIBLE);
+        mDataBinding.videoPlayView.getTitleView().setVisibility(View.VISIBLE);
         // 创建手势检测器
         detector = new GestureDetector(this, this);
     }
@@ -60,11 +84,15 @@ public class VideoPlayActivity extends MVVMActivity implements android.view.Gest
                 .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(unit -> finish());
 
+        RxView.clicks( mDataBinding.videoPlayView.getTitleView())
+                .to(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                .subscribe(unit -> finish());
+
     }
 
     @Override
     public void subscribeUi() {
-
+        mViewModel.getCurrentVideoName().observe(this, s -> mDataBinding.videoPlayView.getTitleView().setText(s));
     }
 
     @Override
@@ -138,23 +166,55 @@ public class VideoPlayActivity extends MVVMActivity implements android.view.Gest
         float endY = e2.getY();
 
         if (beginX - endX > minMove && Math.abs(velocityX) > minVelocity) { // 左滑
-            Toast.makeText(this, velocityX + "左滑", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, velocityX + "左滑", Toast.LENGTH_SHORT).show();
+            translationRight();
+            mDataBinding.videoPlayView.playOther( mViewModel.getNextUrl());
         } else if (endX - beginX > minMove && Math.abs(velocityX) > minVelocity) { // 右滑
-            Toast.makeText(this, velocityX + "右滑", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, velocityX + "右滑", Toast.LENGTH_SHORT).show();
+            translationLeft();
+            mDataBinding.videoPlayView.playOther( mViewModel.getNextUrl());
         } else if (beginY - endY > minMove && Math.abs(velocityY) > minVelocity) { // 上滑
-            Toast.makeText(this, velocityX + "上滑", Toast.LENGTH_SHORT).show();
-            translationY();
+//            Toast.makeText(this, velocityX + "上滑", Toast.LENGTH_SHORT).show();
+            translationUp();
+//            mViewModel.getNextUrl()
+            mDataBinding.videoPlayView.playOther( mViewModel.getNextUrl());
         } else if (endY - beginY > minMove && Math.abs(velocityY) > minVelocity) { // 下滑
-            Toast.makeText(this, velocityX + "下滑", Toast.LENGTH_SHORT).show();
+            translationDown();
+            mDataBinding.videoPlayView.playOther( mViewModel.getNextUrl());
+//            Toast.makeText(this, velocityX + "下滑", Toast.LENGTH_SHORT).show();
         }
 
         return false;
     }
 
 
-    public void translationY(){
-        ObjectAnimator animator = ObjectAnimator.ofFloat( mDataBinding.anchorPlayView,"translationY",1000,0);//文字标签Y轴平移
-        animator.setDuration(1000);
+    public void translationUp(){
+        ObjectAnimator animator = ObjectAnimator.ofFloat( mDataBinding.anchorPlayView,"translationY", ScreenUtils.getScreenSize(this).getHeight(),0);//文字标签Y轴平移
+        animator.setDuration(600);
+        AnimatorSet animatorSet= new AnimatorSet();//创建动画集
+        animatorSet.play(animator);
+        animatorSet.start();
+    }
+
+    public void translationDown(){
+        ObjectAnimator animator = ObjectAnimator.ofFloat( mDataBinding.anchorPlayView,"translationY",-ScreenUtils.getScreenSize(this).getHeight(), 0);//文字标签Y轴平移
+        animator.setDuration(600);
+        AnimatorSet animatorSet= new AnimatorSet();//创建动画集
+        animatorSet.play(animator);
+        animatorSet.start();
+    }
+
+    public void translationRight(){
+        ObjectAnimator animator = ObjectAnimator.ofFloat( mDataBinding.anchorPlayView,"translationX",ScreenUtils.getScreenSize(this).getWidth(),0);//文字标签Y轴平移
+        animator.setDuration(600);
+        AnimatorSet animatorSet= new AnimatorSet();//创建动画集
+        animatorSet.play(animator);
+        animatorSet.start();
+    }
+
+    public void translationLeft(){
+        ObjectAnimator animator = ObjectAnimator.ofFloat( mDataBinding.anchorPlayView,"translationX",-ScreenUtils.getScreenSize(this).getWidth(),0);//文字标签Y轴平移
+        animator.setDuration(600);
         AnimatorSet animatorSet= new AnimatorSet();//创建动画集
         animatorSet.play(animator);
         animatorSet.start();

@@ -1,2 +1,4 @@
 include ':app'
+include ':videokit'
+include ':livekit'
 rootProject.name = "3DLive"

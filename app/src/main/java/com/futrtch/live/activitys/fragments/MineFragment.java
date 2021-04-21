@@ -16,11 +16,15 @@ import com.futrtch.live.R;
 import com.futrtch.live.activitys.EditActivity;
 import com.futrtch.live.activitys.SettingActivity;
 import com.futrtch.live.adapters.viewpage.MineFragmentAdapter;
+import com.futrtch.live.base.BaseResponBean;
+import com.futrtch.live.beans.AccountInfoBean;
 import com.futrtch.live.databinding.FragmentUserBinding;
+import com.futrtch.live.http.RequestTags;
 import com.futrtch.live.mvvm.MVVMFragment;
 import com.futrtch.live.mvvm.vm.MineViewModel;
 import com.futrtch.live.mvvm.vm.MineViewModelFactory;
 import com.jakewharton.rxbinding4.view.RxView;
+import com.jeremyliao.liveeventbus.LiveEventBus;
 
 import java.util.Objects;
 
@@ -91,6 +95,12 @@ public class MineFragment extends MVVMFragment {
             mDataBinding.title.setText(string);
             mDataBinding.userNameTv.setText(string);
         });
+        // 收到账户信息请求返回
+        // 请求账户信息返回
+        LiveEventBus.get(RequestTags.ACCOUNT_INFO_REQ, BaseResponBean.class)
+                .observe(this, baseRespondBean -> {
+                    mViewModel.getUserName().postValue(((AccountInfoBean)baseRespondBean.getData()).getNickname());
+                });
     }
 
     @Override

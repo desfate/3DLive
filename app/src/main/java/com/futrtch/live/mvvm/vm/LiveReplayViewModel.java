@@ -28,6 +28,7 @@ public class LiveReplayViewModel extends ViewModel {
 
     MutableLiveData<Boolean> isRefresh = new MutableLiveData<>();
     MutableLiveData<String> url = new MutableLiveData<>();
+    String thumbUrl = "";
 
     VideoUploadControls uploadControls;
 
@@ -80,5 +81,13 @@ public class LiveReplayViewModel extends ViewModel {
 
     public void setUploadControls(VideoUploadControls uploadControls) {
         this.uploadControls = uploadControls;
+    }
+
+    public String getThumbUrl(){
+        return thumbUrl;
+    }
+
+    public void setThumbUrl(String thumbUrl){
+        this.thumbUrl = thumbUrl;
     }
 }

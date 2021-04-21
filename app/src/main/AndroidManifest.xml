@@ -68,6 +68,12 @@
             android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
 
+        <activity
+            android:name=".activitys.VideoListPlayActivity"
+            android:screenOrientation="landscape"
+            android:configChanges="keyboardHidden|orientation|screenSize">
+        </activity>
+
         <activity android:name=".activitys.LoginActivity"
             android:screenOrientation="portrait">
 
