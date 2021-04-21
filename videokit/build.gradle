@@ -1,0 +1,64 @@
+plugins {
+    id 'com.android.library'
+}
+
+android {
+    compileSdkVersion = rootProject.ext.compileSdkVersion
+    buildToolsVersion = rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main {
+            jni.srcDirs = []
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+
+    // androidX + google
+    implementation deps.androidX.appcompat
+    implementation deps.androidX.annotation
+    // 第三方包
+    implementation deps.desfate.commonKit
+    implementation deps.okHttp3.runtime
+    implementation deps.squareup.okio
+    implementation deps.gson.runtime
+
+    // 来自七牛的播放器
+    implementation files('libs\\pldroid-player-2.2.0.jar')
+
+    // 下面这一堆 原本是给服务提供的  现在由于要敏捷开发  就直接拿到移动端使用
+    implementation group: 'xerces', name: 'xercesImpl', version: '2.11.0'
+    implementation ('com.tencent.qcloud:cosxml:5.5.3') {
+        exclude group: 'com.tencent.qcloud', module: 'mtaUtils' //关闭 mta 上报功能}
+    }
+    // 这些是video库
+    implementation files('libs\\commons-codec-1.10.jar')
+    implementation files('libs\\tencentcloud-sdk-java-3.1.2.jar')
+//    implementation files('libs\\gson-2.2.4.jar')
+    implementation files('libs\\jaxb-api-2.3.0.jar')
+    implementation files('libs\\okhttp-2.5.0.jar')
+}

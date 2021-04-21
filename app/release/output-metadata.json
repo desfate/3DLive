@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.futrtch.live",
+  "variantName": "release",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "properties": [],
+      "versionCode": 12001,
+      "versionName": "v1.2 alpha",
+      "enabled": true,
+      "outputFile": "app-release.apk"
+    }
+  ]
+}
